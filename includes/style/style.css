@@ -3,7 +3,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Montserrat', sans-serif;
-  background-color: #FFFFFF;
+  background-color: #FFF0F5;
   color: #4A4A4A;
 }
 
@@ -15,7 +15,7 @@ h1, h2, h3 {
 /* === Navbar === */
 .navbar {
   background-color: #FFF0F5 !important;
-  border-bottom: 2px solid #ce5680;
+  border-bottom: 2px solid #F8BBD0;
 }
 
 .navbar-brand {
@@ -68,6 +68,65 @@ h1, h2, h3 {
   color: #880E4F !important;
 }
 
+/* === Buttons === */
+button, .button, .btn-primary {
+  background-color: #CBF5A0 !important;
+  border: none !important;
+  color: #4A4A4A !important;
+  font-weight: bold;
+  min-width: 100px;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  text-decoration: none;
+  border-radius: 3px;
+  font: 12px/15px Arial, Helvetica, sans-serif;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+button:hover, .button:hover, .btn-primary:hover {
+  background-color: #D9FBB3 !important;
+  color: #333 !important;
+}
+
+/* === Alerts === */
+.alert {
+  border: 1px solid #F8BBD0;
+  background-color: #FFE4E1;
+  color: #880E4F;
+}
+
+/* === Auth Form Styling === */
+.auth-container {
+  background-color: #FFF0F5;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(200, 100, 150, 0.1);
+  border: 1px solid #F8BBD0;
+  max-width: 500px;
+  margin: 40px auto;
+}
+
+.auth-container .form-label {
+  color: #6A1B9A;
+  font-weight: 600;
+}
+
+.auth-container .form-control {
+  border: 1px solid #F8BBD0;
+  background-color: #FFF;
+  border-radius: 5px;
+}
+
+.auth-container a {
+  color: #C71585;
+  text-decoration: underline;
+}
+
+.auth-container a:hover {
+  color: #880E4F;
+}
+
 /* === Product Grid === */
 ul.products {
   padding: 0;
@@ -118,28 +177,6 @@ ul.products li fieldset label select {
   background-color: #FFF0F5;
   border: 1px solid #F8BBD0;
   padding: 4px;
-}
-
-/* === Buttons === */
-button, .button {
-  background-color: #CBF5A0;
-  min-width: 100px;
-  border: none;
-  padding: 10px;
-  display: inline-block;
-  text-align: center;
-  cursor: pointer;
-  text-decoration: none;
-  color: #4A4A4A;
-  min-height: 15px;
-  font: 12px/15px Arial, Helvetica, sans-serif;
-  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
-  border-radius: 3px;
-}
-
-button:hover, .button:hover {
-  background-color: #D9FBB3;
-  color: #333;
 }
 
 /* === Product Thumbnail & Description === */
@@ -243,61 +280,12 @@ ul.shopping-cart .cart-itm .remove-itm a {
   float: right;
 }
 
-/* === Auth Form Styling === */
-.auth-container {
-  background-color: #FFF0F5;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(200, 100, 150, 0.1);
-  border: 1px solid #F8BBD0;
-  max-width: 500px;
-  margin: 40px auto;
-}
-
-.auth-container .form-label {
-  color: #6A1B9A;
-  font-weight: 600;
-}
-
-.auth-container .form-control {
-  border: 1px solid #F8BBD0;
-  background-color: #FFF;
-  border-radius: 5px;
-}
-
-.auth-container .btn-primary {
-  background-color: #CBF5A0;
-  border: none;
-  color: #4A4A4A;
-  font-weight: bold;
-}
-
-.auth-container .btn-primary:hover {
-  background-color: #D9FBB3;
-  color: #333;
-}
-
-.auth-container a {
-  color: #C71585;
-  text-decoration: underline;
-}
-
-.auth-container a:hover {
-  color: #880E4F;
-}
-
-/* === Alert Styling === */
-.alert {
-  border: 1px solid #F8BBD0;
-  background-color: #FFE4E1;
-  color: #880E4F;
-}
-
 /* === Profile Page Styling === */
 .profile-card {
   border: 1px solid #F8BBD0;
   background-color: #FFF0F5;
   box-shadow: 0 2px 8px rgba(200, 100, 150, 0.1);
+  border-radius: 8px;
 }
 
 .profile-image {
@@ -306,13 +294,37 @@ ul.shopping-cart .cart-itm .remove-itm a {
   object-fit: cover;
   border-radius: 50%;
   border: 2px solid #F8BBD0;
+  box-shadow: 0 2px 5px rgba(200, 100, 150, 0.2);
 }
 
 .profile-table th {
   width: 120px;
   color: #880E4F;
+  font-weight: 600;
 }
 
 .profile-table td {
   color: #6A1B9A;
+}
+
+.profile-table tr:not(:last-child) td {
+  padding-bottom: 8px;
+}
+
+.profile-card .card-header {
+  background-color: #F8BBD0;
+  color: #880E4F;
+  font-weight: bold;
+  border-bottom: 1px solid #FCE4EC;
+}
+
+.profile-card .btn-primary {
+  background-color: #CBF5A0 !important;
+  color: #4A4A4A !important;
+  border: none !important;
+}
+
+.profile-card .btn-primary:hover {
+  background-color: #D9FBB3 !important;
+  color: #333 !important;
 }
