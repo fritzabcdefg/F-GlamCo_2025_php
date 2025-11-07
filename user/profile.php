@@ -23,7 +23,7 @@ if ($user_id) {
 
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card mb-4">
+            <div class="card profile-card mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Customer Profile</h5>
                     <a href="profile_edit.php" class="btn btn-sm btn-primary">Edit</a>
@@ -41,38 +41,38 @@ if ($user_id) {
                                         $img = isset($customer['image']) && $customer['image'] !== '' ? '../uploads/' . $customer['image'] : 'http://bootdey.com/img/Content/avatar/avatar1.png';
                                         $displayName = trim((isset($customer['title']) ? $customer['title'] : '') . ' ' . (isset($customer['fname']) ? $customer['fname'] : '') . ' ' . (isset($customer['lname']) ? $customer['lname'] : ''));
                                     ?>
-                                    <img src="<?php echo $img; ?>" alt="Profile Image" class="img-fluid rounded-circle mb-3" style="width:150px;height:150px;object-fit:cover;">
+                                    <img src="<?php echo $img; ?>" alt="Profile Image" class="profile-image mb-3">
                                     <?php if ($displayName): ?>
                                         <h5 class="mt-2"><?php echo htmlspecialchars($displayName); ?></h5>
                                     <?php endif; ?>
                                 </div>
                                 <div class="col-md-8">
-                                    <table class="table table-borderless">
+                                    <table class="table table-borderless profile-table">
                                         <tbody>
-                                        <tr>
-                                            <th scope="row">Name</th>
-                                            <td><?php echo htmlspecialchars(($customer['fname'] ?? '') . ' ' . ($customer['lname'] ?? '')); ?></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">Email</th>
-                                            <td><?php echo htmlspecialchars($customer['email'] ?? ''); ?></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">Address</th>
-                                            <td><?php echo htmlspecialchars($customer['addressline'] ?? ''); ?></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">Town</th>
-                                            <td><?php echo htmlspecialchars($customer['town'] ?? ''); ?></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">Zipcode</th>
-                                            <td><?php echo htmlspecialchars($customer['zipcode'] ?? ''); ?></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">Phone</th>
-                                            <td><?php echo htmlspecialchars($customer['phone'] ?? ''); ?></td>
-                                        </tr>
+                                            <tr>
+                                                <th scope="row">Name</th>
+                                                <td><?php echo htmlspecialchars(($customer['fname'] ?? '') . ' ' . ($customer['lname'] ?? '')); ?></td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">Email</th>
+                                                <td><?php echo htmlspecialchars($customer['email'] ?? ''); ?></td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">Address</th>
+                                                <td><?php echo htmlspecialchars($customer['addressline'] ?? ''); ?></td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">Town</th>
+                                                <td><?php echo htmlspecialchars($customer['town'] ?? ''); ?></td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">Zipcode</th>
+                                                <td><?php echo htmlspecialchars($customer['zipcode'] ?? ''); ?></td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">Phone</th>
+                                                <td><?php echo htmlspecialchars($customer['phone'] ?? ''); ?></td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>

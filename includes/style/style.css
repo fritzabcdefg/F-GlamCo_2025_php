@@ -292,3 +292,27 @@ ul.shopping-cart .cart-itm .remove-itm a {
   background-color: #FFE4E1;
   color: #880E4F;
 }
+
+/* === Profile Page Styling === */
+.profile-card {
+  border: 1px solid #F8BBD0;
+  background-color: #FFF0F5;
+  box-shadow: 0 2px 8px rgba(200, 100, 150, 0.1);
+}
+
+.profile-image {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #F8BBD0;
+}
+
+.profile-table th {
+  width: 120px;
+  color: #880E4F;
+}
+
+.profile-table td {
+  color: #6A1B9A;
+}
