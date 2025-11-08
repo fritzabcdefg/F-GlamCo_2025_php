@@ -19,21 +19,25 @@ if (isset($_POST['submit'])) {
   $email = trim($_POST['email']);
   $pass = trim($_POST['password']);
 
-  $sql = "SELECT id, email, password, role FROM users WHERE email=? LIMIT 1";
+  $sql = "SELECT id, email, password, role, active FROM users WHERE email=? LIMIT 1";
   $stmt = mysqli_prepare($conn, $sql);
   mysqli_stmt_bind_param($stmt, 's', $email);
   mysqli_stmt_execute($stmt);
   mysqli_stmt_store_result($stmt);
-  mysqli_stmt_bind_result($stmt, $user_id, $email, $hashedPassword, $role);
+  mysqli_stmt_bind_result($stmt, $user_id, $email, $hashedPassword, $role, $active);
 
   if (mysqli_stmt_num_rows($stmt) === 1) {
     mysqli_stmt_fetch($stmt);
     if (hash_equals($hashedPassword, sha1($pass))) {
-      $_SESSION['email'] = $email;
-      $_SESSION['user_id'] = $user_id;
-      $_SESSION['role'] = $role;
-      header("Location: ../user/profile.php");
-      exit();
+      if (!$active) {
+        $_SESSION['message'] = 'Your account has been deactivated. Contact the administrator.';
+      } else {
+        $_SESSION['email'] = $email;
+        $_SESSION['user_id'] = $user_id;
+        $_SESSION['role'] = $role;
+        header("Location: ../user/profile.php");
+        exit();
+      }
     } else {
       $_SESSION['message'] = 'Wrong email or password';
     }

@@ -1,5 +1,6 @@
 <?php
 session_start();
+include('../includes/auth_admin.php');
 include('../includes/config.php');
 $_SESSION['name'] = trim($_POST['name']);
 $_SESSION['cost'] = trim($_POST['cost_price']);

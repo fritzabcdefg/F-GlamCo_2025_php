@@ -1,5 +1,6 @@
 <?php
 session_start();
+include('../includes/auth_admin.php');
 include('../includes/header.php');
 include('../includes/config.php');
 

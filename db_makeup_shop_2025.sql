@@ -21,6 +21,9 @@ CREATE TABLE `users` (
   KEY `fk_customers_user_id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- add active flag to users (0 = deactivated, 1 = active)
+ALTER TABLE `users` ADD COLUMN `active` TINYINT(1) NOT NULL DEFAULT 1;
+
 -- --------------------------------------------------------
 -- Table: customers
 -- --------------------------------------------------------
@@ -121,5 +124,37 @@ CREATE TABLE `stocks` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 
+--
+-- Views used by admin pages
+-- salesperorder: total sales grouped by order
+-- orderdetails: join customers, orderinfo, orderline, and items for details
+
+CREATE OR REPLACE VIEW `salesperorder` AS
+SELECT
+  o.orderinfo_id AS orderinfo_id,
+  SUM(it.sell_price * ol.quantity) AS total,
+  CONCAT(UPPER(LEFT(o.status,1)), SUBSTRING(o.status,2)) AS status
+FROM `orderinfo` o
+JOIN `orderline` ol ON o.orderinfo_id = ol.orderinfo_id
+JOIN `items` it ON ol.item_id = it.item_id
+GROUP BY o.orderinfo_id, o.status;
+
+CREATE OR REPLACE VIEW `orderdetails` AS
+SELECT
+  o.orderinfo_id,
+  c.lname,
+  c.fname,
+  c.addressline,
+  c.town,
+  c.zipcode,
+  c.phone,
+  CONCAT(UPPER(LEFT(o.status,1)), SUBSTRING(o.status,2)) AS status,
+  it.name,
+  ol.quantity,
+  it.sell_price
+FROM `orderinfo` o
+JOIN `customers` c ON o.customer_id = c.customer_id
+JOIN `orderline` ol ON o.orderinfo_id = ol.orderinfo_id
+JOIN `items` it ON ol.item_id = it.item_id;
 
 COMMIT;

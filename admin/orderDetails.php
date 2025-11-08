@@ -2,6 +2,7 @@
 // CREATE VIEW orderdetails AS SELECT o.orderinfo_id, c.lname, c.fname, c.addressline, c.town, c.zipcode, c.phone,  i.sell_price, ol.quantity, i.description, o.status FROM customer c INNER JOIN orderinfo o using(customer_id) INNER JOIN orderline ol USING (orderinfo_id) INNER JOIN item i USING(item_id);
 
 session_start();
+include('../includes/auth_admin.php');
 include('../includes/header.php');
 include('../includes/config.php');
 
