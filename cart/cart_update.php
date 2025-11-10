@@ -2,6 +2,17 @@
 session_start();
 include('../includes/header.php');
 include('../includes/config.php');
+require_once __DIR__ . '/../includes/csrf.php';
+require_once __DIR__ . '/../includes/flash.php';
+
+// CSRF: require valid token for POST actions
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isset($_POST['csrf_token']) || !csrf_verify($_POST['csrf_token'])) {
+        flash_set('Invalid request.', 'danger');
+        header('Location: ../index.php');
+        exit;
+    }
+}
 
 // 🛒 Add item to cart
 if (isset($_POST["type"]) && $_POST["type"] === 'add' && $_POST["item_qty"] > 0) {

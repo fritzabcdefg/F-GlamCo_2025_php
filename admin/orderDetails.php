@@ -5,6 +5,7 @@ session_start();
 include('../includes/auth_admin.php');
 include('../includes/header.php');
 include('../includes/config.php');
+require_once __DIR__ . '/../includes/csrf.php';
 
 $orderId = $_GET['id'];
 $_SESSION['orderId'] = $orderId;
@@ -49,6 +50,7 @@ $items = mysqli_query($conn, $sql);
 </table>
 <h4><?= $grandTotal ?></h4>
 <form action="updateOrder.php" method="POST">
+    <?php echo csrf_input(); ?>
 <select class="form-select form-control" aria-label="Default select example" name="status">
     <option selected>Open this select menu</option>
     <option value="Processing">processing</option>

@@ -55,6 +55,14 @@ CREATE TABLE `items` (
   PRIMARY KEY (`item_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+-- Add category_id to items for categorization (safe ALTER for existing DBs)
+ALTER TABLE `items` 
+  ADD COLUMN `category_id` INT(11) DEFAULT NULL;
+
+-- Add FK to categories if the categories table exists
+ALTER TABLE `items`
+  ADD CONSTRAINT `items_category_id_fk` FOREIGN KEY (`category_id`) REFERENCES `categories`(`category_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
 -- --------------------------------------------------------
 -- Table: orderinfo
 -- --------------------------------------------------------
@@ -123,6 +131,19 @@ CREATE TABLE `stocks` (
   CONSTRAINT `stock_item_id_fk` FOREIGN KEY (`item_id`) REFERENCES `items` (`item_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+-- --------------------------------------------------------
+-- Table: product_images
+-- --------------------------------------------------------
+CREATE TABLE `product_images` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `item_id` INT(11) NOT NULL,
+  `filename` VARCHAR(255) NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_item_id` (`item_id`),
+  CONSTRAINT `product_images_item_fk` FOREIGN KEY (`item_id`) REFERENCES `items`(`item_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
 
 --
 -- Views used by admin pages
@@ -156,5 +177,21 @@ FROM `orderinfo` o
 JOIN `customers` c ON o.customer_id = c.customer_id
 JOIN `orderline` ol ON o.orderinfo_id = ol.orderinfo_id
 JOIN `items` it ON ol.item_id = it.item_id;
+
+-- --------------------------------------------------------
+-- Table: reviews
+-- --------------------------------------------------------
+CREATE TABLE `reviews` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `item_id` INT(11) NOT NULL,
+  `user_name` VARCHAR(100) DEFAULT NULL,
+  `rating` TINYINT(1) DEFAULT NULL,
+  `comment` TEXT NOT NULL,
+  `is_visible` TINYINT(1) NOT NULL DEFAULT 1,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_reviews_item` (`item_id`),
+  CONSTRAINT `reviews_item_fk` FOREIGN KEY (`item_id`) REFERENCES `items`(`item_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 COMMIT;

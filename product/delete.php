@@ -1,21 +1,72 @@
 <?php
 session_start();
-include('../includes/auth_admin.php');
-include('../includes/config.php');
+    include('../includes/auth_admin.php');
+    include('../includes/config.php');
+    require_once __DIR__ . '/../includes/csrf.php';
+    require_once __DIR__ . '/../includes/flash.php';
+
+    // CSRF: require POST with valid token
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['csrf_token']) || !csrf_verify($_POST['csrf_token'])) {
+        flash_set('Invalid request.', 'danger');
+        header('Location: index.php');
+        exit;
+    }
 
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 if ($id) {
-    // fetch image path
-    $row = mysqli_fetch_assoc(mysqli_query($conn, "SELECT img_path FROM items WHERE item_id = {$id} LIMIT 1"));
-    $img = $row['img_path'] ?? '';
+    // fetch image path (prepared)
+    $img = '';
+    $sel = mysqli_prepare($conn, "SELECT img_path FROM items WHERE item_id = ? LIMIT 1");
+    if ($sel) {
+        mysqli_stmt_bind_param($sel, 'i', $id);
+        mysqli_stmt_execute($sel);
+        $resSel = mysqli_stmt_get_result($sel);
+        if ($resSel && mysqli_num_rows($resSel) > 0) {
+            $r = mysqli_fetch_assoc($resSel);
+            $img = $r['img_path'] ?? '';
+        }
+        mysqli_stmt_close($sel);
+    }
 
     // delete stock first (if present)
-    mysqli_query($conn, "DELETE FROM stocks WHERE item_id = {$id}");
+    $delS = mysqli_prepare($conn, "DELETE FROM stocks WHERE item_id = ?");
+    if ($delS) {
+        mysqli_stmt_bind_param($delS, 'i', $id);
+        mysqli_stmt_execute($delS);
+        mysqli_stmt_close($delS);
+    }
+
+    // delete product_images rows and unlink files (select then delete)
+    $imgQ = mysqli_prepare($conn, "SELECT filename FROM product_images WHERE item_id = ?");
+    if ($imgQ) {
+        mysqli_stmt_bind_param($imgQ, 'i', $id);
+        mysqli_stmt_execute($imgQ);
+        $resImgs = mysqli_stmt_get_result($imgQ);
+        if ($resImgs) {
+            while ($r = mysqli_fetch_assoc($resImgs)) {
+                $f = $r['filename'];
+                if ($f && file_exists($f)) @unlink($f);
+            }
+        }
+        mysqli_stmt_close($imgQ);
+
+        $delImgs = mysqli_prepare($conn, "DELETE FROM product_images WHERE item_id = ?");
+        if ($delImgs) {
+            mysqli_stmt_bind_param($delImgs, 'i', $id);
+            mysqli_stmt_execute($delImgs);
+            mysqli_stmt_close($delImgs);
+        }
+    }
 
     // delete item
-    mysqli_query($conn, "DELETE FROM items WHERE item_id = {$id}");
+    $delItem = mysqli_prepare($conn, "DELETE FROM items WHERE item_id = ?");
+    if ($delItem) {
+        mysqli_stmt_bind_param($delItem, 'i', $id);
+        mysqli_stmt_execute($delItem);
+        mysqli_stmt_close($delItem);
+    }
 
-    // delete image file if it exists in images/
+    // delete main image file if it exists in images/
     if ($img && file_exists($img)) {
         @unlink($img);
     }

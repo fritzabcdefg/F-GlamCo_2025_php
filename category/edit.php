@@ -3,6 +3,7 @@ session_start();
 include('../includes/auth_admin.php');
 include('../includes/header.php');
 include('../includes/config.php');
+require_once __DIR__ . '/../includes/csrf.php';
 
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $category = null;
@@ -18,6 +19,7 @@ if ($id) {
 <div class="container mt-4">
 	<h3><?php echo $category ? 'Edit Category' : 'Create Category'; ?></h3>
 	<form action="<?php echo $category ? 'update.php' : 'store.php'; ?>" method="POST">
+		<?php echo csrf_input(); ?>
 		<?php if ($category): ?>
 			<input type="hidden" name="category_id" value="<?php echo $category['category_id']; ?>">
 		<?php endif; ?>

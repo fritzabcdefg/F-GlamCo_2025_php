@@ -3,6 +3,7 @@ session_start();
 include('../includes/auth_admin.php');
 include('../includes/header.php');
 include('../includes/config.php');
+require_once __DIR__ . '/../includes/csrf.php';
 
 // var_dump($_SESSION);
 // fetch categories for dropdown
@@ -18,6 +19,7 @@ if ($catRes) {
 <body>
     <div class="container">
         <form method="POST" action="store.php" enctype="multipart/form-data">
+            <?php echo csrf_input(); ?>
             <div class="form-group">
                 <label for="name">Item Name</label>
                 <input type="text"
@@ -79,8 +81,9 @@ if ($catRes) {
 
                 <input type="number" class="form-control" id="qty" placeholder="1" name="quantity" />
 
-                <label for="qty">Item Image</label>
-                <input class="form-control" type="file" name="img_path" /><br />
+                <label for="qty">Item Images</label>
+                <input class="form-control" type="file" name="img_paths[]" multiple accept="image/*" /><br />
+                <small class="form-text text-muted">You can select multiple images. The first image will be used as the main thumbnail.</small>
                 <small>
                     <?php
                     if (isset($_SESSION['imageError'])) {

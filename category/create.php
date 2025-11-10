@@ -3,11 +3,13 @@ session_start();
 include('../includes/auth_admin.php');
 include('../includes/header.php');
 include('../includes/config.php');
+require_once __DIR__ . '/../includes/csrf.php';
 ?>
 
 <div class="container mt-4">
 	<h3>Create Category</h3>
 	<form action="store.php" method="POST">
+		<?php echo csrf_input(); ?>
 		<div class="mb-3">
 			<label for="name" class="form-label">Name</label>
 			<input type="text" name="name" id="name" class="form-control" value="<?php echo isset($_SESSION['cat_name'])?htmlspecialchars($_SESSION['cat_name']):''; ?>">

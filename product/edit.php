@@ -3,6 +3,7 @@ session_start();
 include('../includes/auth_admin.php');
 include('../includes/header.php');
 include('../includes/config.php');
+require_once __DIR__ . '/../includes/csrf.php';
 
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $item = null;
@@ -29,6 +30,7 @@ if ($catRes) {
         <p>Item not found. <a href="index.php">Back to list</a></p>
     <?php else: ?>
         <form method="POST" action="update.php" enctype="multipart/form-data">
+            <?php echo csrf_input(); ?>
             <input type="hidden" name="item_id" value="<?php echo $item['item_id']; ?>">
             <div class="mb-3">
                 <label class="form-label">Name</label>
@@ -60,12 +62,33 @@ if ($catRes) {
                 <input type="text" name="supplier_name" class="form-control" value="<?php echo htmlspecialchars($item['supplier_name']); ?>">
             </div>
             <div class="mb-3">
-                <label class="form-label">Current Image</label><br />
-                <?php if (!empty($item['img_path'])): ?>
+                <label class="form-label">Current Images</label><br />
+                <?php
+                // show images from product_images table
+                $imgRes = mysqli_query($conn, "SELECT * FROM product_images WHERE item_id = {$item['item_id']} ORDER BY created_at ASC");
+                if ($imgRes && mysqli_num_rows($imgRes) > 0):
+                    while ($imgRow = mysqli_fetch_assoc($imgRes)):
+                ?>
+                    <div style="display:inline-block;margin-right:8px;text-align:center;">
+                        <img src="<?php echo htmlspecialchars($imgRow['filename']); ?>" alt="" style="width:120px;height:120px;object-fit:cover;border:1px solid #ddd;margin-bottom:4px;" />
+                        <div>
+                            <label style="font-size:0.85em;"><input type="checkbox" name="delete_images[]" value="<?php echo $imgRow['id']; ?>"> Remove</label>
+                        </div>
+                    </div>
+                <?php
+                    endwhile;
+                else:
+                    if (!empty($item['img_path'])):
+                ?>
                     <img src="<?php echo htmlspecialchars($item['img_path']); ?>" alt="" style="max-width:200px;max-height:200px;object-fit:cover;" class="mb-2" />
-                <?php endif; ?>
-                <input type="file" name="img_path" class="form-control">
-                <small class="form-text text-muted">Upload a new image to replace the current one.</small>
+                <?php
+                    endif;
+                endif;
+                ?>
+
+                <label class="form-label">Add Images</label>
+                <input type="file" name="img_paths[]" class="form-control" multiple accept="image/*">
+                <small class="form-text text-muted">Select one or more images to add to the gallery.</small>
             </div>
             <button type="submit" name="submit" class="btn btn-primary">Save</button>
             <a href="index.php" class="btn btn-secondary">Cancel</a>

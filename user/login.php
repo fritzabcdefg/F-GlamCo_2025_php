@@ -1,6 +1,8 @@
 <?php
 session_start();
 include("../includes/config.php");
+require_once __DIR__ . '/../includes/csrf.php';
+require_once __DIR__ . '/../includes/flash.php';
 ?>
 
 <!doctype html>
@@ -16,31 +18,69 @@ include("../includes/config.php");
   
 <?php
 if (isset($_POST['submit'])) {
-  $email = trim($_POST['email']);
-  $pass = trim($_POST['password']);
+  // CSRF check
+  if (!isset($_POST['csrf_token']) || !csrf_verify($_POST['csrf_token'])) {
+    flash_set('Invalid form submission.', 'danger');
+  } else {
+  $email = isset($_POST['email']) ? trim($_POST['email']) : '';
+  $pass = isset($_POST['password']) ? trim($_POST['password']) : '';
 
-  $sql = "SELECT id, email, password, role, active FROM users WHERE email=? LIMIT 1";
-  $stmt = mysqli_prepare($conn, $sql);
-  mysqli_stmt_bind_param($stmt, 's', $email);
-  mysqli_stmt_execute($stmt);
-  mysqli_stmt_store_result($stmt);
-  mysqli_stmt_bind_result($stmt, $user_id, $email, $hashedPassword, $role, $active);
+  // server-side validation
+  if ($email === '' || $pass === '') {
+    flash_set('Email and password are required.', 'danger');
+  } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    flash_set('Please enter a valid email address.', 'danger');
+  } else {
+    $sql = "SELECT id, email, password, role, active FROM users WHERE email=? LIMIT 1";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, 's', $email);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_store_result($stmt);
+    mysqli_stmt_bind_result($stmt, $user_id, $email_db, $hashedPassword, $role, $active);
 
-  if (mysqli_stmt_num_rows($stmt) === 1) {
-    mysqli_stmt_fetch($stmt);
-    if (hash_equals($hashedPassword, sha1($pass))) {
-      if (!$active) {
-        $_SESSION['message'] = 'Your account has been deactivated. Contact the administrator.';
+    if (mysqli_stmt_num_rows($stmt) === 1) {
+      mysqli_stmt_fetch($stmt);
+
+      $login_ok = false;
+      $needs_rehash = false;
+
+      // Prefer PHP's password_verify for modern hashes
+      if (password_verify($pass, $hashedPassword)) {
+          $login_ok = true;
+      } elseif (hash_equals($hashedPassword, sha1($pass))) {
+          // Legacy SHA1 match — accept login but mark for re-hash
+          $login_ok = true;
+          $needs_rehash = true;
+      }
+
+      if ($login_ok) {
+        if (!$active) {
+          flash_set('Your account has been deactivated. Contact the administrator.', 'warning');
+        } else {
+          // If legacy SHA1 matched, upgrade to password_hash()
+          if ($needs_rehash) {
+              $newHash = password_hash($pass, PASSWORD_DEFAULT);
+              $up = mysqli_prepare($conn, "UPDATE users SET password = ? WHERE id = ?");
+              if ($up) {
+                  mysqli_stmt_bind_param($up, 'si', $newHash, $user_id);
+                  mysqli_stmt_execute($up);
+                  mysqli_stmt_close($up);
+              }
+          }
+
+          $_SESSION['email'] = $email_db;
+          $_SESSION['user_id'] = $user_id;
+          $_SESSION['role'] = $role;
+          header("Location: ../user/profile.php");
+          exit();
+        }
       } else {
-        $_SESSION['email'] = $email;
-        $_SESSION['user_id'] = $user_id;
-        $_SESSION['role'] = $role;
-        header("Location: ../user/profile.php");
-        exit();
+        flash_set('Wrong email or password.', 'danger');
       }
     } else {
-      $_SESSION['message'] = 'Wrong email or password';
+      flash_set('Wrong email or password.', 'danger');
     }
+  }
   }
 }
 ?>
@@ -48,6 +88,7 @@ if (isset($_POST['submit'])) {
   <div class="auth-container">
     <?php include("../includes/alert.php"); ?>
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
+      <?php echo csrf_input(); ?>
       <div class="mb-3">
         <label for="form2Example1" class="form-label">Email address</label>
         <input type="email" id="form2Example1" class="form-control" name="email" required />

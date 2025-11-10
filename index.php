@@ -2,12 +2,14 @@
 session_start();
 include('./includes/header.php');
 include('./includes/config.php');
+require_once __DIR__ . '/includes/csrf.php';
+$csrf_input_html = '<input type="hidden" name="csrf_token" value="' . htmlspecialchars(csrf_token(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '">';
 
 // 🛒 Display Cart if items exist
 if (isset($_SESSION["cart_products"]) && count($_SESSION["cart_products"]) > 0) {
     echo '<div class="cart-view-table-front" id="view-cart">';
     echo '<h3>Your Shopping Cart</h3>';
-    echo '<form method="POST" action="./cart/cart_update.php">';
+    echo '<form method="POST" action="./cart/cart_update.php">' . $csrf_input_html;
     echo '<table width="100%" cellpadding="6" cellspacing="0">';
     echo '<tbody>';
     $total = 0;
@@ -51,7 +53,7 @@ if ($results) {
     while ($row = mysqli_fetch_assoc($results)) {
         $products_item .= <<<EOT
         <li class="product">
-            <form method="POST" action="./cart/cart_update.php">
+            <form method="POST" action="./cart/cart_update.php">{$csrf_input_html}
                 <div class="product-content">
                     <h3>{$row['name']}</h3>
                     <div class="product-thumb">
@@ -68,6 +70,7 @@ if ($results) {
                         <input type="hidden" name="item_id" value="{$row['itemId']}" />
                         <input type="hidden" name="type" value="add" />
                         <div align="center">
+                            <a href="./product/show.php?id={$row['itemId']}" class="btn btn-sm btn-outline-primary">View</a>
                             <button type="submit" class="add_to_cart">Add</button>
                         </div>
                     </div>

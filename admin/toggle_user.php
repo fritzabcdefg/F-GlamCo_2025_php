@@ -1,14 +1,31 @@
 <?php
 require_once __DIR__ . '/../includes/config.php';
+require_once __DIR__ . '/../includes/csrf.php';
 require_once __DIR__ . '/../includes/auth_admin.php';
 
-if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-    $_SESSION['message'] = 'Invalid user id.';
+require_once __DIR__ . '/../includes/flash.php';
+
+// require POST
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    flash_set('Invalid request method.', 'danger');
     header('Location: users.php');
     exit;
 }
 
-$user_id = (int) $_GET['id'];
+if (!isset($_POST['id']) || !is_numeric($_POST['id'])) {
+    flash_set('Invalid user id.', 'danger');
+    header('Location: users.php');
+    exit;
+}
+
+// CSRF
+if (!isset($_POST['csrf_token']) || !csrf_verify($_POST['csrf_token'])) {
+    flash_set('Invalid form submission.', 'danger');
+    header('Location: users.php');
+    exit;
+}
+
+$user_id = (int) $_POST['id'];
 
 // fetch current active value
 $sql = "SELECT active FROM users WHERE id = ? LIMIT 1";
@@ -18,7 +35,7 @@ if ($stmt = $conn->prepare($sql)) {
     $stmt->bind_result($active);
     if ($stmt->fetch() === null) {
         // no user found
-        $_SESSION['message'] = 'User not found.';
+        flash_set('User not found.', 'danger');
         $stmt->close();
         header('Location: users.php');
         exit;
@@ -36,9 +53,9 @@ $update = "UPDATE users SET active = ? WHERE id = ?";
 if ($ustmt = $conn->prepare($update)) {
     $ustmt->bind_param('ii', $new_active, $user_id);
     if ($ustmt->execute()) {
-        $_SESSION['message'] = $new_active ? 'User activated.' : 'User deactivated.';
+        flash_set($new_active ? 'User activated.' : 'User deactivated.', 'success');
     } else {
-        $_SESSION['message'] = 'Failed to update user status.';
+        flash_set('Failed to update user status.', 'danger');
     }
     $ustmt->close();
 } else {

@@ -1,7 +1,18 @@
 <?php
 session_start();
-include('../includes/auth_admin.php');
-include('../includes/config.php');
+	include('../includes/auth_admin.php');
+	include('../includes/config.php');
+	require_once __DIR__ . '/../includes/csrf.php';
+	require_once __DIR__ . '/../includes/flash.php';
+
+	// CSRF check
+	if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+			if (!isset($_POST['csrf_token']) || !csrf_verify($_POST['csrf_token'])) {
+				flash_set('Invalid form submission.', 'danger');
+				header('Location: create.php');
+				exit;
+			}
+	}
 
 if (isset($_POST['submit'])) {
 	$name = trim($_POST['name']);
@@ -17,11 +28,18 @@ if (isset($_POST['submit'])) {
 		exit();
 	}
 
-	$nameEsc = mysqli_real_escape_string($conn, $name);
-	$descEsc = mysqli_real_escape_string($conn, $description);
+	$nameEsc = $name;
+	$descEsc = $description;
 
-	$sql = "INSERT INTO categories (name, description) VALUES ('{$nameEsc}', '{$descEsc}')";
-	$res = mysqli_query($conn, $sql);
+	$ins = mysqli_prepare($conn, "INSERT INTO categories (name, description) VALUES (?, ?)");
+	if ($ins) {
+		mysqli_stmt_bind_param($ins, 'ss', $nameEsc, $descEsc);
+		$res = mysqli_stmt_execute($ins);
+		mysqli_stmt_close($ins);
+	} else {
+		$res = false;
+	}
+
 	if ($res) {
 		// clear session-backed form values
 		unset($_SESSION['cat_name'], $_SESSION['cat_description']);

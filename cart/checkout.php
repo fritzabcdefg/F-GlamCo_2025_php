@@ -3,15 +3,27 @@ session_start();
 include('../includes/auth_user.php');
 include('../includes/header.php');
 include('../includes/config.php');
+require_once __DIR__ . '/../includes/csrf.php';
+require_once __DIR__ . '/../includes/flash.php';
 
 try {
+    // Require POST and valid CSRF token for checkout
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['csrf_token']) || !csrf_verify($_POST['csrf_token'])) {
+        flash_set('Invalid checkout request.', 'danger');
+        header('Location: ../index.php');
+        exit;
+    }
+
     mysqli_query($conn, 'START TRANSACTION');
 
-    // Get customer_id based on logged-in user
-    $sql = "SELECT customer_id FROM customers WHERE user_id = {$_SESSION['user_id']} LIMIT 1";
-    $result = mysqli_query($conn, $sql);
-    $row = mysqli_fetch_assoc($result);
-    $customer_id = $row['customer_id'];
+    // Get customer_id based on logged-in user (use prepared statement)
+    $customer_id = null;
+    $selCust = mysqli_prepare($conn, "SELECT customer_id FROM customers WHERE user_id = ? LIMIT 1");
+    mysqli_stmt_bind_param($selCust, 'i', $_SESSION['user_id']);
+    mysqli_stmt_execute($selCust);
+    mysqli_stmt_bind_result($selCust, $customer_id);
+    mysqli_stmt_fetch($selCust);
+    mysqli_stmt_close($selCust);
 
     // Insert into orderinfo
     $q = 'INSERT INTO orderinfo(customer_id, date_placed, date_shipped, shipping) VALUES (?, NOW(), NOW(), ?)';
@@ -45,7 +57,10 @@ try {
     mysqli_commit($conn);
     unset($_SESSION['cart_products']);
 
-    echo "<div class='alert alert-success text-center mt-4'>Checkout successful. Your order has been placed.</div>";
+    // Set a flash success message and redirect to home
+    flash_set('Checkout successful. Your order has been placed.', 'success');
+    header('Location: ../index.php');
+    exit;
 
 } catch (mysqli_sql_exception $e) {
     echo "<div class='alert alert-danger text-center mt-4'>Error: " . $e->getMessage() . "</div>";

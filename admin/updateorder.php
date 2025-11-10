@@ -3,16 +3,30 @@ session_start();
 include('../includes/auth_admin.php');
 include("../includes/config.php");
 include("../includes/header.php");
+require_once __DIR__ . '/../includes/csrf.php';
+require_once __DIR__ . '/../includes/flash.php';
 
-$status =$_POST['status'];
+// CSRF check
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['csrf_token']) || !csrf_verify($_POST['csrf_token'])) {
+    flash_set('Invalid request.', 'danger');
+    header('Location: orders.php');
+    exit;
+}
+
+$status = isset($_POST['status']) ? $_POST['status'] : '';
 
 
 
-$sql = "UPDATE orderinfo SET status = '{$status}' WHERE orderinfo_id = {$_SESSION['orderId']}";
-
-$result = mysqli_query($conn, $sql);
+$orderId = isset($_SESSION['orderId']) ? (int) $_SESSION['orderId'] : 0;
+$upd = mysqli_prepare($conn, "UPDATE orderinfo SET status = ? WHERE orderinfo_id = ?");
+$result = false;
+if ($upd) {
+    mysqli_stmt_bind_param($upd, 'si', $status, $orderId);
+    $result = mysqli_stmt_execute($upd);
+    mysqli_stmt_close($upd);
+}
 if ($result ) {
-    $_SESSION['message'] = 'order updated';
+    flash_set('Order updated', 'success');
     header("Location: orders.php");
 }
 
@@ -73,8 +87,8 @@ if ($orderId && $result) {
             $subject = "Order #" . (int)$row['orderinfo_id'] . " status: " . $statusHuman;
             $send = smtp_send_mail($to, $subject, $html);
             if (!$send['success']) {
-                // log error (simple session message)
-                $_SESSION['message'] .= ' (email failed: ' . htmlspecialchars($send['error']) . ')';
+                // log email failure as a separate flash (warning)
+                flash_set('Email notification failed: ' . htmlspecialchars($send['error']), 'warning');
             }
         }
         $stmt->close();

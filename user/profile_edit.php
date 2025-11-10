@@ -3,6 +3,8 @@ session_start();
 include('../includes/auth_user.php');
 include("../includes/header.php");
 include("../includes/config.php");
+require_once __DIR__ . '/../includes/csrf.php';
+require_once __DIR__ . '/../includes/flash.php';
 
 $customer = null;
 $user_id = $_SESSION['user_id'] ?? 0;
@@ -16,6 +18,12 @@ if ($result && mysqli_num_rows($result) > 0) {
 
 // Handle image upload
 if (isset($_POST['upload_image']) && isset($_FILES['profile_image'])) {
+    // CSRF
+    if (!isset($_POST['csrf_token']) || !csrf_verify($_POST['csrf_token'])) {
+        $_SESSION['message'] = 'Invalid request.';
+        header('Location: profile.php');
+        exit;
+    }
     $target_dir = "../uploads/";
     $filename = basename($_FILES["profile_image"]["name"]);
     $target_file = $target_dir . $filename;
@@ -24,8 +32,13 @@ if (isset($_POST['upload_image']) && isset($_FILES['profile_image'])) {
     $valid_types = ['jpg', 'jpeg', 'png'];
     if (in_array($imageFileType, $valid_types) && $_FILES["profile_image"]["size"] <= 5 * 1024 * 1024) {
         if (move_uploaded_file($_FILES["profile_image"]["tmp_name"], $target_file)) {
-            mysqli_query($conn, "UPDATE customers SET image = '$filename' WHERE user_id = $user_id");
-            $_SESSION['success'] = "Image uploaded successfully.";
+            $updImg = mysqli_prepare($conn, "UPDATE customers SET image = ? WHERE user_id = ?");
+            if ($updImg) {
+                mysqli_stmt_bind_param($updImg, 'si', $filename, $user_id);
+                mysqli_stmt_execute($updImg);
+                mysqli_stmt_close($updImg);
+            }
+            flash_set('Image uploaded successfully.', 'success');
             header("Location: profile.php");
             exit;
         } else {
@@ -38,6 +51,12 @@ if (isset($_POST['upload_image']) && isset($_FILES['profile_image'])) {
 
 // Handle profile update
 if (isset($_POST['submit'])) {
+    // CSRF
+    if (!isset($_POST['csrf_token']) || !csrf_verify($_POST['csrf_token'])) {
+        $_SESSION['message'] = 'Invalid request.';
+        header('Location: profile.php');
+        exit;
+    }
     $lname = trim($_POST['lname']);
     $fname = trim($_POST['fname']);
     $title = trim($_POST['title']);
@@ -47,23 +66,23 @@ if (isset($_POST['submit'])) {
     $phone = trim($_POST['phone']);
 
     if ($customer) {
-        $sql = "UPDATE customers SET 
-                    title = '$title',
-                    lname = '$lname',
-                    fname = '$fname',
-                    addressline = '$address',
-                    town = '$town',
-                    zipcode = '$zipcode',
-                    phone = '$phone'
-                WHERE user_id = $user_id";
+        $upd = mysqli_prepare($conn, "UPDATE customers SET title = ?, lname = ?, fname = ?, addressline = ?, town = ?, zipcode = ?, phone = ? WHERE user_id = ?");
+        if ($upd) {
+            mysqli_stmt_bind_param($upd, 'sssssssi', $title, $lname, $fname, $address, $town, $zipcode, $phone, $user_id);
+            $ok = mysqli_stmt_execute($upd);
+            mysqli_stmt_close($upd);
+        }
     } else {
-        $sql = "INSERT INTO customers (title, lname, fname, addressline, town, zipcode, phone, user_id) 
-                VALUES ('$title', '$lname', '$fname', '$address', '$town', '$zipcode', '$phone', $user_id)";
+        $ins = mysqli_prepare($conn, "INSERT INTO customers (title, lname, fname, addressline, town, zipcode, phone, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        if ($ins) {
+            mysqli_stmt_bind_param($ins, 'sssssssi', $title, $lname, $fname, $address, $town, $zipcode, $phone, $user_id);
+            $ok = mysqli_stmt_execute($ins);
+            mysqli_stmt_close($ins);
+        }
     }
 
-    $result = mysqli_query($conn, $sql);
-    if ($result) {
-        $_SESSION['success'] = 'Profile saved';
+    if (!empty($ok)) {
+        flash_set('Profile saved', 'success');
         header("Location: profile.php");
         exit;
     } else {
@@ -89,6 +108,7 @@ if (isset($_POST['submit'])) {
                          alt="Profile Image">
                     <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
                     <form method="POST" enctype="multipart/form-data">
+                        <?php echo csrf_input(); ?>
                         <input type="file" name="profile_image" accept="image/*" class="form-control mb-3">
                         <button class="btn btn-primary" type="submit" name="upload_image">Upload new image</button>
                     </form>
@@ -100,6 +120,7 @@ if (isset($_POST['submit'])) {
                 <div class="card-header">Account Details</div>
                 <div class="card-body">
                     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" enctype="multipart/form-data">
+                        <?php echo csrf_input(); ?>
                         <div class="row gx-3 mb-3">
                             <div class="col-md-6">
                                 <label class="small mb-1" for="inputFirstName">First name</label>
