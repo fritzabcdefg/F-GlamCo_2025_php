@@ -43,6 +43,16 @@ CREATE TABLE `customers` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
+-- Table: categories
+-- --------------------------------------------------------
+
+CREATE TABLE `categories` (
+  `category_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `description` TEXT DEFAULT NULL,
+  PRIMARY KEY (`category_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+-- --------------------------------------------------------
 -- Table: items
 -- --------------------------------------------------------
 CREATE TABLE `items` (
@@ -91,16 +101,7 @@ CREATE TABLE `orderline` (
   CONSTRAINT `fk_items_has_orders_orders1` FOREIGN KEY (`orderinfo_id`) REFERENCES `orderinfo` (`orderinfo_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- --------------------------------------------------------
--- Table: categories
--- --------------------------------------------------------
 
-CREATE TABLE `categories` (
-  `category_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(45) NOT NULL,
-  `description` TEXT DEFAULT NULL,
-  PRIMARY KEY (`category_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 -- Table: products
