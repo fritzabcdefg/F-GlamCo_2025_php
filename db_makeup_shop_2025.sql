@@ -185,6 +185,7 @@ JOIN `items` it ON ol.item_id = it.item_id;
 CREATE TABLE `reviews` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `item_id` INT(11) NOT NULL,
+  `user_id` BIGINT(20) UNSIGNED DEFAULT NULL,
   `user_name` VARCHAR(100) DEFAULT NULL,
   `rating` TINYINT(1) DEFAULT NULL,
   `comment` TEXT NOT NULL,
@@ -192,7 +193,9 @@ CREATE TABLE `reviews` (
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `idx_reviews_item` (`item_id`),
-  CONSTRAINT `reviews_item_fk` FOREIGN KEY (`item_id`) REFERENCES `items`(`item_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `idx_reviews_user` (`user_id`),
+  CONSTRAINT `reviews_item_fk` FOREIGN KEY (`item_id`) REFERENCES `items`(`item_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `reviews_user_fk` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 COMMIT;

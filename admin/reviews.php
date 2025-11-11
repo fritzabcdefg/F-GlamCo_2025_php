@@ -12,12 +12,13 @@ $res = mysqli_query($conn, $sql);
 <div class="container mt-4">
     <h3>Product Reviews</h3>
     <table class="table table-striped">
-        <thead><tr><th>ID</th><th>Product</th><th>User</th><th>Rating</th><th>Comment</th><th>Visible</th><th>Created</th><th>Actions</th></tr></thead>
+        <thead><tr><th>ID</th><th>Product</th><th>User ID</th><th>User</th><th>Rating</th><th>Comment</th><th>Visible</th><th>Created</th><th>Actions</th></tr></thead>
         <tbody>
             <?php while ($row = mysqli_fetch_assoc($res)): ?>
                 <tr>
                     <td><?php echo $row['id']; ?></td>
                     <td><?php echo htmlspecialchars($row['item_name']); ?></td>
+                    <td><?php echo $row['user_id'] ?? 'N/A'; ?></td>
                     <td><?php echo htmlspecialchars($row['user_name'] ?? 'Anonymous'); ?></td>
                     <td><?php echo $row['rating']; ?></td>
                     <td><?php echo htmlspecialchars($row['comment']); ?></td>

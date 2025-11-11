@@ -80,7 +80,11 @@ if ($revQ) {
                     <strong><?php echo htmlspecialchars($rev['user_name'] ?? 'Anonymous'); ?></strong>
                     <?php if (!empty($rev['rating'])): ?> - Rating: <?php echo intval($rev['rating']); ?>/5<?php endif; ?>
                     <div style="margin-top:6px;"><?php echo nl2br(htmlspecialchars($rev['comment'])); ?></div>
-                    <div style="font-size:0.8em;color:#777;"><?php echo $rev['created_at']; ?></div>
+                    <div style="font-size:0.8em;color:#777;"><?php echo $rev['created_at']; ?>
+                    <?php if (isset($_SESSION['user_id']) && $rev['user_id'] == $_SESSION['user_id']): ?>
+                        <a href="reviews/edit.php?id=<?php echo $rev['id']; ?>" style="margin-left:10px;">Edit</a>
+                    <?php endif; ?>
+                    </div>
                 </div>
             <?php endforeach; ?>
         <?php endif; ?>
