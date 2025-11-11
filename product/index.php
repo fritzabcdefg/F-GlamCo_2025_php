@@ -2,52 +2,62 @@
 session_start();
 include('../includes/header.php');
 include('../includes/config.php');
-print_r($_SESSION);
-// if (!isset($_SESSION['user_id'])) {
-//     $_SESSION['message'] = "please Login to access the page";
-//     header("Location: ../user/login.php" );
-// }
-// echo $_GET['search'];
-if(isset($_GET['search'])) {
-    $keyword = strtolower(trim($_GET['search']));
-}
-else {
-    $keyword = '';
-}
 
+$keyword = isset($_GET['search']) ? strtolower(trim($_GET['search'])) : '';
 
 if ($keyword) {
     $sql = "SELECT * FROM items LEFT JOIN stocks USING (item_id) WHERE description LIKE '%{$keyword}%'";
-    $result = mysqli_query($conn, $sql);
 } else {
     $sql = "SELECT * FROM items LEFT JOIN stocks USING (item_id)";
-    $result = mysqli_query($conn, $sql);
 }
-
+$result = mysqli_query($conn, $sql);
 $itemCount = mysqli_num_rows($result);
 ?>
 
+<div class="container mt-4">
+  <div class="action-bar">
+    <a href="create.php" class="action-button">➕ Add Item</a>
+    <a href="/F&LGlamCo/category/index.php" class="action-button">📁 Add Category</a>
+  </div>
 
-<body>
-    <a href="create.php" class="btn btn-primary btn-lg " role="button" aria-disabled="true">Add Item</a></p>
-    <h2> Items on List: <?=$itemCount ?> </h2>
-    <table class="table table-striped table-bordered">
-        <?php
-        while ($row = mysqli_fetch_assoc($result)) {
-            echo "<tr>";
-            echo "<td><img src='{$row['img_path']}' width='150' height='150' /> </td>";
-            echo "<td>{$row['item_id']}</td>";
-            echo "<td>{$row['name']}</td>";
-            echo "<td>{$row['sell_price']}</td>";
-            echo "<td>{$row['cost_price']}</td>";
-            echo "<td>{$row['quantity']}</td>";
+  <div class="alert">
+    Items on List: <?= $itemCount ?>
+  </div>
 
-            echo "<td><a href='edit.php?id={$row['item_id']}'><i class='fa-regular fa-pen-to-square' style='color: blue'></i></a><a href='delete.php?id={$row['item_id']}'><i class='fa-solid fa-trash' style='color: red'></i></a></td>";
-            echo "</tr>";
-        }
-        ?>
-    </table>
-</body>
-<a href="/F&LGlamCo/category/index.php" class="btn btn-primary btn-lg " role="button" aria-disabled="true">Add Category</a></p>
-<?php
-include('../includes/footer.php');
+  <!-- Item Table -->
+  <table class="item-table">
+    <thead>
+      <tr>
+        <th>Image</th>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Selling Price</th>
+        <th>Cost Price</th>
+        <th>Quantity</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php while ($row = mysqli_fetch_assoc($result)): ?>
+        <tr>
+          <td><img src="<?= $row['img_path'] ?>" class="item-thumb" alt="Product Image" /></td>
+          <td><?= $row['item_id'] ?></td>
+          <td><?= htmlspecialchars($row['name']) ?></td>
+          <td>₱<?= number_format($row['sell_price'], 2) ?></td>
+          <td>₱<?= number_format($row['cost_price'], 2) ?></td>
+          <td><?= $row['quantity'] ?></td>
+          <td>
+            <a href="edit.php?id=<?= $row['item_id'] ?>" class="icon-button edit-icon">
+              <i class="fa-regular fa-pen-to-square"></i>
+            </a>
+            <a href="delete.php?id=<?= $row['item_id'] ?>" class="icon-button delete-icon">
+              <i class="fa-solid fa-trash"></i>
+            </a>
+          </td>
+        </tr>
+      <?php endwhile; ?>
+    </tbody>
+  </table>
+</div>
+
+<?php include('../includes/footer.php'); ?>
