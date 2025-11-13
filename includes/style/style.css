@@ -31,7 +31,9 @@ h1, h2, h3 {
 }
 
 .text-pink {
-  color: #ee1765 !important;
+  color: #f69b9a !important;
+  font-weight: bold;
+  font-family: Oswald, sans-serif;
 }
 
 .border-pink {
