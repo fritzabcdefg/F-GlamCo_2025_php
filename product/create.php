@@ -95,20 +95,16 @@ if ($catRes) {
                 <input type="number" id="qty" name="quantity" class="form-control"
                     placeholder="Enter quantity"
                     value="<?php echo isset($_SESSION['qty']) ? $_SESSION['qty'] : ''; ?>" />
-
-<<<<<<< HEAD
                 <input type="number" class="form-control" id="qty" placeholder="1" name="quantity" />
 
                 <label for="qty">Item Images</label>
                 <input class="form-control" type="file" name="img_paths[]" multiple accept="image/*" /><br />
                 <small class="form-text text-muted">You can select multiple images. The first image will be used as the main thumbnail.</small>
                 <small>
-=======
                 <!-- Image Upload -->
                 <label for="img_path">Item Image</label>
                 <input type="file" name="img_path" class="form-control" />
                 <small class="error">
->>>>>>> 61e5e3cab6850afcf1bd758b843d4db0a0ab3cb8
                     <?php
                     if (isset($_SESSION['imageError'])) {
                         echo $_SESSION['imageError'];
