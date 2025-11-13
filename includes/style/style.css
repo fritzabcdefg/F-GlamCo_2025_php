@@ -12,23 +12,45 @@ h1, h2, h3 {
   color: #C71585;
 }
 
-/* Make header/navbar bigger */
+/* === Glam Header Enhancements === */
 .navbar {
-  padding-top: 1rem;   /* increase top spacing */
-  padding-bottom: 1rem; /* increase bottom spacing */
-  min-height: 80px;    /* force a taller navbar */
+  background-color: #000000 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); /* subtle shadow */
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  min-height: 80px;
 }
 
 .navbar-brand {
-  font-size: 1.5rem;   /* make brand text larger */
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #ffffff !important;
+  letter-spacing: 1px;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.text-pink {
+  color: #ee1765 !important;
+}
+
+.border-pink {
+  border: 1px solid #ee1765 !important;
+}
+
+.search-bar input::placeholder {
+  color: #ee1765;
 }
 
 .navbar-nav .nav-link {
-  font-size: 1.1rem;   /* make nav links bigger */
-  padding: 0.75rem 1rem; /* add more vertical space */
+  font-size: 1.1rem;
+  padding: 0.75rem 1rem;
+  color: #ee1765 !important;
+  transition: background-color 0.3s ease;
 }
 
-.navbar-nav .nav-link:hover {
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
   background-color: #F8BBD0;
   color: #880E4F !important;
   border-radius: 4px;
@@ -40,6 +62,12 @@ h1, h2, h3 {
 
 .navbar-toggler-icon {
   background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(203,245,160, 1)' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+/* === Header Icons === */
+.navbar-nav .nav-link i {
+  margin-right: 6px;
+  font-size: 1.1em;
 }
 
 /* === Dropdown Menu === */

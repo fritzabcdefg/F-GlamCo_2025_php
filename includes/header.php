@@ -9,75 +9,61 @@ if (session_status() === PHP_SESSION_NONE) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Shop</title>
+  <title>F & L Glam Co</title>
 
   <!-- External Styles & Fonts -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
-
-  <!-- Custom Styles -->
   <link href="./includes/style/style.css" rel="stylesheet" type="text/css">
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="/F&LGlamCo/index.php">My Shop</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
 
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <!-- Left Nav -->
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) === 'index.php' ? 'active' : ''; ?>" href="/F&LGlamCo/index.php">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) === 'link.php' ? 'active' : ''; ?>" href="/F&LGlamCo/link.php">Link</a>
-          </li>
-          <li class="nav-item dropdown">
-            <?php if (isset($_SESSION['user_id'])): ?>
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Menu</a>
-              <ul class="dropdown-menu">
-                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
-                  <li><a class="dropdown-item" href="/F&LGlamCo/product/index.php">Items</a></li>
-                  <li><a class="dropdown-item" href="/F&LGlamCo/admin/orders.php">Orders</a></li>
-                  <li><a class="dropdown-item" href="/F&LGlamCo/admin/users.php">Users</a></li>
-                <?php else: ?>
-                  <li><a class="dropdown-item" href="/F&LGlamCo/user/profile.php">Profile</a></li>
-                  <li><a class="dropdown-item" href="/F&LGlamCo/user/myorders.php">My Orders</a></li>
-                <?php endif; ?>
-              </ul>
-            <?php endif; ?>
-          </li>
-        </ul>
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background-color: #000;">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
 
-        <!-- Search -->
-        <form action="/F&LGlamCo/search.php" method="GET" class="d-flex me-3">
-          <input class="form-control me-2" type="search" placeholder="Search" name="search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
+    <!-- Left Section -->
+    <div class="d-flex align-items-center gap-3">
+      <a class="nav-link text-pink" href="/F&LGlamCo/index.php">
+        <i class="fas fa-home"></i>
+      </a>
 
-        <!-- Right Nav -->
-        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-          <?php if (!isset($_SESSION['user_id'])): ?>
-            <li class="nav-item">
-              <a href="/F&LGlamCo/user/login.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) === 'login.php' ? 'active' : ''; ?>">Login</a>
-            </li>
-          <?php else: ?>
-            <li class="nav-item d-flex align-items-center">
-              <span class="nav-link"><?= isset($_SESSION['email']) ? $_SESSION['email'] : 'Welcome!' ?></span>
-            </li>
-            <li class="nav-item">
-              <a href="/F&LGlamCo/user/logout.php" class="nav-link">Logout</a>
-            </li>
-          <?php endif; ?>
-        </ul>
-      </div>
+      <form action="/F&LGlamCo/search.php" method="GET" class="d-flex search-bar">
+        <input class="form-control form-control-sm border-pink" type="search" placeholder="Search" name="search">
+        <button class="btn btn-sm text-pink" type="submit"><i class="fas fa-search"></i></button>
+      </form>
+
+      <a class="nav-link text-pink <?php echo basename($_SERVER['PHP_SELF']) === 'index.php' ? 'active' : ''; ?>" href="/F&LGlamCo/index.php">All</a>
+      <a class="nav-link text-pink" href="#">Eye Makeup</a>
+      <a class="nav-link text-pink" href="#">Face Makeup</a>
+      <a class="nav-link text-pink" href="#">Lip Makeup</a>
     </div>
-  </nav>
+
+    <!-- Center Brand -->
+    <div class="navbar-brand mx-auto text-white fw-bold fs-4">F & L GLAM CO.</div>
+
+    <!-- Right Section -->
+    <ul class="navbar-nav d-flex align-items-center gap-3">
+      <li class="nav-item">
+        <a class="nav-link text-pink" href="#"><i class="fas fa-shopping-bag"></i> MY BAG</a>
+      </li>
+      <?php if (!isset($_SESSION['user_id'])): ?>
+        <li class="nav-item">
+          <a class="nav-link text-pink <?php echo basename($_SERVER['PHP_SELF']) === 'login.php' ? 'active' : ''; ?>" href="/F&LGlamCo/user/login.php">
+            <i class="fas fa-user"></i> LOGIN
+          </a>
+        </li>
+      <?php else: ?>
+        <li class="nav-item">
+          <span class="nav-link text-white"><?= $_SESSION['email'] ?? 'Welcome!' ?></span>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-pink" href="/F&LGlamCo/user/logout.php">Logout</a>
+        </li>
+      <?php endif; ?>
+    </ul>
+  </div>
+</nav>
