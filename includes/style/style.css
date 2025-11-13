@@ -36,6 +36,13 @@ h1, h2, h3 {
   font-family: Oswald, sans-serif;
 }
 
+.text-pink:hover,
+.text-pink.active {
+  text-decoration: underline;
+  text-decoration-color: #F69b9A;
+  text-underline-offset: 4px;
+}
+
 .border-pink {
   border: 1px solid #ee1765 !important;
 }
@@ -53,7 +60,7 @@ h1, h2, h3 {
 
 .navbar-nav .nav-link:hover,
 .navbar-nav .nav-link.active {
-  background-color: #F8BBD0;
+  background-color: #F69b9A;
   color: #880E4F !important;
   border-radius: 4px;
 }
