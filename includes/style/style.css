@@ -16,7 +16,9 @@ h1, h2, h3 {
 .navbar {
   background-color: #000000 !important;
   border-bottom: 2px solid #000000;
+  box-shadow: 0 2px 6px rgba(255, 255, 255, 0.4); /* shadow underneath */
 }
+
 
 .navbar-brand {
   color: #000000 !important;
