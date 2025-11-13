@@ -3,7 +3,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Montserrat', sans-serif;
-  background-color: #FFF0F5;
+  background-color: #000000;
   color: #4A4A4A;
 }
 
@@ -19,12 +19,12 @@ h1, h2, h3 {
 }
 
 .navbar-brand {
-  color: #C71585 !important;
+  color: #000000 !important;
   font-weight: bold;
 }
 
 .navbar-nav .nav-link {
-  color: #6A1B9A !important;
+  color: #000000 !important;
   transition: background-color 0.3s ease;
 }
 

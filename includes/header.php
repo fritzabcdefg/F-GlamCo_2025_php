@@ -1,3 +1,9 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,14 +16,14 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
 
-  <!-- Your Custom Styles (loaded last to override Bootstrap) -->
-  <link href="/F&LGlamCo/includes/style/style.css" rel="stylesheet" type="text/css">
+  <!-- Custom Styles -->
+  <link href="./includes/style/style.css" rel="stylesheet" type="text/css">
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg">
+<nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
       <a class="navbar-brand" href="/F&LGlamCo/index.php">My Shop</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -26,16 +32,17 @@
       </button>
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <!-- Left Nav -->
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" href="/F&LGlamCo/index.php">Home</a>
+            <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) === 'index.php' ? 'active' : ''; ?>" href="/F&LGlamCo/index.php">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/F&LGlamCo/link.php">Link</a>
+            <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) === 'link.php' ? 'active' : ''; ?>" href="/F&LGlamCo/link.php">Link</a>
           </li>
           <li class="nav-item dropdown">
             <?php if (isset($_SESSION['user_id'])): ?>
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Menu</a>
               <ul class="dropdown-menu">
                 <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
                   <li><a class="dropdown-item" href="/F&LGlamCo/product/index.php">Items</a></li>
@@ -50,15 +57,17 @@
           </li>
         </ul>
 
+        <!-- Search -->
         <form action="/F&LGlamCo/search.php" method="GET" class="d-flex me-3">
           <input class="form-control me-2" type="search" placeholder="Search" name="search">
           <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
 
+        <!-- Right Nav -->
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <?php if (!isset($_SESSION['user_id'])): ?>
             <li class="nav-item">
-              <a href="/F&LGlamCo/user/login.php" class="nav-link">Login</a>
+              <a href="/F&LGlamCo/user/login.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) === 'login.php' ? 'active' : ''; ?>">Login</a>
             </li>
           <?php else: ?>
             <li class="nav-item d-flex align-items-center">
