@@ -15,7 +15,6 @@ if ($catRes) {
 }
 ?>
 
-<<<<<<< HEAD
 <body>
     <div class="container">
         <form method="POST" action="store.php" enctype="multipart/form-data">
@@ -31,9 +30,7 @@ if ($catRes) {
                             if (isset($_SESSION['name']))
                                 echo $_SESSION['name'];
                             ?>" />
-=======
 <link rel="stylesheet" href="../style/style.css">
->>>>>>> 61e5e3cab6850afcf1bd758b843d4db0a0ab3cb8
 
 <body>
     <div class="container form-wrapper">
