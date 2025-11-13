@@ -14,8 +14,8 @@ h1, h2, h3 {
 
 /* === Navbar === */
 .navbar {
-  background-color: #FFF0F5 !important;
-  border-bottom: 2px solid #F8BBD0;
+  background-color: #000000 !important;
+  border-bottom: 2px solid #000000;
 }
 
 .navbar-brand {
