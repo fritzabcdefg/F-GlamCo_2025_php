@@ -12,20 +12,20 @@ h1, h2, h3 {
   color: #C71585; 
 }
 
-/* === Navbar === */
+/* Make header/navbar bigger */
 .navbar {
-  background-color: #000000 !important;
-  border-bottom: 2px solid #000000;
+  padding-top: 1rem;   /* increase top spacing */
+  padding-bottom: 1rem; /* increase bottom spacing */
+  min-height: 80px;    /* force a taller navbar */
 }
 
 .navbar-brand {
-  color: #000000 !important;
-  font-weight: bold;
+  font-size: 1.5rem;   /* make brand text larger */
 }
 
 .navbar-nav .nav-link {
-  color: #000000 !important;
-  transition: background-color 0.3s ease;
+  font-size: 1.1rem;   /* make nav links bigger */
+  padding: 0.75rem 1rem; /* add more vertical space */
 }
 
 .navbar-nav .nav-link:hover {
