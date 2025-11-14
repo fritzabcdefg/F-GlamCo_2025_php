@@ -137,13 +137,23 @@ button:hover, .button:hover, .btn-primary:hover {
   margin-top: 4px;
 }
 
-/* === Auth Form Styling === */
+/* === Auth Page Container === */
+/*.container {
+  background-color: #ffffff;
+  padding: 40px 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(200, 100, 150, 0.1);
+  max-width: 600px;
+  margin: 60px auto;
+}*/
+
+
 .auth-container {
-  background-color: #FFF0F5;
+  background-color: #ffffff;
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(200, 100, 150, 0.1);
-  border: 1px solid #F8BBD0;
+  border: 1px solid #ffffff;
   max-width: 500px;
   margin: 40px auto;
 }
