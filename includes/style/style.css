@@ -346,13 +346,13 @@ ul.shopping-cart .cart-itm .remove-itm a {
   color: #4A4A4A !important;
   border: none !important;
   font-size: 0.85em;
-  padding: 6px 12px;
+  padding: 7px 12px;
   border-radius: 6px;
 }
 
 .profile-card .btn.btn-primary:hover {
-  background-color: #F8BBD0 !important;
-  color: #333 !important;
+  background-color: #F69b9A !important;
+  color: #880E4F !important;
 }
 
 .profile-image {
@@ -385,6 +385,32 @@ ul.shopping-cart .cart-itm .remove-itm a {
   padding-bottom: 8px;
 }
 
+/* === Profile Edit Page Styling === */
+.profile-edit input.form-control {
+  border: 1px solid #F8BBD0;
+  border-radius: 6px;
+  background-color: #FFF8FB;
+  color: #6A1B9A;
+}
+
+.profile-edit label {
+  color: #880E4F;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.profile-edit .btn.btn-primary {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.profile-edit .btn.btn-primary:hover {
+  background-color: #F69b9A !important;
+  color: #880E4F !important;
+}
 
 /* === Product Admin Action Buttons === */
 /* === Refined Action Buttons === */

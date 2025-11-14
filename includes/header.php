@@ -15,11 +15,14 @@ if (session_status() === PHP_SESSION_NONE) {
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
-  <link href="./includes/style/style.css" rel="stylesheet" type="text/css">
+
+  <!-- ✅ Your Custom Stylesheet -->
+  <link href="/F&LGlamCo/includes/style/style.css" rel="stylesheet" type="text/css">
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 </head>
+
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background-color: #000;">

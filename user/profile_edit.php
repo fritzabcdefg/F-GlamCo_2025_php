@@ -91,7 +91,7 @@ if (isset($_POST['submit'])) {
 }
 ?>
 
-<div class="container-xl px-4 mt-4">
+<div class="container-xl px-4 mt-4 profile-edit">
     <?php include("../includes/alert.php"); ?>
     <nav class="nav nav-borders">
         <a class="nav-link active ms-0" href="#">Profile</a>
@@ -99,7 +99,7 @@ if (isset($_POST['submit'])) {
     <hr class="mt-0 mb-4">
     <div class="row">
         <div class="col-xl-4">
-            <div class="card mb-4 mb-xl-0">
+            <div class="card mb-4 mb-xl-0 profile-edit">
                 <div class="card-header">Profile Picture</div>
                 <div class="card-body text-center">
                     <img class="img-account-profile rounded-circle mb-2"
@@ -116,7 +116,8 @@ if (isset($_POST['submit'])) {
             </div>
         </div>
         <div class="col-xl-8">
-            <div class="card mb-4">
+            <!-- Added profile-edit here -->
+            <div class="card mb-4 profile-edit">
                 <div class="card-header">Account Details</div>
                 <div class="card-body">
                     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" enctype="multipart/form-data">
