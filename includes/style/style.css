@@ -322,11 +322,37 @@ ul.shopping-cart .cart-itm .remove-itm a {
 }
 
 /* === Profile Page Styling === */
-.profile-card {
-  border: 1px solid #F8BBD0;
-  background-color: #FFF0F5;
-  box-shadow: 0 2px 8px rgba(200, 100, 150, 0.1);
-  border-radius: 8px;
+.profile-card.card {
+  background-color: #FFF0F5 !important;
+  border: 1px solid #F8BBD0 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 2px 8px rgba(200, 100, 150, 0.1) !important;
+}
+
+.profile-card .card-header {
+  background-color: #F8BBD0 !important;
+  color: #880E4F !important;
+  font-weight: bold !important;
+  border-bottom: 1px solid #FCE4EC !important;
+}
+
+.profile-card .card-header h5 {
+  margin: 0;
+  font-size: 1.2em;
+}
+
+.profile-card .btn.btn-primary {
+  background-color: #F8BBD0 !important;
+  color: #4A4A4A !important;
+  border: none !important;
+  font-size: 0.85em;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+.profile-card .btn.btn-primary:hover {
+  background-color: #F8BBD0 !important;
+  color: #333 !important;
 }
 
 .profile-image {
@@ -338,37 +364,28 @@ ul.shopping-cart .cart-itm .remove-itm a {
   box-shadow: 0 2px 5px rgba(200, 100, 150, 0.2);
 }
 
+.profile-table {
+  margin-top: 10px;
+}
+
 .profile-table th {
   width: 120px;
   color: #880E4F;
   font-weight: 600;
+  padding: 8px;
+  vertical-align: top;
 }
 
 .profile-table td {
   color: #6A1B9A;
+  padding: 8px;
 }
 
 .profile-table tr:not(:last-child) td {
   padding-bottom: 8px;
 }
 
-.profile-card .card-header {
-  background-color: #F8BBD0;
-  color: #880E4F;
-  font-weight: bold;
-  border-bottom: 1px solid #FCE4EC;
-}
 
-.profile-card .btn-primary {
-  background-color: #CBF5A0 !important;
-  color: #4A4A4A !important;
-  border: none !important;
-}
-
-.profile-card .btn-primary:hover {
-  background-color: #D9FBB3 !important;
-  color: #333 !important;
-}
 /* === Product Admin Action Buttons === */
 /* === Refined Action Buttons === */
 .action-bar {
@@ -394,7 +411,7 @@ ul.shopping-cart .cart-itm .remove-itm a {
 }
 
 .action-button:hover {
-  background-color: #D9FBB3;
+  background-color: #F8BBD0;
   color: #333;
   box-shadow: 0 4px 10px rgba(200, 100, 150, 0.2);
 }
