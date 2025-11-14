@@ -323,17 +323,17 @@ ul.shopping-cart .cart-itm .remove-itm a {
 
 /* === Profile Page Styling === */
 .profile-card.card {
-  background-color: #FFF0F5 !important;
-  border: 1px solid #F8BBD0 !important;
+  background-color: #ffffff !important; /* white card body */
+  border: 1px solid #000000 !important;
   border-radius: 10px !important;
   box-shadow: 0 2px 8px rgba(200, 100, 150, 0.1) !important;
 }
 
 .profile-card .card-header {
-  background-color: #F8BBD0 !important;
-  color: #880E4F !important;
+  background-color: #000000 !important; /* black header */
+  color: #ffffff !important;
   font-weight: bold !important;
-  border-bottom: 1px solid #FCE4EC !important;
+  border-bottom: 1px solid #ffffff !important;
 }
 
 .profile-card .card-header h5 {
@@ -342,7 +342,7 @@ ul.shopping-cart .cart-itm .remove-itm a {
 }
 
 .profile-card .btn.btn-primary {
-  background-color: #F8BBD0 !important;
+  background-color: #ffffff !important;
   color: #4A4A4A !important;
   border: none !important;
   font-size: 0.85em;
@@ -351,7 +351,7 @@ ul.shopping-cart .cart-itm .remove-itm a {
 }
 
 .profile-card .btn.btn-primary:hover {
-  background-color: #F69b9A !important;
+  background-color: #F69B9A !important;
   color: #880E4F !important;
 }
 
@@ -365,11 +365,11 @@ ul.shopping-cart .cart-itm .remove-itm a {
 }
 
 .profile-table {
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 .profile-table th {
-  width: 120px;
+  width: 100px;
   color: #880E4F;
   font-weight: 600;
   padding: 8px;
