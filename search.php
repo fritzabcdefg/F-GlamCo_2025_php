@@ -2,8 +2,6 @@
 session_start();
 include('./includes/header.php');
 include('./includes/config.php');
-require_once __DIR__ . '/includes/csrf.php';
-$csrf_input_html = '<input type="hidden" name="csrf_token" value="' . htmlspecialchars(csrf_token(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '">';
 
 $term = isset($_GET['search']) ? trim($_GET['search']) : '';
 if ($term === '') {
@@ -35,15 +33,15 @@ $res = mysqli_stmt_get_result($stmt);
 $products_item = '<ul class="products">';
 if ($res) {
     while ($row = mysqli_fetch_assoc($res)) {
-        $name = htmlspecialchars($row['name']);
-        $img = htmlspecialchars($row['img_path']);
-        $price = htmlspecialchars($row['sell_price']);
-        $qty = (int)$row['quantity'];
+        $name   = htmlspecialchars($row['name']);
+        $img    = htmlspecialchars($row['img_path']);
+        $price  = htmlspecialchars($row['sell_price']);
+        $qty    = (int)$row['quantity'];
         $itemId = (int)$row['itemId'];
 
         $products_item .= <<<EOT
         <li class="product">
-            <form method="POST" action="./cart/cart_update.php">{$csrf_input_html}
+            <form method="POST" action="./cart/cart_update.php">
                 <div class="product-content">
                     <h3>{$name}</h3>
                     <div class="product-thumb">
@@ -71,14 +69,11 @@ EOT;
     }
 }
 $products_item .= '</ul>';
-
 ?>
 
 <div class="container mt-4">
     <h3>Search results for "<?php echo htmlspecialchars($term); ?>"</h3>
-    <?php
-        echo $products_item;
-    ?>
+    <?php echo $products_item; ?>
 </div>
 
 <?php include('./includes/footer.php'); ?>

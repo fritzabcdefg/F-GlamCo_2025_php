@@ -3,13 +3,10 @@ session_start();
 include('../includes/auth_user.php');
 include('../includes/header.php');
 include('../includes/config.php');
-require_once __DIR__ . '/../includes/csrf.php';
-require_once __DIR__ . '/../includes/flash.php';
 
 try {
-    // Require POST and valid CSRF token for checkout
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['csrf_token']) || !csrf_verify($_POST['csrf_token'])) {
-        flash_set('Invalid checkout request.', 'danger');
+    // Require POST
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         header('Location: ../index.php');
         exit;
     }
@@ -45,7 +42,7 @@ try {
         $product_code = $cart_itm["item_id"];
         $product_qty = $cart_itm["item_qty"];
 
-        // Correct parameter order for orderline
+        // Insert into orderline
         mysqli_stmt_bind_param($stmt2, 'iii', $orderinfo_id, $product_code, $product_qty);
         mysqli_stmt_execute($stmt2);
 
@@ -53,12 +50,12 @@ try {
         mysqli_stmt_bind_param($stmt3, 'ii', $product_qty, $product_code);
         mysqli_stmt_execute($stmt3);
     }
+
     // Commit transaction
     mysqli_commit($conn);
     unset($_SESSION['cart_products']);
 
-    // Set a flash success message and redirect to home
-    flash_set('Checkout successful. Your order has been placed.', 'success');
+    // Redirect to home after checkout
     header('Location: ../index.php');
     exit;
 

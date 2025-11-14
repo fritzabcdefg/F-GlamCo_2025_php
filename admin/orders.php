@@ -4,48 +4,41 @@ include('../includes/auth_admin.php');
 include('../includes/header.php');
 include('../includes/config.php');
 
-// CREATE VIEW  salesPerOrder as SELECT o.orderinfo_id, SUM(i.sell_price * ol.quantity), o.status FROM orderinfo o INNER JOIN orderline ol using (orderinfo_id) INNER JOIN items i USING (item_id)
+// CREATE VIEW salesPerOrder AS 
+// SELECT o.orderinfo_id, SUM(i.sell_price * ol.quantity), o.status 
+// FROM orderinfo o 
+// INNER JOIN orderline ol USING (orderinfo_id) 
+// INNER JOIN items i USING (item_id)
 // GROUP BY o.orderinfo_id;
 
-$sql = "SELECT o.orderinfo_id as orderId, total FROM orderinfo o INNER JOIN orderline ol using (orderinfo_id) INNER JOIN items i USING (item_id)
-GROUP BY o.orderinfo_id";
+$sql = "SELECT o.orderinfo_id as orderId, total 
+        FROM orderinfo o 
+        INNER JOIN orderline ol USING (orderinfo_id) 
+        INNER JOIN items i USING (item_id)
+        GROUP BY o.orderinfo_id";
 
-//order details
-
-
+// order details
 $sql = "SELECT * FROM `salesperorder` ORDER BY total DESC";
 $result = mysqli_query($conn, $sql);
 $itemCount = mysqli_num_rows($result);
-
 ?>
 <h2>number of items <?= $itemCount ?> </h2>
-<?php include("../includes/alert.php"); ?>
 <table class="table table-striped table-bordered">
     <?php
     while ($row = mysqli_fetch_assoc($result)) {
         echo "<tr>";
-
         echo "<td>{$row['orderinfo_id']}</td>";
         echo "<td>{$row['total']}</td>";
-        if($row['status'] === 'Delivered') {
+
+        if ($row['status'] === 'Delivered') {
             echo "<td style='color: green'>{$row['status']}</td>";
-        }
-        else {
-            echo "<td style='color: red'>{$row['status']}</td>";
-
-        }
-        if($row['status'] === 'Delivered') {
             echo "<td><i class='fa-regular fa-eye' style='color: gray'></i></td>";
-        echo "</tr>";
-        }
-
-        else {
+            echo "</tr>";
+        } else {
+            echo "<td style='color: red'>{$row['status']}</td>";
             echo "<td><a href='orderDetails.php?id={$row['orderinfo_id']}'><i class='fa-regular fa-eye' style='color: blue'></i></a></td>";
             echo "</tr>";
         }
-
-
-        
     }
     ?>
 </table>

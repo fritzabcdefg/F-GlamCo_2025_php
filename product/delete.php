@@ -1,16 +1,7 @@
 <?php
 session_start();
-    include('../includes/auth_admin.php');
-    include('../includes/config.php');
-    require_once __DIR__ . '/../includes/csrf.php';
-    require_once __DIR__ . '/../includes/flash.php';
-
-    // CSRF: require POST with valid token
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['csrf_token']) || !csrf_verify($_POST['csrf_token'])) {
-        flash_set('Invalid request.', 'danger');
-        header('Location: index.php');
-        exit;
-    }
+include('../includes/auth_admin.php');
+include('../includes/config.php');
 
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 if ($id) {
@@ -45,7 +36,9 @@ if ($id) {
         if ($resImgs) {
             while ($r = mysqli_fetch_assoc($resImgs)) {
                 $f = $r['filename'];
-                if ($f && file_exists($f)) @unlink($f);
+                if ($f && file_exists($f)) {
+                    @unlink($f);
+                }
             }
         }
         mysqli_stmt_close($imgQ);
@@ -66,7 +59,7 @@ if ($id) {
         mysqli_stmt_close($delItem);
     }
 
-    // delete main image file if it exists in images/
+    // delete main image file if it exists
     if ($img && file_exists($img)) {
         @unlink($img);
     }

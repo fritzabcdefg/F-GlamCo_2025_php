@@ -5,7 +5,6 @@ session_start();
 include('../includes/auth_admin.php');
 include('../includes/header.php');
 include('../includes/config.php');
-require_once __DIR__ . '/../includes/csrf.php';
 
 $orderId = $_GET['id'];
 $_SESSION['orderId'] = $orderId;
@@ -13,10 +12,9 @@ $_SESSION['orderId'] = $orderId;
 $sql = "SELECT lname, fname, addressline, town, zipcode, phone, orderinfo_id, status FROM `orderdetails` WHERE orderinfo_id = $orderId LIMIT 1";
 $result = mysqli_query($conn, $sql);
 $customer = mysqli_fetch_assoc($result);
-echo $sql;
-$sql = "SELECT name, quantity, sell_price  FROM `orderdetails` WHERE orderinfo_id = $orderId ";
-$items = mysqli_query($conn, $sql);
 
+$sql = "SELECT name, quantity, sell_price FROM `orderdetails` WHERE orderinfo_id = $orderId";
+$items = mysqli_query($conn, $sql);
 ?>
 <h2><?= $customer['orderinfo_id'] ?> </h2>
 <h3><?php echo "{$customer['lname']} {$customer['fname']}" ?></h3>
@@ -35,32 +33,25 @@ $items = mysqli_query($conn, $sql);
         $total = $row['sell_price'] * $row['quantity'];
         $grandTotal += $total;
         echo "<tr>";
-
         echo "<td>{$row['name']}</td>";
-        echo "<td>{$row['quantity']} </td>";
+        echo "<td>{$row['quantity']}</td>";
         echo "<td>{$row['sell_price']}</td>";
-
         echo "<td>{$total}</td>";
-
-
-
         echo "</tr>";
     }
     ?>
 </table>
 <h4><?= $grandTotal ?></h4>
 <form action="updateOrder.php" method="POST">
-    <?php echo csrf_input(); ?>
-<select class="form-select form-control" aria-label="Default select example" name="status">
-    <option selected>Open this select menu</option>
-    <option value="Processing">processing</option>
-    <option value="Delivered">delivered</option>
-    <option value="Canceled">canceled</option>
-</select>
-<button type="submit" class="btn btn-primary">Update order</button>
+    <select class="form-select form-control" aria-label="Default select example" name="status">
+        <option selected>Open this select menu</option>
+        <option value="Processing">processing</option>
+        <option value="Delivered">delivered</option>
+        <option value="Canceled">canceled</option>
+    </select>
+    <button type="submit" class="btn btn-primary">Update order</button>
 </form>
 
 <?php
-
 include('../includes/footer.php');
 ?>

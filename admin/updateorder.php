@@ -3,19 +3,14 @@ session_start();
 include('../includes/auth_admin.php');
 include("../includes/config.php");
 include("../includes/header.php");
-require_once __DIR__ . '/../includes/csrf.php';
-require_once __DIR__ . '/../includes/flash.php';
 
-// CSRF check
-if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['csrf_token']) || !csrf_verify($_POST['csrf_token'])) {
-    flash_set('Invalid request.', 'danger');
+// require POST
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: orders.php');
     exit;
 }
 
 $status = isset($_POST['status']) ? $_POST['status'] : '';
-
-
 
 $orderId = isset($_SESSION['orderId']) ? (int) $_SESSION['orderId'] : 0;
 $upd = mysqli_prepare($conn, "UPDATE orderinfo SET status = ? WHERE orderinfo_id = ?");
@@ -25,8 +20,7 @@ if ($upd) {
     $result = mysqli_stmt_execute($upd);
     mysqli_stmt_close($upd);
 }
-if ($result ) {
-    flash_set('Order updated', 'success');
+if ($result) {
     header("Location: orders.php");
 }
 
@@ -49,7 +43,10 @@ if ($orderId && $result) {
             $to = $row['email'];
             $statusHuman = ucfirst($row['status']);
             // fetch items
-            $iq = "SELECT it.name, ol.quantity, it.sell_price FROM orderline ol JOIN items it ON ol.item_id = it.item_id WHERE ol.orderinfo_id = ?";
+            $iq = "SELECT it.name, ol.quantity, it.sell_price 
+                   FROM orderline ol 
+                   JOIN items it ON ol.item_id = it.item_id 
+                   WHERE ol.orderinfo_id = ?";
             $itemsHtml = '';
             $grand = 0.00;
             if ($istmt = $conn->prepare($iq)) {
@@ -85,11 +82,7 @@ if ($orderId && $result) {
 
             // send
             $subject = "Order #" . (int)$row['orderinfo_id'] . " status: " . $statusHuman;
-            $send = smtp_send_mail($to, $subject, $html);
-            if (!$send['success']) {
-                // log email failure as a separate flash (warning)
-                flash_set('Email notification failed: ' . htmlspecialchars($send['error']), 'warning');
-            }
+            smtp_send_mail($to, $subject, $html);
         }
         $stmt->close();
     }

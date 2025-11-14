@@ -2,30 +2,30 @@
 session_start();
 include('./includes/header.php');
 include('./includes/config.php');
-require_once __DIR__ . '/includes/csrf.php';
-$csrf_input_html = '<input type="hidden" name="csrf_token" value="' . htmlspecialchars(csrf_token(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '">';
 
 // 🛒 Display Cart if items exist
 if (isset($_SESSION["cart_products"]) && count($_SESSION["cart_products"]) > 0) {
     echo '<div class="cart-view-table-front" id="view-cart">';
     echo '<h3>Your Shopping Cart</h3>';
-    echo '<form method="POST" action="./cart/cart_update.php">' . $csrf_input_html;
+    echo '<form method="POST" action="./cart/cart_update.php">';
     echo '<table width="100%" cellpadding="6" cellspacing="0">';
     echo '<tbody>';
     $total = 0;
     $b = 0;
     foreach ($_SESSION["cart_products"] as $cart_itm) {
-        $product_name = $cart_itm["item_name"];
-        $product_qty = $cart_itm["item_qty"];
-        $product_price = $cart_itm["item_price"];
-        $product_code = $cart_itm["item_id"];
+        $product_name    = $cart_itm["item_name"];
+        $product_qty     = $cart_itm["item_qty"];
+        $product_price   = $cart_itm["item_price"];
+        $product_code    = $cart_itm["item_id"];
         $available_stock = $cart_itm["item_stock"];
-        $bg_color = ($b++ % 2 == 1) ? 'odd' : 'even';
+        $bg_color        = ($b++ % 2 == 1) ? 'odd' : 'even';
+
         echo '<tr class="' . $bg_color . '">';
         echo "<td>Qty <input type='number' size='2' maxlength='2' name='product_qty[$product_code]' value='{$product_qty}' min='1' max='{$available_stock}'/></td>";
         echo "<td>{$product_name}</td>";
         echo '<td><input type="checkbox" name="remove_code[]" value="' . $product_code . '" /> Remove</td>';
         echo '</tr>';
+
         $subtotal = ($product_price * $product_qty);
         $total += $subtotal;
     }
@@ -53,7 +53,7 @@ if ($results) {
     while ($row = mysqli_fetch_assoc($results)) {
         $products_item .= <<<EOT
         <li class="product">
-            <form method="POST" action="./cart/cart_update.php">{$csrf_input_html}
+            <form method="POST" action="./cart/cart_update.php">
                 <div class="product-content">
                     <h3>{$row['name']}</h3>
                     <div class="product-thumb">

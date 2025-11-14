@@ -2,7 +2,7 @@
 session_start();
 include('../includes/header.php');
 include('../includes/config.php');
-require_once __DIR__ . '/../includes/csrf.php';
+
 
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 if (!$id) {

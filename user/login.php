@@ -1,8 +1,6 @@
 <?php
 session_start();
 include("../includes/config.php");
-require_once __DIR__ . '/../includes/csrf.php';
-require_once __DIR__ . '/../includes/flash.php';
 ?>
 
 <!doctype html>
@@ -18,19 +16,11 @@ require_once __DIR__ . '/../includes/flash.php';
   
 <?php
 if (isset($_POST['submit'])) {
-  // CSRF check
-  if (!isset($_POST['csrf_token']) || !csrf_verify($_POST['csrf_token'])) {
-    flash_set('Invalid form submission.', 'danger');
-  } else {
   $email = isset($_POST['email']) ? trim($_POST['email']) : '';
-  $pass = isset($_POST['password']) ? trim($_POST['password']) : '';
+  $pass  = isset($_POST['password']) ? trim($_POST['password']) : '';
 
   // server-side validation
-  if ($email === '' || $pass === '') {
-    flash_set('Email and password are required.', 'danger');
-  } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    flash_set('Please enter a valid email address.', 'danger');
-  } else {
+  if ($email !== '' && $pass !== '' && filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $sql = "SELECT id, email, password, role, active FROM users WHERE email=? LIMIT 1";
     $stmt = mysqli_prepare($conn, $sql);
     mysqli_stmt_bind_param($stmt, 's', $email);
@@ -53,10 +43,7 @@ if (isset($_POST['submit'])) {
           $needs_rehash = true;
       }
 
-      if ($login_ok) {
-        if (!$active) {
-          flash_set('Your account has been deactivated. Contact the administrator.', 'warning');
-        } else {
+      if ($login_ok && $active) {
           // If legacy SHA1 matched, upgrade to password_hash()
           if ($needs_rehash) {
               $newHash = password_hash($pass, PASSWORD_DEFAULT);
@@ -68,27 +55,19 @@ if (isset($_POST['submit'])) {
               }
           }
 
-          $_SESSION['email'] = $email_db;
+          $_SESSION['email']   = $email_db;
           $_SESSION['user_id'] = $user_id;
-          $_SESSION['role'] = $role;
+          $_SESSION['role']    = $role;
           header("Location: ../user/profile.php");
           exit();
-        }
-      } else {
-        flash_set('Wrong email or password.', 'danger');
       }
-    } else {
-      flash_set('Wrong email or password.', 'danger');
     }
-  }
   }
 }
 ?>
 <div class="container">
   <div class="auth-container">
-    <?php include("../includes/alert.php"); ?>
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
-      <?php echo csrf_input(); ?>
       <div class="mb-3">
         <label for="form2Example1" class="form-label">Email address</label>
         <input type="email" id="form2Example1" class="form-control" name="email" required />

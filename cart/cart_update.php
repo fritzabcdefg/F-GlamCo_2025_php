@@ -2,17 +2,6 @@
 session_start();
 include('../includes/header.php');
 include('../includes/config.php');
-require_once __DIR__ . '/../includes/csrf.php';
-require_once __DIR__ . '/../includes/flash.php';
-
-// CSRF: require valid token for POST actions
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!isset($_POST['csrf_token']) || !csrf_verify($_POST['csrf_token'])) {
-        flash_set('Invalid request.', 'danger');
-        header('Location: ../index.php');
-        exit;
-    }
-}
 
 // 🛒 Add item to cart
 if (isset($_POST["type"]) && $_POST["type"] === 'add' && $_POST["item_qty"] > 0) {
@@ -45,7 +34,6 @@ if (isset($_POST["product_qty"]) || isset($_POST["remove_code"])) {
     if (isset($_POST["product_qty"]) && is_array($_POST["product_qty"])) {
         foreach ($_POST["product_qty"] as $key => $value) {
             if (is_numeric($value) && isset($_SESSION["cart_products"][$key])) {
-                        // var_dump( $key, $value);
                 $max_stock = $_SESSION["cart_products"][$key]["item_stock"];
                 $safe_qty = max(1, min($value, $max_stock)); // ✅ Enforce min=1 and max=stock
                 $_SESSION["cart_products"][$key]["item_qty"] = $safe_qty;
@@ -55,8 +43,7 @@ if (isset($_POST["product_qty"]) || isset($_POST["remove_code"])) {
 
     // 🗑️ Remove items
     if (isset($_POST["remove_code"]) && is_array($_POST["remove_code"])) {
-        foreach ($_POST["remove_code"] as $key) {        
-            // var_dump($key);
+        foreach ($_POST["remove_code"] as $key) {
             unset($_SESSION["cart_products"][$key]);
         }
     }

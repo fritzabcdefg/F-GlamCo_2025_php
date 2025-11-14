@@ -7,7 +7,10 @@ $user_id = $_SESSION['user_id'] ?? 0;
 $customer = null;
 
 if ($user_id) {
-    $sql = "SELECT c.*, u.email FROM customers c LEFT JOIN users u ON u.id = c.user_id WHERE c.user_id = ? LIMIT 1";
+    $sql = "SELECT c.*, u.email 
+            FROM customers c 
+            LEFT JOIN users u ON u.id = c.user_id 
+            WHERE c.user_id = ? LIMIT 1";
     $stmt = mysqli_prepare($conn, $sql);
     mysqli_stmt_bind_param($stmt, 'i', $user_id);
     mysqli_stmt_execute($stmt);
@@ -19,8 +22,6 @@ if ($user_id) {
 ?>
 
 <div class="container px-4 mt-4">
-    <?php include("../includes/alert.php"); ?>
-
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card profile-card mb-4">
@@ -38,8 +39,14 @@ if ($user_id) {
                             <div class="row">
                                 <div class="col-md-4 text-center">
                                     <?php
-                                        $img = isset($customer['image']) && $customer['image'] !== '' ? '../uploads/' . $customer['image'] : 'http://bootdey.com/img/Content/avatar/avatar1.png';
-                                        $displayName = trim((isset($customer['title']) ? $customer['title'] : '') . ' ' . (isset($customer['fname']) ? $customer['fname'] : '') . ' ' . (isset($customer['lname']) ? $customer['lname'] : ''));
+                                        $img = isset($customer['image']) && $customer['image'] !== '' 
+                                            ? '../uploads/' . $customer['image'] 
+                                            : 'http://bootdey.com/img/Content/avatar/avatar1.png';
+                                        $displayName = trim(
+                                            (isset($customer['title']) ? $customer['title'] : '') . ' ' .
+                                            (isset($customer['fname']) ? $customer['fname'] : '') . ' ' .
+                                            (isset($customer['lname']) ? $customer['lname'] : '')
+                                        );
                                     ?>
                                     <img src="<?php echo $img; ?>" alt="Profile Image" class="profile-image mb-3">
                                     <?php if ($displayName): ?>

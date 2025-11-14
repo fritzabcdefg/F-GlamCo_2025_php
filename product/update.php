@@ -2,28 +2,16 @@
 session_start();
 include('../includes/auth_admin.php');
 include('../includes/config.php');
-require_once __DIR__ . '/../includes/csrf.php';
-require_once __DIR__ . '/../includes/flash.php';
-
-// CSRF check
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!isset($_POST['csrf_token']) || !csrf_verify($_POST['csrf_token'])) {
-        flash_set('Invalid form submission.', 'danger');
-        header('Location: edit.php?id=' . (isset($_POST['item_id']) ? intval($_POST['item_id']) : ''));
-        exit;
-    }
-}
 
 if (isset($_POST['submit'])) {
-    $item_id = intval($_POST['item_id']);
-    $name = trim($_POST['name']);
-    $cost = trim($_POST['cost_price']);
-    $sell = trim($_POST['sell_price']);
-    $qty = intval($_POST['quantity']);
+    $item_id  = intval($_POST['item_id']);
+    $name     = trim($_POST['name']);
+    $cost     = trim($_POST['cost_price']);
+    $sell     = trim($_POST['sell_price']);
+    $qty      = intval($_POST['quantity']);
     $supplier = trim($_POST['supplier_name']);
 
     if ($name === '') {
-        flash_set('Name is required', 'danger');
         header("Location: edit.php?id={$item_id}");
         exit();
     }
@@ -51,7 +39,7 @@ if (isset($_POST['submit'])) {
             if ($err !== UPLOAD_ERR_OK) continue;
             $type = $_FILES['img_paths']['type'][$i];
             if (!in_array($type, $allowed)) continue;
-            $tmp = $_FILES['img_paths']['tmp_name'][$i];
+            $tmp  = $_FILES['img_paths']['tmp_name'][$i];
             $orig = basename($_FILES['img_paths']['name'][$i]);
             $uniq = time() . '_' . bin2hex(random_bytes(4)) . '_' . preg_replace('/[^A-Za-z0-9._-]/', '_', $orig);
             $targetPath = 'images/' . $uniq;
@@ -63,7 +51,7 @@ if (isset($_POST['submit'])) {
 
     // process deletions from gallery
     if (isset($_POST['delete_images']) && is_array($_POST['delete_images'])) {
-            foreach ($_POST['delete_images'] as $delId) {
+        foreach ($_POST['delete_images'] as $delId) {
             $delId = intval($delId);
             $sel = mysqli_prepare($conn, "SELECT filename FROM product_images WHERE id = ? AND item_id = ? LIMIT 1");
             if ($sel) {
@@ -90,21 +78,16 @@ if (isset($_POST['submit'])) {
         }
     }
 
-    $nameEsc = mysqli_real_escape_string($conn, $name);
-    $costEsc = mysqli_real_escape_string($conn, $cost);
-    $sellEsc = mysqli_real_escape_string($conn, $sell);
-    $supplierEsc = mysqli_real_escape_string($conn, $supplier);
     // if there is no main img set but we have uploaded images, set first as main
     $target = $existingImg;
     if (empty($target) && count($uploadedFiles)) {
         $target = $uploadedFiles[0];
     }
-    $targetEsc = mysqli_real_escape_string($conn, $target);
 
-    $category_id = isset($_POST['category_id']) && $_POST['category_id'] !== '' ? intval($_POST['category_id']) : 'NULL';
+    $category_id = isset($_POST['category_id']) && $_POST['category_id'] !== '' ? intval($_POST['category_id']) : null;
 
     // update items using prepared statement (handle NULL category)
-    if ($category_id === 'NULL') {
+    if ($category_id === null) {
         $upd = mysqli_prepare($conn, "UPDATE items SET name = ?, cost_price = ?, sell_price = ?, supplier_name = ?, img_path = ?, category_id = NULL WHERE item_id = ?");
         if ($upd) {
             mysqli_stmt_bind_param($upd, 'sddssi', $name, $cost, $sell, $supplier, $target, $item_id);
@@ -112,10 +95,9 @@ if (isset($_POST['submit'])) {
             mysqli_stmt_close($upd);
         }
     } else {
-        $catVal = intval($category_id);
         $upd = mysqli_prepare($conn, "UPDATE items SET name = ?, cost_price = ?, sell_price = ?, supplier_name = ?, img_path = ?, category_id = ? WHERE item_id = ?");
         if ($upd) {
-            mysqli_stmt_bind_param($upd, 'sddssii', $name, $cost, $sell, $supplier, $target, $catVal, $item_id);
+            mysqli_stmt_bind_param($upd, 'sddssii', $name, $cost, $sell, $supplier, $target, $category_id, $item_id);
             mysqli_stmt_execute($upd);
             mysqli_stmt_close($upd);
         }
@@ -126,8 +108,7 @@ if (isset($_POST['submit'])) {
         $insImg = mysqli_prepare($conn, "INSERT INTO product_images (item_id, filename) VALUES (?, ?)");
         if ($insImg) {
             foreach ($uploadedFiles as $f) {
-                $fEsc = $f; // prepared statement will handle value
-                mysqli_stmt_bind_param($insImg, 'is', $item_id, $fEsc);
+                mysqli_stmt_bind_param($insImg, 'is', $item_id, $f);
                 mysqli_stmt_execute($insImg);
             }
             mysqli_stmt_close($insImg);

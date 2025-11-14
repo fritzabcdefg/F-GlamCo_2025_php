@@ -1,161 +1,121 @@
 <?php
 session_start();
 include('../includes/auth_admin.php');
+include('../includes/header.php');
 include('../includes/config.php');
-<<<<<<< HEAD
-require_once __DIR__ . '/../includes/csrf.php';
-require_once __DIR__ . '/../includes/flash.php';
 
-// CSRF check
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!isset($_POST['csrf_token']) || !csrf_verify($_POST['csrf_token'])) {
-        flash_set('Invalid form submission.', 'danger');
-        header('Location: create.php');
-        exit;
+$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+$item = null;
+if ($id) {
+    $sql = "SELECT i.*, s.quantity 
+            FROM items i 
+            LEFT JOIN stocks s USING (item_id) 
+            WHERE i.item_id = {$id} LIMIT 1";
+    $res = mysqli_query($conn, $sql);
+    if ($res && mysqli_num_rows($res) > 0) {
+        $item = mysqli_fetch_assoc($res);
     }
 }
-=======
 
->>>>>>> 61e5e3cab6850afcf1bd758b843d4db0a0ab3cb8
-$_SESSION['name'] = trim($_POST['name']);
-$_SESSION['cost'] = trim($_POST['cost_price']);
-$_SESSION['sell'] = trim($_POST['sell_price']);
-$_SESSION['qty'] = $_POST['quantity'];
-$_SESSION['category_id'] = isset($_POST['category_id']) ? intval($_POST['category_id']) : null;
-
-if (isset($_POST['submit'])) {
-    $cost = trim($_POST['cost_price']);
-    $sell = trim($_POST['sell_price']);
-    $name = trim($_POST['name']);
-    $qty  = $_POST['quantity'];
-    $target = '';
-
-    if (empty($name)) {
-        $_SESSION['nameError'] = 'Please input a Product name';
-        header("Location: create.php");
-        exit;
-    }
-
-    if (empty($cost) || !is_numeric($cost)) {
-        $_SESSION['costError'] = 'error product price format';
-        header("Location: create.php");
-        exit;
-    }
-
-    if (empty($sell) || !is_numeric($sell)) {
-        $_SESSION['sellError'] = 'error product price format';
-        header("Location: create.php");
-        exit;
-    }
-<<<<<<< HEAD
-    // handle multiple uploaded images (input name img_paths[])
-    $uploadedFiles = [];
-    if (isset($_FILES['img_paths'])) {
-        $allowed = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-        for ($i = 0; $i < count($_FILES['img_paths']['name']); $i++) {
-            $err = $_FILES['img_paths']['error'][$i];
-            if ($err !== UPLOAD_ERR_OK) continue;
-            $type = $_FILES['img_paths']['type'][$i];
-            if (!in_array($type, $allowed)) continue;
-            $tmp = $_FILES['img_paths']['tmp_name'][$i];
-            $orig = basename($_FILES['img_paths']['name'][$i]);
-            // make filename unique
-            $uniq = time() . '_' . bin2hex(random_bytes(4)) . '_' . preg_replace('/[^A-Za-z0-9._-]/', '_', $orig);
-            $targetPath = 'images/' . $uniq;
-            if (move_uploaded_file($tmp, $targetPath)) {
-                $uploadedFiles[] = $targetPath;
-            }
-        }
-    }
-
-    // previous single-file fallback (if developer used old field name)
-    if (empty($uploadedFiles) && isset($_FILES['img_path']) && $_FILES['img_path']['error'] == UPLOAD_ERR_OK) {
-        $tmp = $_FILES['img_path']['tmp_name'];
-        $orig = basename($_FILES['img_path']['name']);
-        $uniq = time() . '_' . preg_replace('/[^A-Za-z0-9._-]/', '_', $orig);
-        $targetPath = 'images/' . $uniq;
-        if (move_uploaded_file($tmp, $targetPath)) {
-            $uploadedFiles[] = $targetPath;
-        }
-    }
-
-    $category_id = isset($_POST['category_id']) && $_POST['category_id'] !== '' ? intval($_POST['category_id']) : 'NULL';
-
-    // use first uploaded image as main thumbnail (legacy img_path)
-    $mainImg = count($uploadedFiles) ? $uploadedFiles[0] : '';
-
-    // insert item (handle nullable category_id)
-    if ($category_id === 'NULL') {
-        $ins = mysqli_prepare($conn, "INSERT INTO items (name, category_id, cost_price, sell_price, img_path) VALUES (?, NULL, ?, ?, ?)");
-        if ($ins) {
-            mysqli_stmt_bind_param($ins, 'sdds', $name, $cost, $sell, $mainImg);
-            mysqli_stmt_execute($ins);
-            mysqli_stmt_close($ins);
-        }
-    } else {
-        $catVal = intval($category_id);
-        $ins = mysqli_prepare($conn, "INSERT INTO items (name, category_id, cost_price, sell_price, img_path) VALUES (?, ?, ?, ?, ?)");
-        if ($ins) {
-            mysqli_stmt_bind_param($ins, 'sidds', $name, $catVal, $cost, $sell, $mainImg);
-            mysqli_stmt_execute($ins);
-            mysqli_stmt_close($ins);
-        }
-    }
-
-    $item_id = mysqli_insert_id($conn);
-    if ($item_id) {
-        // insert uploaded images into product_images
-        if (!empty($uploadedFiles)) {
-            $insImg = mysqli_prepare($conn, "INSERT INTO product_images (item_id, filename) VALUES (?, ?)");
-            if ($insImg) {
-                foreach ($uploadedFiles as $f) {
-                    mysqli_stmt_bind_param($insImg, 'is', $item_id, $f);
-                    mysqli_stmt_execute($insImg);
-                }
-                mysqli_stmt_close($insImg);
-            }
-        }
-
-        $insS = mysqli_prepare($conn, "INSERT INTO stocks(item_id, quantity) VALUES(?, ?)");
-        if ($insS) {
-            mysqli_stmt_bind_param($insS, 'ii', $item_id, $qty);
-            mysqli_stmt_execute($insS);
-            mysqli_stmt_close($insS);
-            header("Location: index.php");
-            exit();
-        }
-=======
-
-    if (empty($_POST['category_id'])) {
-        $_SESSION['categoryError'] = 'Please select a category';
-        header("Location: create.php");
-        exit;
-    }
-
-    if (isset($_FILES['img_path']) && $_FILES['img_path']['error'] == 0) {
-        if (in_array($_FILES['img_path']['type'], ["image/jpeg","image/jpg","image/png"])) {
-            $source = $_FILES['img_path']['tmp_name'];
-            $target = 'images/' . basename($_FILES['img_path']['name']);
-            move_uploaded_file($source, $target) or die("Couldn't copy");
-        } else {
-            $_SESSION['imageError'] = "wrong file type";
-            header("Location: create.php");
-            exit;
-        }
-    }
-
-    $category_id = intval($_POST['category_id']);
-
-    $sql = "INSERT INTO items(name, category_id, cost_price, sell_price, img_path) 
-            VALUES('{$name}', {$category_id}, '{$cost}', '{$sell}', '{$target}')";
-    $result = mysqli_query($conn, $sql);
-
-    $q_stock = "INSERT INTO stocks(item_id, quantity) VALUES(LAST_INSERT_ID(), {$qty})";
-    $result2 = mysqli_query($conn, $q_stock);
-
-    if ($result && $result2) {
-        header("Location: index.php");
-        exit;
->>>>>>> 61e5e3cab6850afcf1bd758b843d4db0a0ab3cb8
+// fetch categories for dropdown
+$categories = [];
+$catRes = mysqli_query($conn, "SELECT category_id, name FROM categories ORDER BY name ASC");
+if ($catRes) {
+    while ($c = mysqli_fetch_assoc($catRes)) {
+        $categories[] = $c;
     }
 }
+?>
+
+<div class="container mt-4">
+    <h3><?php echo $item ? 'Edit Item' : 'Item not found'; ?></h3>
+    <?php if (!$item): ?>
+        <p>Item not found. <a href="index.php">Back to list</a></p>
+    <?php else: ?>
+        <form method="POST" action="update.php" enctype="multipart/form-data">
+            <input type="hidden" name="item_id" value="<?php echo $item['item_id']; ?>">
+            
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input type="text" name="name" class="form-control" 
+                       value="<?php echo htmlspecialchars($item['name']); ?>">
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Category</label>
+                <select name="category_id" class="form-control">
+                    <option value="">-- Select category --</option>
+                    <?php foreach ($categories as $cat): ?>
+                        <option value="<?php echo $cat['category_id']; ?>" 
+                            <?php if (isset($item['category_id']) && $item['category_id'] == $cat['category_id']) echo 'selected'; ?>>
+                            <?php echo htmlspecialchars($cat['name']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Cost Price</label>
+                <input type="text" name="cost_price" class="form-control" 
+                       value="<?php echo htmlspecialchars($item['cost_price']); ?>">
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Sell Price</label>
+                <input type="text" name="sell_price" class="form-control" 
+                       value="<?php echo htmlspecialchars($item['sell_price']); ?>">
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Quantity</label>
+                <input type="number" name="quantity" class="form-control" 
+                       value="<?php echo htmlspecialchars($item['quantity']); ?>">
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Supplier</label>
+                <input type="text" name="supplier_name" class="form-control" 
+                       value="<?php echo htmlspecialchars($item['supplier_name']); ?>">
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Current Images</label><br />
+                <?php
+                // show images from product_images table
+                $imgRes = mysqli_query($conn, "SELECT * FROM product_images WHERE item_id = {$item['item_id']} ORDER BY created_at ASC");
+                if ($imgRes && mysqli_num_rows($imgRes) > 0):
+                    while ($imgRow = mysqli_fetch_assoc($imgRes)):
+                ?>
+                        <div style="display:inline-block;margin-right:8px;text-align:center;">
+                            <img src="<?php echo htmlspecialchars($imgRow['filename']); ?>" alt="" 
+                                 style="width:120px;height:120px;object-fit:cover;border:1px solid #ddd;margin-bottom:4px;" />
+                            <div>
+                                <label style="font-size:0.85em;">
+                                    <input type="checkbox" name="delete_images[]" value="<?php echo $imgRow['id']; ?>"> Remove
+                                </label>
+                            </div>
+                        </div>
+                <?php
+                    endwhile;
+                else:
+                    if (!empty($item['img_path'])):
+                ?>
+                        <img src="<?php echo htmlspecialchars($item['img_path']); ?>" alt="" 
+                             style="max-width:200px;max-height:200px;object-fit:cover;" class="mb-2" />
+                <?php
+                    endif;
+                endif;
+                ?>
+
+                <label class="form-label">Add Images</label>
+                <input type="file" name="img_paths[]" class="form-control" multiple accept="image/*">
+                <small class="form-text text-muted">Select one or more images to add to the gallery.</small>
+            </div>
+            
+            <button type="submit" name="submit" class="btn btn-primary">Save</button>
+            <a href="index.php" class="btn btn-secondary">Cancel</a>
+        </form>
+    <?php endif; ?>
+</div>
+
+<?php include('../includes/footer.php'); ?>

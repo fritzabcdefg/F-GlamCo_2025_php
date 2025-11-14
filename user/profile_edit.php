@@ -3,8 +3,6 @@ session_start();
 include('../includes/auth_user.php');
 include("../includes/header.php");
 include("../includes/config.php");
-require_once __DIR__ . '/../includes/csrf.php';
-require_once __DIR__ . '/../includes/flash.php';
 
 $customer = null;
 $user_id = $_SESSION['user_id'] ?? 0;
@@ -18,12 +16,6 @@ if ($result && mysqli_num_rows($result) > 0) {
 
 // Handle image upload
 if (isset($_POST['upload_image']) && isset($_FILES['profile_image'])) {
-    // CSRF
-    if (!isset($_POST['csrf_token']) || !csrf_verify($_POST['csrf_token'])) {
-        $_SESSION['message'] = 'Invalid request.';
-        header('Location: profile.php');
-        exit;
-    }
     $target_dir = "../uploads/";
     $filename = basename($_FILES["profile_image"]["name"]);
     $target_file = $target_dir . $filename;
@@ -38,7 +30,6 @@ if (isset($_POST['upload_image']) && isset($_FILES['profile_image'])) {
                 mysqli_stmt_execute($updImg);
                 mysqli_stmt_close($updImg);
             }
-            flash_set('Image uploaded successfully.', 'success');
             header("Location: profile.php");
             exit;
         } else {
@@ -51,19 +42,13 @@ if (isset($_POST['upload_image']) && isset($_FILES['profile_image'])) {
 
 // Handle profile update
 if (isset($_POST['submit'])) {
-    // CSRF
-    if (!isset($_POST['csrf_token']) || !csrf_verify($_POST['csrf_token'])) {
-        $_SESSION['message'] = 'Invalid request.';
-        header('Location: profile.php');
-        exit;
-    }
-    $lname = trim($_POST['lname']);
-    $fname = trim($_POST['fname']);
-    $title = trim($_POST['title']);
+    $lname   = trim($_POST['lname']);
+    $fname   = trim($_POST['fname']);
+    $title   = trim($_POST['title']);
     $address = trim($_POST['address']);
-    $town = trim($_POST['town']);
+    $town    = trim($_POST['town']);
     $zipcode = trim($_POST['zipcode']);
-    $phone = trim($_POST['phone']);
+    $phone   = trim($_POST['phone']);
 
     if ($customer) {
         $upd = mysqli_prepare($conn, "UPDATE customers SET title = ?, lname = ?, fname = ?, addressline = ?, town = ?, zipcode = ?, phone = ? WHERE user_id = ?");
@@ -82,7 +67,6 @@ if (isset($_POST['submit'])) {
     }
 
     if (!empty($ok)) {
-        flash_set('Profile saved', 'success');
         header("Location: profile.php");
         exit;
     } else {
@@ -92,7 +76,6 @@ if (isset($_POST['submit'])) {
 ?>
 
 <div class="container-xl px-4 mt-4 profile-edit">
-    <?php include("../includes/alert.php"); ?>
     <nav class="nav nav-borders">
         <a class="nav-link active ms-0" href="#">Profile</a>
     </nav>
@@ -108,7 +91,6 @@ if (isset($_POST['submit'])) {
                          alt="Profile Image">
                     <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
                     <form method="POST" enctype="multipart/form-data">
-                        <?php echo csrf_input(); ?>
                         <input type="file" name="profile_image" accept="image/*" class="form-control mb-3">
                         <button class="btn btn-primary" type="submit" name="upload_image">Upload new image</button>
                     </form>
@@ -116,12 +98,10 @@ if (isset($_POST['submit'])) {
             </div>
         </div>
         <div class="col-xl-8">
-            <!-- Added profile-edit here -->
             <div class="card mb-4 profile-edit">
                 <div class="card-header">Account Details</div>
                 <div class="card-body">
                     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" enctype="multipart/form-data">
-                        <?php echo csrf_input(); ?>
                         <div class="row gx-3 mb-3">
                             <div class="col-md-6">
                                 <label class="small mb-1" for="inputFirstName">First name</label>

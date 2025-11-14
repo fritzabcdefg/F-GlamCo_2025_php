@@ -20,41 +20,46 @@ print_r($_SESSION);
             </thead>
             <tbody>
                 <?php
-                if (isset($_SESSION["cart_products"])) //check session var
-                {
-                    $total = 0; //set initial total value
-                    $b = 0; //var for zebra stripe table 
+                if (isset($_SESSION["cart_products"])) {
+                    $total = 0; 
+                    $b = 0; 
                     foreach ($_SESSION["cart_products"] as $cart_itm) {
-                        //set variables to use in content below
-                        $product_name = $cart_itm["item_name"];
-                        $product_qty = $cart_itm["item_qty"];
+                        $product_name  = $cart_itm["item_name"];
+                        $product_qty   = $cart_itm["item_qty"];
                         $product_price = $cart_itm["item_price"];
-                        $product_code = $cart_itm["item_id"];
-                        $subtotal = ($product_price * $product_qty); //calculate Price x Qty
-                        $bg_color = ($b++ % 2 == 1) ? 'odd' : 'even'; //class for zebra stripe 
+                        $product_code  = $cart_itm["item_id"];
+                        $subtotal      = $product_price * $product_qty;
+                        $bg_color      = ($b++ % 2 == 1) ? 'odd' : 'even';
+
                         echo '<tr class="' . $bg_color . '">';
                         echo '<td><input type="text" size="2" maxlength="2" name="product_qty[' . $product_code . ']" value="' . $product_qty . '" /></td>';
-                        echo '<td>' . $product_name . '</td>';
-                        echo '<td>' . $product_price . '</td>';
-                        echo '<td>' . $subtotal . '</td>';
+                        echo '<td>' . htmlspecialchars($product_name) . '</td>';
+                        echo '<td>' . number_format($product_price, 2) . '</td>';
+                        echo '<td>' . number_format($subtotal, 2) . '</td>';
                         echo '<td><input type="checkbox" name="remove_code[]" value="' . $product_code . '" /></td>';
                         echo '</tr>';
-                        $total = ($total + $subtotal); //add subtotal to total var
+
+                        $total += $subtotal;
                     }
                 }
                 ?>
                 <tr>
-                    <td colspan="5"><span style="float:right;text-align: right;">Amount Payable : <?php echo sprintf("%01.2f", $total); ?></span></td>
+                    <td colspan="5" style="text-align:right;">
+                        Amount Payable : <?php echo sprintf("%01.2f", $total); ?>
+                    </td>
                 </tr>
                 <tr>
-                    <td colspan="5"><a href="index.php" class="button">Add More Items</a>
+                    <td colspan="5" style="text-align:right;">
+                        <a href="index.php" class="button">Add More Items</a>
                         <button type="submit">Update</button>
-                    <td colspan="5"><a href="checkout.php" class="button">checkout</a></td>
+                        <a href="checkout.php" class="button">Checkout</a>
+                    </td>
                 </tr>
             </tbody>
         </table>
     </form>
 </div>
+
 <?php
 include('../includes/footer.php');
 ?>
