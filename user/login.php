@@ -57,7 +57,7 @@ if (isset($_POST['submit'])) {
           $_SESSION['email']   = $email_db;
           $_SESSION['user_id'] = $user_id;
           $_SESSION['role']    = $role;
-          header("Location: ../user/profile.php");
+          header("Location: ../index.php");
           exit();
       }
     }

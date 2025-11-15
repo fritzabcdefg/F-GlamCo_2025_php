@@ -41,9 +41,16 @@ if (session_status() === PHP_SESSION_NONE) { session_start(); }
     <!-- Name -->
     <h6 class="text-white mb-3"><?php echo htmlspecialchars($displayName ?: 'Guest'); ?></h6>
 
-    <!-- Buttons -->
+    <!-- Buttons based on role -->
     <a href="/F&LGlamCo/user/profile.php" class="sidebar-btn">View Profile</a>
-    <a href="/F&LGlamCo/user/orders.php" class="sidebar-btn">My Orders</a>
+
+    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+      <a href="/F&LGlamCo/product/index.php" class="sidebar-btn">Items</a>
+      <a href="/F&LGlamCo/admin/users.php" class="sidebar-btn">Users</a>
+      <a href="/F&LGlamCo/admin/orders.php" class="sidebar-btn">Orders</a>
+    <?php else: ?>
+      <a href="/F&LGlamCo/user/orders.php" class="sidebar-btn">My Orders</a>
+    <?php endif; ?>
 
     <!-- Bottom section -->
     <div class="bottom mt-auto">

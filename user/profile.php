@@ -1,6 +1,7 @@
 <?php
 session_start();
 include("../includes/config.php");
+include("../includes/header.php");
 
 $user_id = $_SESSION['user_id'] ?? 0;
 $customer = null;
@@ -25,7 +26,7 @@ if ($user_id) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Register - F&L Glam Co</title>
+  <title>Profile - F&L Glam Co</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../includes/style/style.css">
 </head>
@@ -37,8 +38,14 @@ if ($user_id) {
             <div class="card profile-card mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Customer Profile</h5>
-                    <a href="profile_edit.php" class="btn btn-sm btn-primary">Edit</a>
+                    <div class="d-flex gap-2">
+                        <a href="profile_edit.php" class="btn btn-sm btn-primary">Edit</a>
+                        <a href="../index.php" class="btn btn-sm btn-danger">
+                            <i class="fas fa-times"></i> Close
+                        </a>
+                    </div>
                 </div>
+
                 <div class="card-body">
                     <?php if (!$user_id): ?>
                         <p>Please <a href="login.php">log in</a> to view your profile.</p>
