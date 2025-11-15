@@ -572,3 +572,92 @@ ul.shopping-cart .cart-itm .remove-itm a {
 .delete-icon i {
   color: #E53935;
 }
+
+/* Profile Picture Container */
+.profile-picture-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;   /* stack image + text vertically */
+  background-color: #FFF0F5; /* soft pink background */
+  border: 1px solid #F8BBD0;
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 350px;
+  margin: 40px auto;        /* center horizontally */
+  box-shadow: 0 4px 12px rgba(200, 100, 150, 0.15);
+  text-align: center;
+}
+
+/* Profile Image */
+.profile-picture-container img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #F8BBD0;
+  box-shadow: 0 2px 8px rgba(200, 100, 150, 0.2);
+  margin-bottom: 15px;
+}
+
+/* Caption text */
+.profile-picture-container h5 {
+  color: #880E4F;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.profile-picture-container .note {
+  font-size: 0.85rem;
+  color: #6A1B9A;
+  margin-bottom: 15px;
+}
+/* === Profile Details Container === */
+.profile-details-container {
+  background-color: #FFF0F5;       /* soft pink background */
+  border: 1px solid #F8BBD0;       /* light pink border */
+  border-radius: 12px;             /* rounded corners */
+  padding: 30px;
+  max-width: 600px;
+  margin: 40px auto;               /* center horizontally */
+  box-shadow: 0 4px 12px rgba(200, 100, 150, 0.15);
+}
+
+/* Title */
+.profile-details-container h3 {
+  text-align: center;
+  color: #C71585;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* Labels */
+.profile-details-container label {
+  color: #880E4F;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Inputs */
+.profile-details-container .form-control {
+  border: 1px solid #F8BBD0;
+  border-radius: 6px;
+  background-color: #FFF8FB;
+  color: #6A1B9A;
+}
+
+/* Button */
+.profile-details-container button {
+  background-color: #000 !important;
+  color: #fff !important;
+  border-radius: 6px;
+  font-weight: bold;
+  padding: 10px 20px;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.profile-details-container button:hover {
+  background-color: #F69b9A !important;
+  color: #880E4F !important;
+}

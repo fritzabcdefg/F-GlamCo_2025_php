@@ -1,6 +1,5 @@
 <?php
 session_start();
-include("../includes/header.php");
 include("../includes/config.php");
 
 $user_id = $_SESSION['user_id'] ?? 0;
@@ -20,6 +19,17 @@ if ($user_id) {
     }
 }
 ?>
+
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Register - F&L Glam Co</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../includes/style/style.css">
+</head>
+<body>
 
 <div class="container px-4 mt-4">
     <div class="row justify-content-center">
@@ -43,9 +53,9 @@ if ($user_id) {
                                             ? '../uploads/' . $customer['image'] 
                                             : 'http://bootdey.com/img/Content/avatar/avatar1.png';
                                         $displayName = trim(
-                                            (isset($customer['title']) ? $customer['title'] : '') . ' ' .
-                                            (isset($customer['fname']) ? $customer['fname'] : '') . ' ' .
-                                            (isset($customer['lname']) ? $customer['lname'] : '')
+                                            ($customer['title'] ?? '') . ' ' .
+                                            ($customer['fname'] ?? '') . ' ' .
+                                            ($customer['lname'] ?? '')
                                         );
                                     ?>
                                     <img src="<?php echo $img; ?>" alt="Profile Image" class="profile-image mb-3">
@@ -93,3 +103,5 @@ if ($user_id) {
 </div>
 
 <?php include("../includes/footer.php"); ?>
+</body>
+</html>
