@@ -19,34 +19,48 @@ if (session_status() === PHP_SESSION_NONE) { session_start(); }
 
 <!-- Sidebar -->
 <div id="mySidebar" class="sidebar">
-  <div class="sidebar-panel">
+  <div class="sidebar-panel text-center">
+
+    <!-- Close button -->
     <label for="sidebarToggle" class="closebtn"><i class="fas fa-times"></i> Close</label>
 
-    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
-      <a href="/F&LGlamCo/product/index.php" class="sidebar-btn">Items</a>
-      <a href="/F&LGlamCo/admin/users.php" class="sidebar-btn">Users</a>
-      <a href="/F&LGlamCo/admin/orders.php" class="sidebar-btn">Orders</a>
-    <?php else: ?>
-      <a href="/F&LGlamCo/user/profile.php" class="sidebar-btn">Profile</a>
-      <a href="/F&LGlamCo/user/orders.php" class="sidebar-btn">My Orders</a>
-    <?php endif; ?>
+    <?php
+      // Fetch customer info if available
+      $img = isset($customer['image']) && $customer['image'] !== '' 
+          ? '../uploads/' . $customer['image'] 
+          : 'http://bootdey.com/img/Content/avatar/avatar1.png';
 
-    <div class="bottom">
-      <p class="sidebar-email"><?= $_SESSION['email'] ?? '' ?></p>
+      $displayName = trim(($customer['fname'] ?? '') . ' ' . ($customer['lname'] ?? ''));
+    ?>
+
+    <!-- Profile picture -->
+    <img src="<?php echo $img; ?>" alt="Profile" 
+         class="rounded-circle mb-3" 
+         style="width:100px;height:100px;object-fit:cover;">
+
+    <!-- Name -->
+    <h6 class="text-white mb-3"><?php echo htmlspecialchars($displayName ?: 'Guest'); ?></h6>
+
+    <!-- Buttons -->
+    <a href="/F&LGlamCo/user/profile.php" class="sidebar-btn">View Profile</a>
+    <a href="/F&LGlamCo/user/orders.php" class="sidebar-btn">My Orders</a>
+
+    <!-- Bottom section -->
+    <div class="bottom mt-auto">
+      <p class="sidebar-email text-white mb-2">
+        <?php echo htmlspecialchars($_SESSION['email'] ?? ''); ?>
+      </p>
       <a href="/F&LGlamCo/user/logout.php" class="sidebar-btn logout">Logout</a>
     </div>
   </div>
 </div>
 
 
+<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark shadow-sm flex-column" style="background-color: #000;">
   <!-- Top row: Brand -->
   <div class="w-100 d-flex justify-content-between align-items-center py-2">
     <span class="navbar-brand text-white fw-bold fs-4 mx-auto">F & L GLAM CO.</span>
-    <?php if (isset($_SESSION['user_id'])): ?>
-      <!-- Hamburger icon only if logged in -->
-      <label for="sidebarToggle" class="openbtn me-3"><i class="fas fa-bars"></i></label>
-    <?php endif; ?>
   </div>
 
   <!-- Bottom row: Menus -->
@@ -69,16 +83,19 @@ if (session_status() === PHP_SESSION_NONE) { session_start(); }
       <li class="nav-item">
         <a class="nav-link text-pink" href="#"><i class="fas fa-shopping-bag"></i> MY BAG</a>
       </li>
+
+      <?php if (isset($_SESSION['user_id'])): ?>
+        <!-- Sidebar toggle beside the bag -->
+        <li class="nav-item">
+          <label for="sidebarToggle" class="nav-link text-pink" style="cursor:pointer;">
+            <i class="fas fa-bars"></i> MENU
+          </label>
+        </li>
+      <?php endif; ?>
+
       <?php if (!isset($_SESSION['user_id'])): ?>
         <li class="nav-item">
           <a class="nav-link text-pink" href="/F&LGlamCo/user/login.php"><i class="fas fa-user"></i> LOGIN</a>
-        </li>
-      <?php else: ?>
-        <li class="nav-item">
-          <span class="nav-link text-white"><?= $_SESSION['email'] ?? 'Welcome!' ?></span>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-pink" href="/F&LGlamCo/user/logout.php">Logout</a>
         </li>
       <?php endif; ?>
     </ul>
