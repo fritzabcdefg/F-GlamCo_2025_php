@@ -53,7 +53,7 @@ if (isset($_POST['submit'])) {
             $_SESSION['email']   = $userRow['email'];
             $_SESSION['role']    = $userRow['role'] ?? 'user';
         }
-        header("Location: profile.php");
+        header("Location: ../index.php");
         exit;
     } else {
         echo "Error: " . mysqli_error($conn);
