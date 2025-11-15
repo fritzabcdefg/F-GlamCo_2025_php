@@ -78,6 +78,66 @@ h1, h2, h3 {
   margin-right: 6px;
   font-size: 1.1em;
 }
+/* Sidebar base */
+/* Sidebar base */
+.sidebar {
+  height: 100%;
+  width: 0;                  /* hidden by default */
+  position: fixed;
+  top: 0;
+  right: 0;                  /* stick to the right side */
+  background-color: #111;    /* dark panel background */
+  overflow-x: hidden;
+  transition: width 0.3s ease;
+  padding-top: 60px;
+  z-index: 9999;
+}
+
+/* Sidebar links styled as panel buttons */
+.sidebar a {
+  padding: 12px 20px;
+  text-decoration: none;
+  font-size: 1.1rem;
+  color: #fff;
+  display: block;
+  margin: 8px 0;
+  border-radius: 6px;
+  background-color: #F69b9A;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.sidebar a:hover {
+  background-color: #fff;
+  color: #C71585;
+}
+
+/* Close button at the top */
+.closebtn {
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-bottom: 20px;
+  display: block;
+}
+
+/* Toggle open when checkbox is checked */
+#sidebarToggle:checked ~ .sidebar {
+  width: 250px; /* slide in from right */
+}
+
+/* Hamburger (3-line) button */
+.openbtn {
+  font-size: 1.5rem;   /* size of the icon */
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: #ffffff;      /* <-- white color */
+}
+.openbtn:hover {
+  color: #F69b9A;      /* optional hover color (pink) */
+}
+
 
 /* === Dropdown Menu === */
 .dropdown-menu {
