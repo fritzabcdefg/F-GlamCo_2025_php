@@ -44,7 +44,6 @@ if (isset($_POST['submit'])) {
       }
 
       if ($login_ok && $active) {
-          // If legacy SHA1 matched, upgrade to password_hash()
           if ($needs_rehash) {
               $newHash = password_hash($pass, PASSWORD_DEFAULT);
               $up = mysqli_prepare($conn, "UPDATE users SET password = ? WHERE id = ?");
