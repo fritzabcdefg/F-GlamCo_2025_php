@@ -65,6 +65,18 @@ if (isset($_POST['submit'])) {
 }
 ?>
 <div class="container">
+      <?php if (isset($_GET['error'])): ?>
+      <?php if ($_GET['error'] === 'unauthorized'): ?>
+        <div class="alert alert-danger text-center">
+          You must log in to access that page.
+        </div>
+      <?php elseif ($_GET['error'] === 'adminonly'): ?>
+        <div class="alert alert-warning text-center">
+          Admin access required to view that page.
+        </div>
+      <?php endif; ?>
+    <?php endif; ?>
+
   <div class="auth-container">
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
       <div class="mb-3">
