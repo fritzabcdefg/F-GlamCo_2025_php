@@ -38,42 +38,30 @@ if ($revQ) {
 }
 ?>
 
+<style>
+    .image-slideshow {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        padding: 10px 0;
+    }
+    .image-slideshow img {
+        max-height: 400px;
+        border: 1px solid #ddd;
+        background: #fff;
+        flex-shrink: 0;
+    }
+</style>
+
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-6">
             <?php if (count($images) > 0): ?>
-                <!-- Bootstrap Carousel -->
-                <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
-                    
-                    <!-- Indicators -->
-                    <div class="carousel-indicators">
-                        <?php foreach ($images as $index => $img): ?>
-                            <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="<?php echo $index; ?>"
-                                    class="<?php echo $index === 0 ? 'active' : ''; ?>"
-                                    aria-current="<?php echo $index === 0 ? 'true' : 'false'; ?>"
-                                    aria-label="Slide <?php echo $index+1; ?>"></button>
-                        <?php endforeach; ?>
-                    </div>
-
-                    <!-- Slides -->
-                    <div class="carousel-inner">
-                        <?php foreach ($images as $index => $img): ?>
-                            <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
-                                <img src="<?php echo htmlspecialchars($img); ?>" class="d-block w-100" style="max-height:400px;object-fit:contain;">
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-
-                    <!-- Controls -->
-                    <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                    </button>
-
+                <!-- Simple Slideshow (scrollable images) -->
+                <div class="image-slideshow">
+                    <?php foreach ($images as $img): ?>
+                        <img src="<?php echo htmlspecialchars($img); ?>" alt="Product Image">
+                    <?php endforeach; ?>
                 </div>
             <?php else: ?>
                 <img src="../assets/no-image.png" class="d-block w-100" style="max-height:400px;object-fit:contain;">
