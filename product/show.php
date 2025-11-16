@@ -74,7 +74,6 @@ if ($revQ) {
             <p>Cost Price: ₱<?php echo number_format($item['cost_price'], 2); ?></p>
             <p>In stock: <?php echo htmlspecialchars($item['quantity']); ?></p>
 
-           <!-- Add to cart form -->
             <!-- Add to cart form -->
             <form method="POST" action="../cart/cart_update.php">
                 <input type="hidden" name="type" value="add">
@@ -88,57 +87,62 @@ if ($revQ) {
 
     <hr />
 
-    <!-- Reviews Section -->
-    <div class="reviews">
-        <h3>Reviews (<?php echo count($reviews); ?>)</h3>
-        <?php if (count($reviews) == 0): ?>
-            <p>No reviews yet. Be the first to write one!</p>
-        <?php else: ?>
-            <?php foreach ($reviews as $rev): ?>
-                <div style="border-bottom:1px solid #eee;padding:8px 0;">
-                    <strong><?php echo htmlspecialchars($rev['user_name'] ?? 'Anonymous'); ?></strong>
-                    <?php if (!empty($rev['rating'])): ?> - Rating: <?php echo intval($rev['rating']); ?>/5<?php endif; ?>
-                    <div style="margin-top:6px;"><?php echo nl2br(htmlspecialchars($rev['comment'])); ?></div>
-                    <div style="font-size:0.8em;color:#777;"><?php echo $rev['created_at']; ?>
-                    <?php if (isset($_SESSION['user_id']) && $rev['user_id'] == $_SESSION['user_id']): ?>
-                        <a href="reviews/edit.php?id=<?php echo $rev['id']; ?>" style="margin-left:10px;">Edit</a>
-                    <?php endif; ?>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        <?php endif; ?>
+<!-- Reviews Section -->
+<div class="reviews mt-4">
+    <?php
+    $ratingSum = 0;
+    $ratingCount = 0;
+    foreach ($reviews as $rev) {
+        if (!empty($rev['rating'])) {
+            $ratingSum += intval($rev['rating']);
+            $ratingCount++;
+        }
+    }
+    $averageRating = $ratingCount > 0 ? round($ratingSum / $ratingCount, 2) : 0;
+    ?>
 
-        <h4>Write a review</h4>
-<form method="POST" action="reviews/store.php">
-    <input type="hidden" name="item_id" value="<?php echo $item['item_id']; ?>">
-    
-    <div class="mb-3">
-        <label>Your name</label>
-        <input type="text" name="user_name" class="form-control" 
-               value="<?php echo isset($_SESSION['user_name']) ? htmlspecialchars($_SESSION['user_name']) : ''; ?>">
-    </div>
-    
-    <div class="mb-3">
-        <label>Rating (1-5)</label>
-        <select name="rating" class="form-control">
-            <option value="">--</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-        </select>
-    </div>
-    
-    <div class="mb-3">
-        <label>Comment</label>
-        <textarea name="comment" class="form-control" rows="4"></textarea>
-    </div>
-    
-    <button class="btn btn-primary">Submit review</button>
-</form>
+    <!-- Ratings -->
+    <h5 class="text-pink fw-bold">
+        RATINGS - <span class="badge bg-pink text-white"><?php echo $averageRating; ?>/5</span>
+    </h5>
+
+    <!-- Reviews -->
+    <h5 class="text-pink fw-bold">
+        REVIEWS <span class="badge bg-pink text-white">(<?php echo count($reviews); ?>)</span>
+    </h5>
+
+    <?php if (count($reviews) === 0): ?>
+        <p class="text-muted">No reviews yet</p>
+    <?php else: ?>
+        <?php foreach ($reviews as $rev): ?>
+            <div class="p-3 mb-2 border rounded" style="background-color:#ffe6f0;">
+                <strong class="text-pink">
+                    <?php echo htmlspecialchars($rev['user_name'] ?? 'Anonymous'); ?>
+                </strong>
+                <?php if (!empty($rev['rating'])): ?>
+                    <span class="badge bg-pink text-white ms-2">Rating: <?php echo intval($rev['rating']); ?>/5</span>
+                <?php endif; ?>
+                <div class="mt-2 text-dark">
+                    <?php echo nl2br(htmlspecialchars($rev['comment'])); ?>
+                </div>
+                <div class="mt-1 text-muted" style="font-size:0.85em;">
+                    <?php echo $rev['created_at']; ?>
+                    <?php if (isset($_SESSION['user_id']) && $rev['user_id'] == $_SESSION['user_id']): ?>
+                        <a href="reviews/edit.php?id=<?php echo $rev['id']; ?>" class="ms-2 text-pink">Edit</a>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
 </div>
-</div>
+
+<style>
+    .text-pink { color: #e83e8c; } /* Bootstrap pink */
+    .bg-pink { background-color: #e83e8c !important; }
+</style>
+
+
+
 
 <?php include('../includes/footer.php'); ?>
 

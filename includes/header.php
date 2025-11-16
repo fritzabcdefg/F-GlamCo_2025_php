@@ -48,6 +48,7 @@ if (session_status() === PHP_SESSION_NONE) { session_start(); }
       <a href="/F&LGlamCo/product/index.php" class="sidebar-btn">Items</a>
       <a href="/F&LGlamCo/admin/users.php" class="sidebar-btn">Users</a>
       <a href="/F&LGlamCo/admin/orders.php" class="sidebar-btn">Orders</a>
+      <a href="/F&LGlamCo/admin/reviews.php" class="sidebar-btn">Reviews</a>
     <?php else: ?>
       <a href="/F&LGlamCo/user/orders/orders.php" class="sidebar-btn">My Orders</a>
     <?php endif; ?>
