@@ -45,56 +45,35 @@ if ($catRes) {
                 <?php endforeach; ?>
             </select>
 
-            <!-- Cost Price -->
-            <label for="cost">Cost Price</label>
-            <input type="text" id="cost" name="cost_price" class="form-control"
-                   placeholder="Enter item cost price"
-                   value="<?php echo isset($_SESSION['cost']) ? $_SESSION['cost'] : ''; ?>" />
-            <small class="error">
-                <?php
-                if (isset($_SESSION['costError'])) {
-                    echo $_SESSION['costError'];
-                    unset($_SESSION['costError']);
-                }
-                ?>
-            </small>
+           <!-- Cost Price -->
+<label for="cost">Cost Price</label>
+<input type="text" id="cost" name="cost_price" class="form-control"
+       placeholder="Enter item cost price"
+       value="<?php echo isset($_SESSION['cost']) ? $_SESSION['cost'] : ''; ?>" />
 
-            <!-- Selling Price -->
-            <label for="sell">Selling Price</label>
-            <input type="text" id="sell" name="sell_price" class="form-control"
-                   placeholder="Enter selling price"
-                   value="<?php echo isset($_SESSION['sell']) ? $_SESSION['sell'] : ''; ?>" />
-            <small class="error">
-                <?php
-                if (isset($_SESSION['sellError'])) {
-                    echo $_SESSION['sellError'];
-                    unset($_SESSION['sellError']);
-                }
-                ?>
-            </small>
+<!-- Selling Price -->
+<label for="sell">Selling Price</label>
+<input type="text" id="sell" name="sell_price" class="form-control"
+       placeholder="Enter selling price"
+       value="<?php echo isset($_SESSION['sell']) ? $_SESSION['sell'] : ''; ?>" />
 
-            <!-- Quantity -->
-            <label for="qty">Quantity</label>
-            <input type="number" id="qty" name="quantity" class="form-control"
-                   placeholder="Enter quantity"
-                   value="<?php echo isset($_SESSION['qty']) ? $_SESSION['qty'] : ''; ?>" />
+<!-- Supplier Name -->
+<label for="supplier">Supplier Name</label>
+<input type="text" id="supplier" name="supplier_name" class="form-control"
+       placeholder="Enter supplier name"
+       value="<?php echo isset($_SESSION['supplier_name']) ? $_SESSION['supplier_name'] : ''; ?>" />
+
+<!-- Quantity -->
+<label for="qty">Quantity</label>
+<input type="number" id="qty" name="quantity" class="form-control"
+       placeholder="Enter quantity"
+       value="<?php echo isset($_SESSION['qty']) ? $_SESSION['qty'] : ''; ?>" />
+
 
             <!-- Item Images -->
             <label for="img_paths">Item Images</label>
             <input class="form-control" type="file" name="img_paths[]" multiple accept="image/*" /><br />
-            <small class="form-text text-muted">You can select multiple images. The first image will be used as the main thumbnail.</small>
-
-            <!-- Single Image Upload -->
-            <label for="img_path">Item Image</label>
-            <input type="file" name="img_path" class="form-control" />
-            <small class="error">
-                <?php
-                if (isset($_SESSION['imageError'])) {
-                    echo $_SESSION['imageError'];
-                    unset($_SESSION['imageError']);
-                }
-                ?>
-            </small>
+    
         </div>
 
         <!-- Buttons -->

@@ -6,9 +6,16 @@ include('../includes/config.php');
 $keyword = isset($_GET['search']) ? strtolower(trim($_GET['search'])) : '';
 
 if ($keyword) {
-    $sql = "SELECT * FROM items LEFT JOIN stocks USING (item_id) WHERE description LIKE '%{$keyword}%'";
+    // Search by description or supplier name
+    $sql = "SELECT i.*, s.quantity 
+            FROM items i 
+            LEFT JOIN stocks s USING (item_id) 
+            WHERE i.description LIKE '%{$keyword}%' 
+               OR i.supplier_name LIKE '%{$keyword}%'";
 } else {
-    $sql = "SELECT * FROM items LEFT JOIN stocks USING (item_id)";
+    $sql = "SELECT i.*, s.quantity 
+            FROM items i 
+            LEFT JOIN stocks s USING (item_id)";
 }
 $result = mysqli_query($conn, $sql);
 $itemCount = mysqli_num_rows($result);
@@ -31,6 +38,7 @@ $itemCount = mysqli_num_rows($result);
         <th>Image</th>
         <th>ID</th>
         <th>Name</th>
+        <th>Supplier</th> <!-- ✅ Added Supplier column -->
         <th>Selling Price</th>
         <th>Cost Price</th>
         <th>Quantity</th>
@@ -40,9 +48,13 @@ $itemCount = mysqli_num_rows($result);
     <tbody>
       <?php while ($row = mysqli_fetch_assoc($result)): ?>
         <tr>
-          <td><img src="<?= $row['img_path'] ?>" class="item-thumb" alt="Product Image" /></td>
+          <td>
+            <img src="<?= htmlspecialchars($row['img_path']) ?>" 
+                 class="item-thumb" alt="Product Image" />
+          </td>
           <td><?= $row['item_id'] ?></td>
           <td><?= htmlspecialchars($row['name']) ?></td>
+          <td><?= htmlspecialchars($row['supplier_name']) ?></td> <!-- ✅ Display supplier -->
           <td>₱<?= number_format($row['sell_price'], 2) ?></td>
           <td>₱<?= number_format($row['cost_price'], 2) ?></td>
           <td><?= $row['quantity'] ?></td>
