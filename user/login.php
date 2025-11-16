@@ -95,11 +95,11 @@ if (isset($_POST['submit'])) {
   <div class="auth-container">
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
       <div class="mb-3">
-        <label for="form2Example1" class="form-label">Email address</label>
+        <label for="form2Example1" class="loginform-label ">Email address</label>
         <input type="email" id="form2Example1" class="form-control" name="email" required />
       </div>
       <div class="mb-3">
-        <label for="form2Example2" class="form-label">Password</label>
+        <label for="form2Example2" class="loginform-label ">Password</label>
         <input type="password" id="form2Example2" class="form-control" name="password" required />
       </div>
       <button type="submit" class="btn btn-primary w-100 mb-3" name="submit">Sign in</button>
