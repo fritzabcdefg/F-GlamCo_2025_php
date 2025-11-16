@@ -43,6 +43,7 @@ $result = mysqli_stmt_get_result($stmt);
         border-collapse: collapse;
         background: #fff;
         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        color:#FFFFFF;
     }
     .orders-table th, .orders-table td {
         padding: 12px;

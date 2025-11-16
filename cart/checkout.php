@@ -18,7 +18,7 @@ $shipping = 80.00; // flat shipping fee
     body {
         margin: 0;
         padding: 0;
-        background: #f9f9f9;
+        background: #000000ff;
     }
     .checkout-container {
         width: 100%;
@@ -38,8 +38,8 @@ $shipping = 80.00; // flat shipping fee
         border-bottom: 1px solid #ddd;
     }
     .checkout-table th {
-        background: #007bff;
-        color: #fff;
+        background: #F8BBD0;
+        color: #000000ff;
     }
     .checkout-actions {
         text-align: right;
@@ -49,8 +49,8 @@ $shipping = 80.00; // flat shipping fee
         margin-left: 10px;
         padding: 8px 16px;
         border: none;
-        background: #007bff;
-        color: #fff;
+        background: #F8BBD0;
+        color: #000000ff;
         text-decoration: none;
         border-radius: 4px;
         cursor: pointer;
@@ -64,7 +64,7 @@ $shipping = 80.00; // flat shipping fee
 </style>
 
 <div class="checkout-container">
-    <h1 align="center">✅ Checkout</h1>
+    <h1 align="center">Checkout</h1>
     <form method="POST" action="process_checkout.php">
         
         <!-- Items Table -->
@@ -110,8 +110,8 @@ $shipping = 80.00; // flat shipping fee
         </table>
 
         <div class="checkout-actions">
-            <a href="view_cart.php" class="button">🔄 Back to Cart</a>
-            <button type="submit" class="confirm">✅ Confirm Checkout</button>
+            <a href="view_cart.php" class="button">Back to Cart</a>
+            <button type="submit" class="confirm">Confirm Checkout</button>
         </div>
     </form>
 </div>
