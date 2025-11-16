@@ -4,22 +4,28 @@ include('../includes/header.php');
 include('../includes/config.php');
 
 // 🛒 Add item to cart
-if (isset($_POST["type"]) && $_POST["type"] === 'add' && $_POST["item_qty"] > 0) {
+if (isset($_POST["type"]) && $_POST["type"] === 'add' && isset($_POST["item_qty"]) && $_POST["item_qty"] > 0) {
+    $new_product = [];
     foreach ($_POST as $key => $value) {
         $new_product[$key] = $value;
     }
     unset($new_product['type']);
 
-    $sql = "SELECT i.item_id AS itemId, name, img_path, sell_price, s.quantity 
-            FROM items i 
-            INNER JOIN stocks s USING (item_id) 
-            WHERE i.item_id = {$new_product['item_id']}";
+    // Fetch product details (with first image from product_images)
+    $sql = "SELECT i.item_id AS itemId, i.name, i.sell_price, s.quantity,
+                   (SELECT filename FROM product_images WHERE item_id = i.item_id ORDER BY created_at ASC LIMIT 1) AS main_image
+            FROM items i
+            INNER JOIN stocks s USING (item_id)
+            WHERE i.item_id = {$new_product['item_id']} LIMIT 1";
     $result = mysqli_query($conn, $sql);
     $row = mysqli_fetch_assoc($result);
 
-    $new_product["item_name"] = $row['name'];
-    $new_product["item_price"] = $row['sell_price'];
-    $new_product["item_stock"] = $row['quantity']; // ✅ Store stock for validation
+    if ($row) {
+        $new_product["item_name"]  = $row['name'];
+        $new_product["item_price"] = $row['sell_price'];
+        $new_product["item_stock"] = $row['quantity']; // ✅ Store stock for validation
+        $new_product["item_image"] = $row['main_image']; // ✅ Store image for cart display
+    }
 
     // Replace existing item if already in cart
     if (isset($_SESSION["cart_products"][$new_product['item_id']])) {
@@ -49,5 +55,6 @@ if (isset($_POST["product_qty"]) || isset($_POST["remove_code"])) {
     }
 }
 
-header('Location: ../index.php');
+// Redirect back to cart
+header('Location: ../cart/view_cart.php');
 exit;

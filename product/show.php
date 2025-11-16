@@ -74,13 +74,15 @@ if ($revQ) {
             <p>Cost Price: ₱<?php echo number_format($item['cost_price'], 2); ?></p>
             <p>In stock: <?php echo htmlspecialchars($item['quantity']); ?></p>
 
+           <!-- Add to cart form -->
             <!-- Add to cart form -->
             <form method="POST" action="../cart/cart_update.php">
-                <?php echo csrf_input(); ?>
+                <input type="hidden" name="type" value="add">
                 <input type="hidden" name="item_id" value="<?php echo $item['item_id']; ?>">
                 <input type="number" name="item_qty" value="1" min="1" max="<?php echo (int)$item['quantity']; ?>">
-                <button class="btn btn-primary">Add to cart</button>
+                <button class="btn btn-primary">🛒 Add to Bag</button>
             </form>
+
         </div>
     </div>
 
@@ -107,31 +109,36 @@ if ($revQ) {
         <?php endif; ?>
 
         <h4>Write a review</h4>
-        <form method="POST" action="reviews/store.php">
-            <?php echo csrf_input(); ?>
-            <input type="hidden" name="item_id" value="<?php echo $item['item_id']; ?>">
-            <div class="mb-3">
-                <label>Your name</label>
-                <input type="text" name="user_name" class="form-control" value="<?php echo isset($_SESSION['user_name']) ? htmlspecialchars($_SESSION['user_name']) : ''; ?>">
-            </div>
-            <div class="mb-3">
-                <label>Rating (1-5)</label>
-                <select name="rating" class="form-control">
-                    <option value="">--</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label>Comment</label>
-                <textarea name="comment" class="form-control" rows="4"></textarea>
-            </div>
-            <button class="btn btn-primary">Submit review</button>
-        </form>
+<form method="POST" action="reviews/store.php">
+    <input type="hidden" name="item_id" value="<?php echo $item['item_id']; ?>">
+    
+    <div class="mb-3">
+        <label>Your name</label>
+        <input type="text" name="user_name" class="form-control" 
+               value="<?php echo isset($_SESSION['user_name']) ? htmlspecialchars($_SESSION['user_name']) : ''; ?>">
     </div>
+    
+    <div class="mb-3">
+        <label>Rating (1-5)</label>
+        <select name="rating" class="form-control">
+            <option value="">--</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+    </div>
+    
+    <div class="mb-3">
+        <label>Comment</label>
+        <textarea name="comment" class="form-control" rows="4"></textarea>
+    </div>
+    
+    <button class="btn btn-primary">Submit review</button>
+</form>
+</div>
 </div>
 
 <?php include('../includes/footer.php'); ?>
+
