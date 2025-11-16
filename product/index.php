@@ -25,8 +25,8 @@ $itemCount = mysqli_num_rows($result);
 
 <div class="container mt-4">
   <div class="action-bar">
-    <a href="create.php" class="action-button">➕ Add Item</a>
-    <a href="/F&LGlamCo/category/index.php" class="action-button">📁 Add Category</a>
+    <a href="create.php" class="action-button"> Add Item</a>
+    <a href="/F&LGlamCo/category/index.php" class="action-button"> Add Category</a>
   </div>
 
   <div class="alert">
