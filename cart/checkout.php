@@ -66,7 +66,9 @@ $shipping = 80.00; // flat shipping fee
 <div class="checkout-container">
     <h1 align="center">✅ Checkout</h1>
     <form method="POST" action="process_checkout.php">
-        <table class="checkout-table">
+        
+        <!-- Items Table -->
+        <table class="checkout-table mb-4">
             <thead>
                 <tr>
                     <th>Quantity</th>
@@ -90,13 +92,19 @@ $shipping = 80.00; // flat shipping fee
                     <td>₱<?php echo number_format($subtotal, 2); ?></td>
                 </tr>
                 <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <!-- Summary Table -->
+        <table class="checkout-table">
+            <tbody>
                 <tr>
-                    <td colspan="3" style="text-align:right;font-weight:bold;">Shipping Fee:</td>
-                    <td>₱<?php echo number_format($shipping, 2); ?></td>
+                    <td style="text-align:right;font-weight:bold;">Shipping Fee:</td>
+                    <td style="text-align:center;">₱<?php echo number_format($shipping, 2); ?></td>
                 </tr>
                 <tr>
-                    <td colspan="3" style="text-align:right;font-weight:bold;">Total Amount:</td>
-                    <td>₱<?php echo number_format($total + $shipping, 2); ?></td>
+                    <td style="text-align:right;font-weight:bold;">Total Amount:</td>
+                    <td style="text-align:center;"><strong>₱<?php echo number_format($total + $shipping, 2); ?></strong></td>
                 </tr>
             </tbody>
         </table>
@@ -107,5 +115,6 @@ $shipping = 80.00; // flat shipping fee
         </div>
     </form>
 </div>
+
 
 <?php include('../includes/footer.php'); ?>

@@ -55,6 +55,5 @@ if (isset($_POST["product_qty"]) || isset($_POST["remove_code"])) {
     }
 }
 
-// Redirect back to cart
-header('Location: ../cart/view_cart.php');
+header('Location: ../index.php');
 exit;

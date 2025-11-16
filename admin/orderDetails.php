@@ -1,57 +1,96 @@
 <?php
-// CREATE VIEW orderdetails AS SELECT o.orderinfo_id, c.lname, c.fname, c.addressline, c.town, c.zipcode, c.phone,  i.sell_price, ol.quantity, i.description, o.status FROM customer c INNER JOIN orderinfo o using(customer_id) INNER JOIN orderline ol USING (orderinfo_id) INNER JOIN item i USING(item_id);
+// CREATE VIEW orderdetails AS 
+// SELECT o.orderinfo_id, c.lname, c.fname, c.addressline, c.town, c.zipcode, c.phone,  
+// i.sell_price, ol.quantity, i.description, o.status 
+// FROM customer c 
+// INNER JOIN orderinfo o USING(customer_id) 
+// INNER JOIN orderline ol USING(orderinfo_id) 
+// INNER JOIN item i USING(item_id);
 
 session_start();
-include('../includes/auth_admin.php');
-include('../includes/header.php');
-include('../includes/config.php');
+require_once __DIR__ . '/../includes/auth_admin.php';
+require_once __DIR__ . '/../includes/config.php';
+include __DIR__ . '/../includes/header.php';
 
-$orderId = $_GET['id'];
+$orderId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $_SESSION['orderId'] = $orderId;
 
-$sql = "SELECT lname, fname, addressline, town, zipcode, phone, orderinfo_id, status FROM `orderdetails` WHERE orderinfo_id = $orderId LIMIT 1";
+// Fetch customer + order summary
+$sql = "SELECT lname, fname, addressline, town, zipcode, phone, orderinfo_id, status 
+        FROM orderdetails 
+        WHERE orderinfo_id = $orderId LIMIT 1";
 $result = mysqli_query($conn, $sql);
 $customer = mysqli_fetch_assoc($result);
 
-$sql = "SELECT name, quantity, sell_price FROM `orderdetails` WHERE orderinfo_id = $orderId";
+// Fetch order items
+$sql = "SELECT name, quantity, sell_price 
+        FROM orderdetails 
+        WHERE orderinfo_id = $orderId";
 $items = mysqli_query($conn, $sql);
 ?>
-<h2><?= $customer['orderinfo_id'] ?> </h2>
-<h3><?php echo "{$customer['lname']} {$customer['fname']}" ?></h3>
-<p><?php echo "{$customer['addressline']} {$customer['town']} {$customer['zipcode']} {$customer['phone']}" ?></p>
-<table class="table table-striped table-bordered">
-    <thead>
-        <th>item name</th>
-        <th>quantity</th>
-        <th>price</th>
-        <th>total</th>
-    </thead>
 
-    <?php
-    $grandTotal = 0;
-    while ($row = mysqli_fetch_assoc($items)) {
-        $total = $row['sell_price'] * $row['quantity'];
-        $grandTotal += $total;
-        echo "<tr>";
-        echo "<td>{$row['name']}</td>";
-        echo "<td>{$row['quantity']}</td>";
-        echo "<td>{$row['sell_price']}</td>";
-        echo "<td>{$total}</td>";
-        echo "</tr>";
-    }
-    ?>
-</table>
-<h4><?= $grandTotal ?></h4>
-<form action="updateOrder.php" method="POST">
-    <select class="form-select form-control" aria-label="Default select example" name="status">
-        <option selected>Open this select menu</option>
-        <option value="Processing">processing</option>
-        <option value="Delivered">delivered</option>
-        <option value="Canceled">canceled</option>
-    </select>
-    <button type="submit" class="btn btn-primary">Update order</button>
-</form>
+<div class="container mt-4">
+    <h2>Order #<?= htmlspecialchars($customer['orderinfo_id']) ?></h2>
 
-<?php
-include('../includes/footer.php');
-?>
+    <!-- Customer Info -->
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title"><?= htmlspecialchars($customer['lname'] . ' ' . $customer['fname']) ?></h5>
+            <p class="card-text">
+                <?= htmlspecialchars($customer['addressline']) ?>, 
+                <?= htmlspecialchars($customer['town']) ?>, 
+                <?= htmlspecialchars($customer['zipcode']) ?><br>
+                Phone: <?= htmlspecialchars($customer['phone']) ?><br>
+                Status: <strong><?= htmlspecialchars($customer['status']) ?></strong>
+            </p>
+        </div>
+    </div>
+
+    <!-- Items Table -->
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Item Name</th>
+                <th>Quantity</th>
+                <th>Price (₱)</th>
+                <th>Subtotal (₱)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php 
+            $grandTotal = 0;
+            while ($row = mysqli_fetch_assoc($items)): 
+                $total = $row['sell_price'] * $row['quantity'];
+                $grandTotal += $total;
+            ?>
+            <tr>
+                <td><?= htmlspecialchars($row['name']) ?></td>
+                <td><?= (int)$row['quantity'] ?></td>
+                <td><?= number_format($row['sell_price'], 2) ?></td>
+                <td><?= number_format($total, 2) ?></td>
+            </tr>
+            <?php endwhile; ?>
+        </tbody>
+    </table>
+
+    <!-- Grand Total -->
+    <h4 class="mt-3">Grand Total: ₱<?= number_format($grandTotal, 2) ?></h4>
+
+    <!-- Update Status Form -->
+        <form action="updateOrder.php" method="POST" class="mt-3">
+            <input type="hidden" name="order_id" value="<?= (int)$orderId ?>">
+            <div class="mb-3">
+                <label for="status" class="form-label">Update Status</label>
+                <select class="form-select" id="status" name="status" required>
+                    <option value="">Select status...</option>
+                    <option value="Processing" <?= $customer['status'] === 'Processing' ? 'selected' : '' ?>>Processing</option>
+                    <option value="Shipped" <?= $customer['status'] === 'Shipped' ? 'selected' : '' ?>>Shipped</option>
+                    <option value="Delivered" <?= $customer['status'] === 'Delivered' ? 'selected' : '' ?>>Delivered</option>
+                    <option value="Cancelled" <?= $customer['status'] === 'Cancelled' ? 'selected' : '' ?>>Cancelled</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Update Order</button>
+        </form>
+</div>
+
+<?php include __DIR__ . '/../includes/footer.php'; ?>

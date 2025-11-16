@@ -1,47 +1,56 @@
 <?php
 session_start();
-include('../includes/auth_admin.php');
-include('../includes/header.php');
-include('../includes/config.php');
+require_once __DIR__ . '/../includes/auth_admin.php';
+require_once __DIR__ . '/../includes/config.php';
+include __DIR__ . '/../includes/header.php';
 
-// CREATE VIEW salesPerOrder AS 
-// SELECT o.orderinfo_id, SUM(i.sell_price * ol.quantity), o.status 
-// FROM orderinfo o 
-// INNER JOIN orderline ol USING (orderinfo_id) 
-// INNER JOIN items i USING (item_id)
-// GROUP BY o.orderinfo_id;
-
-$sql = "SELECT o.orderinfo_id as orderId, total 
-        FROM orderinfo o 
-        INNER JOIN orderline ol USING (orderinfo_id) 
-        INNER JOIN items i USING (item_id)
-        GROUP BY o.orderinfo_id";
-
-// order details
-$sql = "SELECT * FROM `salesperorder` ORDER BY total DESC";
+// Query orders from salesPerOrder view
+$sql = "SELECT orderinfo_id, total, status FROM salesperorder ORDER BY total DESC";
 $result = mysqli_query($conn, $sql);
-$itemCount = mysqli_num_rows($result);
+$itemCount = $result ? mysqli_num_rows($result) : 0;
 ?>
-<h2>number of items <?= $itemCount ?> </h2>
-<table class="table table-striped table-bordered">
-    <?php
-    while ($row = mysqli_fetch_assoc($result)) {
-        echo "<tr>";
-        echo "<td>{$row['orderinfo_id']}</td>";
-        echo "<td>{$row['total']}</td>";
 
-        if ($row['status'] === 'Delivered') {
-            echo "<td style='color: green'>{$row['status']}</td>";
-            echo "<td><i class='fa-regular fa-eye' style='color: gray'></i></td>";
-            echo "</tr>";
-        } else {
-            echo "<td style='color: red'>{$row['status']}</td>";
-            echo "<td><a href='orderDetails.php?id={$row['orderinfo_id']}'><i class='fa-regular fa-eye' style='color: blue'></i></a></td>";
-            echo "</tr>";
-        }
-    }
-    ?>
-</table>
-<?php
-include('../includes/footer.php');
-?>
+<div class="container mt-4">
+    <h2>Orders</h2>
+    <p>Total Orders: <?= $itemCount ?></p>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Order #</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if ($itemCount > 0): ?>
+                <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                    <tr>
+                        <td><?php echo (int)$row['orderinfo_id']; ?></td>
+                        <td>₱<?php echo number_format($row['total'], 2); ?></td>
+                        <td>
+                            <?php if ($row['status'] === 'Delivered'): ?>
+                                <span class="badge bg-success">Delivered</span>
+                            <?php elseif ($row['status'] === 'Cancelled'): ?>
+                                <span class="badge bg-danger">Cancelled</span>
+                            <?php else: ?>
+                                <span class="badge bg-warning text-dark"><?php echo htmlspecialchars($row['status']); ?></span>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <a href="orderDetails.php?id=<?php echo (int)$row['orderinfo_id']; ?>" 
+                               class="btn btn-sm btn-primary">
+                                <i class="fa-regular fa-eye"></i> View
+                            </a>
+                        </td>
+                    </tr>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <tr><td colspan="4">No orders found.</td></tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+</div>
+
+<?php include __DIR__ . '/../includes/footer.php'; ?>

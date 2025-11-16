@@ -215,5 +215,6 @@ INSERT INTO `users` (`id`, `email`, `password`, `role`, `active`, `created_at`, 
 (1, 'pretse@gmail.com', '$2y$10$HcRYzmlnoqB9L7t0.jgU5Ot8t.TYk0zttrlmAAZ6XktTz5DA5l8Re', 'customer', 1, NULL, NULL),
 (2, 'fritziecadao@gmail.com', 'd033e22ae348aeb5660fc2140aec35850c4da997', 'admin', 1, NULL, NULL);
 
-
+INSERT INTO `customers` (`customer_id`, `title`, `lname`, `fname`, `addressline`, `town`, `zipcode`, `phone`, `user_id`, `image`) VALUES
+(1, '', 'Cadao', 'Fritzie', '205 ML QUEZON ST NEW LOWER BICUTN TAGUIG CITY', 'TAGUIG', '1632', '09664259993', 1, 'Snaptik.app_74656941751832609616 (2).jpg');
 COMMIT;

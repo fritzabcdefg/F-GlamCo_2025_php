@@ -29,7 +29,7 @@ try {
     mysqli_stmt_close($selCust);
 
     // Insert into orderinfo
-    $shipping = 10.00;
+    $shipping = 80.00;
     $stmt1 = mysqli_prepare($conn, 'INSERT INTO orderinfo(customer_id, date_placed, date_shipped, shipping) VALUES (?, NOW(), NOW(), ?)');
     mysqli_stmt_bind_param($stmt1, 'id', $customer_id, $shipping);
     mysqli_stmt_execute($stmt1);
@@ -39,34 +39,44 @@ try {
     $stmt2 = mysqli_prepare($conn, 'INSERT INTO orderline(orderinfo_id, item_id, quantity) VALUES (?, ?, ?)');
     $stmt3 = mysqli_prepare($conn, 'UPDATE stocks SET quantity = quantity - ? WHERE item_id = ?');
 
-    // ✅ Build email BEFORE clearing cart
-    $total = 0;
+    // Insert order lines and update stock
+    foreach ($_SESSION["cart_products"] as $cart_itm) {
+        $product_code = $cart_itm["item_id"];
+        $product_qty  = $cart_itm["item_qty"];
+
+        mysqli_stmt_bind_param($stmt2, 'iii', $orderinfo_id, $product_code, $product_qty);
+        mysqli_stmt_execute($stmt2);
+
+        mysqli_stmt_bind_param($stmt3, 'ii', $product_qty, $product_code);
+        mysqli_stmt_execute($stmt3);
+    }
+
+    // ✅ Commit transaction
+    mysqli_commit($conn);
+
+    // ✅ Build email using orderdetails view
     $html_body = "<h2>Order Confirmation - F&L Glam Co</h2>";
     $html_body .= "<p>Thank you for your order! Here are your items:</p>";
     $html_body .= "<table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%;'>";
     $html_body .= "<tr><th>Product</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr>";
 
-    foreach ($_SESSION["cart_products"] as $cart_itm) {
-        $product_code = $cart_itm["item_id"];
-        $product_qty  = $cart_itm["item_qty"];
-        $product_name = $cart_itm["item_name"];
-        $product_price = $cart_itm["item_price"];
-        $subtotal = $product_price * $product_qty;
+    $total = 0;
+    $sql = "SELECT name, quantity, sell_price 
+            FROM orderdetails 
+            WHERE orderinfo_id = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, 'i', $orderinfo_id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        $subtotal = $row['sell_price'] * $row['quantity'];
         $total += $subtotal;
 
-        // Insert into orderline
-        mysqli_stmt_bind_param($stmt2, 'iii', $orderinfo_id, $product_code, $product_qty);
-        mysqli_stmt_execute($stmt2);
-
-        // Update stock
-        mysqli_stmt_bind_param($stmt3, 'ii', $product_qty, $product_code);
-        mysqli_stmt_execute($stmt3);
-
-        // Add to email body
         $html_body .= "<tr>
-            <td>{$product_name}</td>
-            <td>{$product_qty}</td>
-            <td>₱" . number_format($product_price, 2) . "</td>
+            <td>" . htmlspecialchars($row['name']) . "</td>
+            <td>" . $row['quantity'] . "</td>
+            <td>₱" . number_format($row['sell_price'], 2) . "</td>
             <td>₱" . number_format($subtotal, 2) . "</td>
         </tr>";
     }
@@ -75,9 +85,6 @@ try {
     $html_body .= "<tr><td colspan='3' align='right'><strong>Shipping</strong></td><td>₱" . number_format($shipping, 2) . "</td></tr>";
     $html_body .= "<tr><td colspan='3' align='right'><strong>Grand Total</strong></td><td><strong>₱" . number_format($grand_total, 2) . "</strong></td></tr>";
     $html_body .= "</table>";
-
-    // ✅ Commit transaction
-    mysqli_commit($conn);
 
     // ✅ Send emails
     smtp_send_mail("test@mailtrap.io", "New Order Placed", $html_body);

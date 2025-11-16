@@ -87,8 +87,18 @@ if (session_status() === PHP_SESSION_NONE) { session_start(); }
 
     <!-- Right Section -->
     <ul class="navbar-nav d-flex align-items-center gap-3">
-      <li class="nav-item">
-        <a class="nav-link text-pink" href="/F&LGlamCo/cart/view_cart.php"><i class="fas fa-shopping-bag"></i> MY BAG</a>
+      <li class="nav-item position-relative">
+        <a class="nav-link text-pink" href="/F&LGlamCo/cart/view_cart.php">
+          <i class="fas fa-shopping-bag"></i>
+          <?php 
+            $cart_count = isset($_SESSION['cart_products']) ? count($_SESSION['cart_products']) : 0;
+            if ($cart_count > 0): 
+          ?>
+            <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle">
+              <?php echo $cart_count; ?>
+            </span>
+          <?php endif; ?>
+        </a>
       </li>
 
       <?php if (isset($_SESSION['user_id'])): ?>
