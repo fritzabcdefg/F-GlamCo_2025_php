@@ -56,8 +56,8 @@ CREATE TABLE `categories` (
 CREATE TABLE `items` (
   `item_id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
-  `cost_price` DECIMAL(5,2) DEFAULT NULL,
-  `sell_price` DECIMAL(5,2) DEFAULT NULL,
+  `cost_price` DECIMAL(10,2) DEFAULT NULL,
+  `sell_price` DECIMAL(10,2) DEFAULT NULL,
   `supplier_name` VARCHAR(45) DEFAULT NULL,
   `category_id` INT(11) DEFAULT NULL,
   PRIMARY KEY (`item_id`),
