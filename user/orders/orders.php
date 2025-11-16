@@ -76,6 +76,7 @@ $result = mysqli_stmt_get_result($stmt);
                 <th>Subtotal</th>
                 <th>Total</th>
                 <th>Actions</th>
+                <th>Reviews</th>
             </tr>
         </thead>
         <tbody>
@@ -94,6 +95,14 @@ $result = mysqli_stmt_get_result($stmt);
                 <a href="order_details.php?id=<?php echo $row['orderinfo_id']; ?>" 
                 class="btn btn-sm btn-primary">View</a>
                  </td>
+                <td>
+                    <?php if ($row['status'] === 'Delivered'): ?>
+                       <a href="../../product/reviews/review.php?order=<?php echo $row['orderinfo_id']; ?>&index=0" 
+                     class="btn btn-sm btn-primary">Review</a>
+                    <?php else: ?>
+                        <button class="btn btn-sm btn-secondary" disabled>Review</button>
+                    <?php endif; ?>
+                </td>
 
             </tr>
             <?php endwhile; ?>

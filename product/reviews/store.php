@@ -7,19 +7,21 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit();
 }
 
-$item_id   = isset($_POST['item_id']) ? intval($_POST['item_id']) : 0;
-$user_id   = isset($_SESSION['user_id']) ? intval($_SESSION['user_id']) : null;
-$user_name = isset($_POST['user_name']) ? trim($_POST['user_name']) : null;
-$rating    = isset($_POST['rating']) && $_POST['rating'] !== '' ? intval($_POST['rating']) : null;
-$comment   = isset($_POST['comment']) ? trim($_POST['comment']) : '';
+$item_id     = isset($_POST['item_id']) ? intval($_POST['item_id']) : 0;
+$orderId     = isset($_POST['orderinfo_id']) ? intval($_POST['orderinfo_id']) : 0;
+$nextIndex   = isset($_POST['next_index']) ? intval($_POST['next_index']) : 0;
+$user_id     = isset($_SESSION['user_id']) ? intval($_SESSION['user_id']) : null;
+$user_name   = isset($_POST['user_name']) ? trim($_POST['user_name']) : null;
+$rating      = isset($_POST['rating']) && $_POST['rating'] !== '' ? intval($_POST['rating']) : null;
+$comment     = isset($_POST['comment']) ? trim($_POST['comment']) : '';
 
 if ($item_id <= 0 || $comment === '') {
     header("Location: ../../product/show.php?id={$item_id}");
     exit();
 }
 
-// basic foul-word filter: mask banned words by replacing middle chars with *
-$banned = ['fuck','shit','bitch','damn','asshole','crap','dick','piss'];
+// basic foul-word filter
+$banned = ['fuck','shit','bitch','damn','asshole','crap','dick','piss','puta','bobo','tanga'];
 $commentFiltered = $comment;
 foreach ($banned as $bad) {
     $pattern = '/\b(' . preg_quote($bad, '/') . ')\b/i';
@@ -35,7 +37,7 @@ foreach ($banned as $bad) {
 
 $comment_esc = $commentFiltered;
 
-// prepare insert; include user_id if available
+// insert review
 $ins = mysqli_prepare($conn, "INSERT INTO reviews (item_id, user_id, user_name, rating, comment) VALUES (?, ?, ?, ?, ?)");
 if ($ins) {
     mysqli_stmt_bind_param($ins, 'iisss', $item_id, $user_id, $user_name, $rating, $comment_esc);
@@ -45,5 +47,11 @@ if ($ins) {
     $res = false;
 }
 
-header("Location: ../../product/show.php?id={$item_id}");
+// ✅ Redirect to next product in the order
+if ($orderId > 0) {
+    header("Location: review.php?order={$orderId}&index={$nextIndex}");
+} else {
+    // fallback: go back to product page
+    header("Location: ../../product/show.php?id={$item_id}");
+}
 exit();
