@@ -191,26 +191,6 @@ INSERT INTO `categories` (`name`, `description`) VALUES
 ('Lip Makeup', 'Products for coloring and caring for lips, including lipsticks, glosses, liners, and balms.'),
 ('Face Makeup', 'Products for complexion and contouring, including foundation, concealer, blush, bronzer, and highlighter.');
 
-INSERT INTO `items` (`item_id`, `name`, `cost_price`, `sell_price`, `supplier_name`, `category_id`) VALUES
-(1, 'AVENE AVENE Cold Cream Nutri-Nour Lip Balm 4g', 420.00, 620.00, 'Avene.Co', 2),
-(2, 'Mat Rev First Dance', 999.99, 999.99, 'CHARLOTTE TILBURY', 2),
-(3, '3D Voluming Gloss B07 Peach 70% 5.3G', 850.00, 999.00, 'FWEE', 2);
-
-INSERT INTO `product_images` (`id`, `item_id`, `filename`, `created_at`) VALUES
-(1, 1, '/F&LGlamCo/product/images/1763266092_d00473f7_AVENE_Cold_Cream_Nutri-Nour_Lip_Balm_4g__2_.png', '2025-11-16 04:08:12'),
-(2, 1, '/F&LGlamCo/product/images/1763266092_f3a47532_AVENE_Cold_Cream_Nutri-Nour_Lip_Balm_4g__3_.png', '2025-11-16 04:08:12'),
-(3, 1, '/F&LGlamCo/product/images/1763266092_bfd9ad33_AVENE_Cold_Cream_Nutri-Nour_Lip_Balm_4g.png', '2025-11-16 04:08:12'),
-(4, 2, '/F&LGlamCo/product/images/1763268842_1d8e9755_Mat_Rev_Mrs_Kisses__2_.png', '2025-11-16 04:54:02'),
-(5, 2, '/F&LGlamCo/product/images/1763268842_82b93d0d_Mat_Rev_Mrs_Kisses__3_.png', '2025-11-16 04:54:02'),
-(6, 2, '/F&LGlamCo/product/images/1763268842_28f38872_Mat_Rev_Mrs_Kisses.png', '2025-11-16 04:54:02'),
-(7, 3, '/F&LGlamCo/product/images/1763268875_3d7b78ef_3D_Voluming_Gloss_B07_Peach_70__5.3G__2_.png', '2025-11-16 04:54:35'),
-(8, 3, '/F&LGlamCo/product/images/1763268875_4f1ac694_3D_Voluming_Gloss_B07_Peach_70__5.3G.png', '2025-11-16 04:54:35');
-
-INSERT INTO `stocks` (`item_id`, `quantity`) VALUES
-(1, 100),
-(2, 50),
-(3, 100);
-
 INSERT INTO `users` (`id`, `email`, `password`, `role`, `active`, `created_at`, `updated_at`) VALUES
 (1, 'pretse@gmail.com', '$2y$10$HcRYzmlnoqB9L7t0.jgU5Ot8t.TYk0zttrlmAAZ6XktTz5DA5l8Re', 'customer', 1, NULL, NULL),
 (2, 'fritziecadao@gmail.com', 'd033e22ae348aeb5660fc2140aec35850c4da997', 'admin', 1, NULL, NULL);

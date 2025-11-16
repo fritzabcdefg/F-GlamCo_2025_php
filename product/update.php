@@ -4,13 +4,17 @@ include('../includes/auth_admin.php');
 include('../includes/config.php');
 
 if (isset($_POST['submit'])) {
-    $item_id  = intval($_POST['item_id']);
-    $name     = trim($_POST['name']);
-    $cost     = floatval($_POST['cost_price']);
-    $sell     = floatval($_POST['sell_price']);
-    $qty      = intval($_POST['quantity']);
-    $supplier = trim($_POST['supplier_name']);
+    $item_id     = intval($_POST['item_id']);
+    $name        = trim($_POST['name']);
+    $qty         = intval($_POST['quantity']);
+    $supplier    = trim($_POST['supplier_name']);
     $category_id = !empty($_POST['category_id']) ? intval($_POST['category_id']) : null;
+
+    // ✅ Normalize prices to 2 decimals
+    $costRaw = isset($_POST['cost_price']) ? (float)$_POST['cost_price'] : 0;
+    $sellRaw = isset($_POST['sell_price']) ? (float)$_POST['sell_price'] : 0;
+    $cost    = number_format(round($costRaw, 2), 2, '.', '');
+    $sell    = number_format(round($sellRaw, 2), 2, '.', '');
 
     if ($name === '') {
         header("Location: edit.php?id={$item_id}");
@@ -20,7 +24,7 @@ if (isset($_POST['submit'])) {
     // --- Handle newly uploaded images ---
     $uploadedFiles = [];
     if (isset($_FILES['img_paths'])) {
-        $allowed = ['image/jpeg','image/jpg','image/png','image/gif'];
+        $allowed     = ['image/jpeg','image/jpg','image/png','image/gif'];
         $uploadDir   = __DIR__ . '/../product/images/';
         $webBasePath = '/F&LGlamCo/product/images/';
         if (!is_dir($uploadDir)) mkdir($uploadDir,0777,true);
@@ -31,7 +35,7 @@ if (isset($_POST['submit'])) {
 
             $orig = basename($_FILES['img_paths']['name'][$i]);
             $uniq = time().'_'.bin2hex(random_bytes(4)).'_'.preg_replace('/[^A-Za-z0-9._-]/','_',$orig);
-            $targetFs = $uploadDir.$uniq;
+            $targetFs  = $uploadDir.$uniq;
             $targetWeb = $webBasePath.$uniq;
 
             if (move_uploaded_file($_FILES['img_paths']['tmp_name'][$i], $targetFs)) {
@@ -64,7 +68,7 @@ if (isset($_POST['submit'])) {
         }
     }
 
-    // --- Update items (no img_path column anymore) ---
+    // --- Update items ---
     if ($category_id === null) {
         $upd = mysqli_prepare($conn,"UPDATE items SET name=?, cost_price=?, sell_price=?, supplier_name=?, category_id=NULL WHERE item_id=?");
         mysqli_stmt_bind_param($upd,'sddsi',$name,$cost,$sell,$supplier,$item_id);
@@ -75,7 +79,7 @@ if (isset($_POST['submit'])) {
     mysqli_stmt_execute($upd);
     mysqli_stmt_close($upd);
 
-    // --- Insert any newly uploaded images into product_images ---
+    // --- Insert any newly uploaded images ---
     if (!empty($uploadedFiles)) {
         $insImg = mysqli_prepare($conn,"INSERT INTO product_images (item_id, filename) VALUES (?, ?)");
         foreach ($uploadedFiles as $f) {
@@ -105,7 +109,7 @@ if (isset($_POST['submit'])) {
         mysqli_stmt_close($insS);
     }
 
-    header('Location: index.php');
+    header('Location: index.php?msg=Item+updated+successfully');
     exit();
 }
 ?>
