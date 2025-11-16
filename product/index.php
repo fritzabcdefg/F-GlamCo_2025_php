@@ -6,10 +6,19 @@ include('../includes/config.php');
 $keyword = isset($_GET['search']) ? strtolower(trim($_GET['search'])) : '';
 
 if ($keyword) {
-    $sql = "SELECT * FROM items LEFT JOIN stocks USING (item_id) WHERE description LIKE '%{$keyword}%'";
+    // Search by description or supplier name
+    $sql = "SELECT i.item_id, i.name, i.supplier_name, i.cost_price, i.sell_price, s.quantity,
+                   (SELECT filename FROM product_images WHERE item_id = i.item_id ORDER BY created_at ASC LIMIT 1) AS main_image
+            FROM items i
+            LEFT JOIN stocks s USING (item_id)
+            WHERE i.name LIKE '%{$keyword}%' OR i.supplier_name LIKE '%{$keyword}%'";
 } else {
-    $sql = "SELECT * FROM items LEFT JOIN stocks USING (item_id)";
+    $sql = "SELECT i.item_id, i.name, i.supplier_name, i.cost_price, i.sell_price, s.quantity,
+                   (SELECT filename FROM product_images WHERE item_id = i.item_id ORDER BY created_at ASC LIMIT 1) AS main_image
+            FROM items i
+            LEFT JOIN stocks s USING (item_id)";
 }
+
 $result = mysqli_query($conn, $sql);
 $itemCount = mysqli_num_rows($result);
 ?>
@@ -30,7 +39,7 @@ $itemCount = mysqli_num_rows($result);
       <tr>
         <th>Image</th>
         <th>ID</th>
-        <th>Name</th>
+        <th>Supplier - Name</th>
         <th>Selling Price</th>
         <th>Cost Price</th>
         <th>Quantity</th>
@@ -39,10 +48,13 @@ $itemCount = mysqli_num_rows($result);
     </thead>
     <tbody>
       <?php while ($row = mysqli_fetch_assoc($result)): ?>
+        <?php 
+          $mainImage = !empty($row['main_image']) ? $row['main_image'] : './assets/no-image.png';
+        ?>
         <tr>
-          <td><img src="<?= $row['img_path'] ?>" class="item-thumb" alt="Product Image" /></td>
+          <td><img src="<?= htmlspecialchars($mainImage) ?>" class="item-thumb" alt="Product Image" /></td>
           <td><?= $row['item_id'] ?></td>
-          <td><?= htmlspecialchars($row['name']) ?></td>
+          <td><?= htmlspecialchars($row['supplier_name']) ?> - <?= htmlspecialchars($row['name']) ?></td>
           <td>₱<?= number_format($row['sell_price'], 2) ?></td>
           <td>₱<?= number_format($row['cost_price'], 2) ?></td>
           <td><?= $row['quantity'] ?></td>

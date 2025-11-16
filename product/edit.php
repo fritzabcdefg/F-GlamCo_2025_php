@@ -98,16 +98,13 @@ if ($catRes) {
                 <?php
                     endwhile;
                 else:
-                    if (!empty($item['img_path'])):
                 ?>
-                        <img src="<?php echo htmlspecialchars($item['img_path']); ?>" alt="" 
-                             style="max-width:200px;max-height:200px;object-fit:cover;" class="mb-2" />
+                    <p>No images uploaded yet.</p>
                 <?php
-                    endif;
                 endif;
                 ?>
 
-                <label class="form-label">Add Images</label>
+                <label class="form-label mt-3">Add Images</label>
                 <input type="file" name="img_paths[]" class="form-control" multiple accept="image/*">
                 <small class="form-text text-muted">Select one or more images to add to the gallery.</small>
             </div>

@@ -40,9 +40,10 @@ if (isset($_SESSION["cart_products"]) && count($_SESSION["cart_products"]) > 0) 
 }
 
 // 📦 Display Products
-$sql = "SELECT i.item_id AS itemId, name, img_path, sell_price, s.quantity
-        FROM items i 
-        INNER JOIN stocks s USING (item_id)  
+$sql = "SELECT i.item_id AS itemId, i.name, i.supplier_name, i.sell_price, s.quantity,
+               (SELECT filename FROM product_images WHERE item_id = i.item_id ORDER BY created_at ASC LIMIT 1) AS main_image
+        FROM items i
+        INNER JOIN stocks s USING (item_id)
         WHERE s.quantity > 0
         ORDER BY i.item_id ASC";
 
@@ -51,20 +52,23 @@ $results = mysqli_query($conn, $sql);
 if ($results) {
     $products_item = '<ul class="products">';
     while ($row = mysqli_fetch_assoc($results)) {
+        // fallback if no image
+        $mainImage = !empty($row['main_image']) ? $row['main_image'] : './assets/no-image.png';
+
         $products_item .= <<<EOT
         <li class="product">
             <form method="POST" action="./cart/cart_update.php">
                 <div class="product-content">
-                    <h3>{$row['name']}</h3>
                     <div class="product-thumb">
-                        <img src="./item/{$row['img_path']}" width="50px" height="50px">
+                        <img src="{$mainImage}" width="80" height="80" style="margin-bottom:6px;">
                     </div>
+                    <h3>{$row['supplier_name']} - {$row['name']}</h3>
                     <div class="product-info">
                         Price: {$row['sell_price']}
                         <fieldset>
                             <label>
                                 <span>Quantity</span>
-                                <input type="number" size="2" maxlength="2" name="item_qty" value="1" min="1" max="{$row['quantity']}"/>
+                                <input type="number" name="item_qty" value="1" min="1" max="{$row['quantity']}"/>
                             </label>
                         </fieldset>
                         <input type="hidden" name="item_id" value="{$row['itemId']}" />

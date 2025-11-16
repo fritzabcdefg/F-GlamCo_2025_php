@@ -79,22 +79,16 @@ if ($catRes) {
                    placeholder="Enter quantity"
                    value="<?php echo isset($_SESSION['qty']) ? $_SESSION['qty'] : ''; ?>" />
 
+            <!-- Supplier Name -->
+            <label for="supplier">Supplier Name</label>
+            <input type="text" id="supplier" name="supplier_name" class="form-control"
+                   placeholder="Enter supplier name"
+                   value="<?php echo isset($_SESSION['supplier_name']) ? $_SESSION['supplier_name'] : ''; ?>" />
+
             <!-- Item Images -->
             <label for="img_paths">Item Images</label>
             <input class="form-control" type="file" name="img_paths[]" multiple accept="image/*" /><br />
             <small class="form-text text-muted">You can select multiple images. The first image will be used as the main thumbnail.</small>
-
-            <!-- Single Image Upload -->
-            <label for="img_path">Item Image</label>
-            <input type="file" name="img_path" class="form-control" />
-            <small class="error">
-                <?php
-                if (isset($_SESSION['imageError'])) {
-                    echo $_SESSION['imageError'];
-                    unset($_SESSION['imageError']);
-                }
-                ?>
-            </small>
         </div>
 
         <!-- Buttons -->
