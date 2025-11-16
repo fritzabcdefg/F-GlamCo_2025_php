@@ -48,7 +48,7 @@ $items = mysqli_query($conn, $sql);
 
     <!-- Items Table -->
     <table class="table table-striped table-bordered">
-        <thead class="table-dark">
+        <thead style="background-color:#F8BBD0; color:#000000;">
             <tr>
                 <th>Item Name</th>
                 <th>Quantity</th>
@@ -89,7 +89,12 @@ $items = mysqli_query($conn, $sql);
                     <option value="Cancelled" <?= $customer['status'] === 'Cancelled' ? 'selected' : '' ?>>Cancelled</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Update Order</button>
+            <button type="submit" title="Update Order"
+    style="background-color:#000000; border:4px solid #ffffff; color:#ffffff; font-weight:bold; font-size:1.0rem; text-align:center; cursor:pointer; padding:8px 17px; border-radius:4px; display:block; margin-left:auto; margin-right:0;">
+    Update Order
+</button>
+
+
         </form>
 </div>
 
