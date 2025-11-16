@@ -114,7 +114,7 @@ CREATE TABLE `orderinfo` (
   `date_placed` DATE NOT NULL,
   `date_shipped` DATE DEFAULT NULL,
   `shipping` DECIMAL(7,2) DEFAULT NULL,
-  `status` ENUM('processing','delivered','cancelled') NOT NULL DEFAULT 'processing',
+  `status` ENUM('Processing','Shipped','Delivered','Cancelled') NOT NULL DEFAULT 'Processing',
   PRIMARY KEY (`orderinfo_id`),
   CONSTRAINT `orderinfo_customer_fk` FOREIGN KEY (`customer_id`) REFERENCES `customers`(`customer_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -210,6 +210,10 @@ INSERT INTO `stocks` (`item_id`, `quantity`) VALUES
 (1, 100),
 (2, 50),
 (3, 100);
+
+INSERT INTO `users` (`id`, `email`, `password`, `role`, `active`, `created_at`, `updated_at`) VALUES
+(1, 'pretse@gmail.com', '$2y$10$HcRYzmlnoqB9L7t0.jgU5Ot8t.TYk0zttrlmAAZ6XktTz5DA5l8Re', 'customer', 1, NULL, NULL),
+(2, 'fritziecadao@gmail.com', 'd033e22ae348aeb5660fc2140aec35850c4da997', 'admin', 1, NULL, NULL);
 
 
 COMMIT;
