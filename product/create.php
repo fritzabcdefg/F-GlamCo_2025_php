@@ -36,17 +36,17 @@ if ($catRes) {
 
         <div class="mb-3">
             <label>Cost Price</label>
-            <input type="text" name="cost_price" class="form-control" required>
+            <input type="number" name="cost_price" class="form-control" step="0.01" required>
         </div>
 
         <div class="mb-3">
             <label>Selling Price</label>
-            <input type="text" name="sell_price" class="form-control" required>
+            <input type="number" name="sell_price" class="form-control" step="0.01" required>
         </div>
 
         <div class="mb-3">
             <label>Quantity</label>
-            <input type="number" name="quantity" class="form-control" required>
+            <input type="number" name="quantity" class="form-control" step="1" min="0" required>
         </div>
 
         <div class="mb-3">

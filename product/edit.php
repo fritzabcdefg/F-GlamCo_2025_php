@@ -56,14 +56,14 @@ if ($catRes) {
             
             <div class="mb-3">
                 <label class="form-label">Cost Price</label>
-                <input type="text" name="cost_price" class="form-control" 
-                       value="<?php echo htmlspecialchars($item['cost_price']); ?>">
+               <input type="number" name="cost_price" class="form-control" step="0.01"
+                 value="<?php echo htmlspecialchars($item['cost_price']); ?>">
             </div>
             
             <div class="mb-3">
                 <label class="form-label">Sell Price</label>
-                <input type="text" name="sell_price" class="form-control" 
-                       value="<?php echo htmlspecialchars($item['sell_price']); ?>">
+                 <input type="number" name="sell_price" class="form-control" step="0.01"
+             value="<?php echo htmlspecialchars($item['sell_price']); ?>">
             </div>
             
             <div class="mb-3">
