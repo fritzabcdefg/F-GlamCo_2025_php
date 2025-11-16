@@ -39,17 +39,20 @@ if (session_status() === PHP_SESSION_NONE) { session_start(); }
          style="width:100px;height:100px;object-fit:cover;">
 
     <!-- Name -->
-    <h6 class="text-white mb-3"><?php echo htmlspecialchars($displayName ?: 'Guest'); ?></h6>
+
 
     <!-- Buttons based on role -->
-    <a href="/F&LGlamCo/user/profile.php" class="sidebar-btn">View Profile</a>
 
     <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+      <h6 class="text-white mb-3"><?php echo htmlspecialchars($displayName ?: 'Admin'); ?></h6>
+         <a href="/F&LGlamCo/user/profile.php" class="sidebar-btn">View Profile</a>
       <a href="/F&LGlamCo/product/index.php" class="sidebar-btn">Items</a>
       <a href="/F&LGlamCo/admin/users.php" class="sidebar-btn">Users</a>
       <a href="/F&LGlamCo/admin/orders.php" class="sidebar-btn">Orders</a>
       <a href="/F&LGlamCo/admin/reviews.php" class="sidebar-btn">Reviews</a>
     <?php else: ?>
+          <h6 class="text-white mb-3"><?php echo htmlspecialchars($displayName ?: 'Guest'); ?></h6>
+             <a href="/F&LGlamCo/user/profile.php" class="sidebar-btn">View Profile</a>
       <a href="/F&LGlamCo/user/orders/orders.php" class="sidebar-btn">My Orders</a>
     <?php endif; ?>
 

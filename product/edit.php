@@ -56,14 +56,14 @@ if ($catRes) {
             
             <div class="mb-3">
                 <label class="form-label">Cost Price</label>
-                <input type="text" name="cost_price" class="form-control" 
-                       value="<?php echo htmlspecialchars($item['cost_price']); ?>">
+               <input type="number" name="cost_price" class="form-control" step="0.01"
+                 value="<?php echo htmlspecialchars($item['cost_price']); ?>">
             </div>
             
             <div class="mb-3">
                 <label class="form-label">Sell Price</label>
-                <input type="text" name="sell_price" class="form-control" 
-                       value="<?php echo htmlspecialchars($item['sell_price']); ?>">
+                 <input type="number" name="sell_price" class="form-control" step="0.01"
+             value="<?php echo htmlspecialchars($item['sell_price']); ?>">
             </div>
             
             <div class="mb-3">
@@ -98,13 +98,16 @@ if ($catRes) {
                 <?php
                     endwhile;
                 else:
+                    if (!empty($item['img_path'])):
                 ?>
-                    <p>No images uploaded yet.</p>
+                        <img src="<?php echo htmlspecialchars($item['img_path']); ?>" alt="" 
+                             style="max-width:200px;max-height:200px;object-fit:cover;" class="mb-2" />
                 <?php
+                    endif;
                 endif;
                 ?>
 
-                <label class="form-label mt-3">Add Images</label>
+                <label class="form-label">Add Images</label>
                 <input type="file" name="img_paths[]" class="form-control" multiple accept="image/*">
                 <small class="form-text text-muted">Select one or more images to add to the gallery.</small>
             </div>
