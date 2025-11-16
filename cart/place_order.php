@@ -119,12 +119,16 @@ try {
             $html .= '<p style="text-align:right;">Shipping: <strong>₱' . number_format($shipping,2) . '</strong></p>';
             $html .= '<p style="text-align:right;">Grand total: <strong>₱' . number_format($grandTotal,2) . '</strong></p>';
 
-            // --- Send emails ---
-            $subject = "Order #" . (int)$row['orderinfo_id'] . " Confirmation";
-            smtp_send_mail("test@mailtrap.io", "New Order Placed", $html); // admin
+            // Send customer confirmation only if we have an address
             if (!empty($to)) {
-                smtp_send_mail($to, $subject, $html); // customer
+                $customerSubject = "Order #" . (int)$orderinfo_id . " Confirmation";
+                smtp_send_mail($to, $customerSubject, $html);
             }
+
+                        // Always send admin notification
+            $adminSubject = "New Order Placed";
+            smtp_send_mail("inbox@YOURID.mailtrap.io", $adminSubject, $html);
+
         }
         $stmt->close();
     }
