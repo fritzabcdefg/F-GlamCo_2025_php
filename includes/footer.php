@@ -1,6 +1,6 @@
 <?php
 ?>
-<footer style="margin-top:40px; padding:24px 16px; background-color:#F8BBD0; text-align:center; font-family:sans-serif; color:#333;">
+<footer style="margin-top:40px; padding:24px 16px; background-color:#FFFFFF; text-align:center; font-family:sans-serif; color:#333;">
     <div style="margin-bottom:16px;">
         <div style="font-weight:600; margin-bottom:8px;">ABOUT US &nbsp; | &nbsp; FAQ &nbsp; | &nbsp; SITEMAP</div>
         <div style="font-weight:600;">Privacy Policy &nbsp; | &nbsp; Terms and Conditions &nbsp; | &nbsp; Certificate of Registration</div>
