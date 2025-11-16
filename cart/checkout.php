@@ -65,7 +65,7 @@ $shipping = 80.00; // flat shipping fee
 
 <div class="checkout-container">
     <h1 align="center">✅ Checkout</h1>
-    <form method="POST" action="process_checkout.php">
+    <form method="POST" action="place_order.php">
         
         <!-- Items Table -->
         <table class="checkout-table mb-4">
