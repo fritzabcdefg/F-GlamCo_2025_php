@@ -253,19 +253,9 @@ table.table thead {
 }
 
 table.table thead th {
-  color: #ffffff !important;
+  color: #000000 !important;
   font-weight: 600;
   padding: 12px;
-}
-
-
-/* Zebra striping for rows */
-table.table-striped tbody tr:nth-child(odd) {
-  background-color: #FFF0F5;
-}
-
-table.table-striped tbody tr:nth-child(even) {
-  background-color: #ffffff;
 }
 
 /* Hover effect */

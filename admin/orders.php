@@ -10,10 +10,11 @@ $result = mysqli_query($conn, $sql);
 $itemCount = $result ? mysqli_num_rows($result) : 0;
 ?>
 
-<div class="container mt-4">
-    <h2>Orders</h2>
-    <p>Total Orders: <?= $itemCount ?></p>
-
+<div style="max-width:960px; margin:32px auto 0 auto; padding:0 16px;">
+    <h2 style="color:#C71585; font-weight:700; margin-bottom:12px;">Orders</h2>
+    <p style="font-size:1em; color:#ffffff;">Total Orders: <?= $itemCount ?></p>
+</div>
+<div class="container mt-4;">
     <table class="table table-striped">
         <thead>
             <tr>
