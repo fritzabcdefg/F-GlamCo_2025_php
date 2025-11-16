@@ -114,7 +114,7 @@ CREATE TABLE `orderinfo` (
   `date_placed` DATE NOT NULL,
   `date_shipped` DATE DEFAULT NULL,
   `shipping` DECIMAL(7,2) DEFAULT NULL,
-  `status` ENUM('Pending','Shipped','Delivered','Cancelled') NOT NULL DEFAULT 'processing',
+  `status` ENUM('Processing','Shipped','Delivered','Cancelled') NOT NULL DEFAULT 'Processing',
   PRIMARY KEY (`orderinfo_id`),
   CONSTRAINT `orderinfo_customer_fk` FOREIGN KEY (`customer_id`) REFERENCES `customers`(`customer_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
