@@ -19,7 +19,7 @@ if ($result) {
 ?>
 
 <div class="container mt-4">
-    <h2 class="mb-4" style="color:#C71585; font-weight:700;">Sales Report</h2>
+    <h2 class="mb-4" style="color:#ffffff; font-weight:700;">Sales Report</h2>
 
     <!-- Sales count -->
     <div class="alert alert-info">

@@ -13,13 +13,16 @@ $itemCount = $result ? mysqli_num_rows($result) : 0;
 <div class="container mt-4">
     <h2 class="mb-4" style="color:#ffffff; font-weight:700;">Users</h2>
 
+    <div class="alert alert-info">
+        Users on list: <?= $itemCount ?>
+    </div>
+
     <table class="table table-striped" style="border:1px solid #F8BBD0; border-radius:10px; overflow:hidden;">
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Email</th>
                 <th>Role</th>
-                <th>Created At</th>
                 <th>Active</th>
                 <th>Actions</th>
             </tr>
@@ -31,7 +34,6 @@ $itemCount = $result ? mysqli_num_rows($result) : 0;
                         <td><?php echo (int)$row['id']; ?></td>
                         <td><?php echo htmlspecialchars($row['email']); ?></td>
                         <td><?php echo htmlspecialchars($row['role']); ?></td>
-                        <td><?php echo htmlspecialchars($row['created_at']); ?></td>
                         <td>
                             <?php if ($row['active']): ?>
                                 <span class="badge badge-success">Active</span>
