@@ -89,10 +89,10 @@ if ($catRes) {
                         <div style="display:inline-block;margin-right:8px;text-align:center;">
                             <img src="<?php echo htmlspecialchars($imgRow['filename']); ?>" alt="" 
                                  style="width:120px;height:120px;object-fit:cover;border:1px solid #ddd;margin-bottom:4px;" />
-                            <div>
-                                <label style="font-size:0.85em;">
+                            <div style="margin-bottom:6px;">
+                                <label style="font-size:0.85em; color:#ffffff; display:flex; align-items:center; gap:6px;">
                                     <input type="checkbox" name="delete_images[]" value="<?php echo $imgRow['id']; ?>"> Remove
-                                </label>
+                                    </label>
                             </div>
                         </div>
                 <?php

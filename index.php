@@ -3,7 +3,6 @@ session_start();
 include('./includes/header.php');
 include('./includes/config.php');
 
-// 📦 Display Products
 $sql = "SELECT i.item_id AS itemId, i.name, i.supplier_name, i.sell_price, s.quantity,
                (SELECT filename FROM product_images WHERE item_id = i.item_id ORDER BY created_at ASC LIMIT 1) AS main_image
         FROM items i
@@ -18,24 +17,24 @@ $results = mysqli_query($conn, $sql);
     ul.products {
         padding: 0;
         margin: 0 auto;
-        max-width: 960px; /* wider row */
+        max-width: 960px;
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
     }
 
     ul.products li {
-        background-color: #fff;          /* white container */
-        width: 240px;                    /* fixed width */
-        height: 360px;                   /* fixed height */
+        background-color: #fff;
+        width: 240px;
+        height: 360px;
         margin: 12px;
         padding: 12px;
         border: 1px solid #ccc;
         border-radius: 6px;
         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         display: flex;
-        flex-direction: column;          /* stack content vertically */
-        justify-content: space-between;  /* spread content evenly */
+        flex-direction: column;
+        justify-content: space-between;
         text-align: center;
     }
 
@@ -43,13 +42,13 @@ $results = mysqli_query($conn, $sql);
         margin: 8px 0;
         font-size: 1em;
         color: #333;
-        background: none;                /* remove pink header bar */
+        background: none;
     }
 
     .product-thumb img {
         max-width: 100%;
-        max-height: 120px;               /* keep image contained */
-        object-fit: contain;             /* scale without distortion */
+        max-height: 120px;
+        object-fit: contain;
         margin-bottom: 8px;
     }
 
@@ -72,6 +71,10 @@ $results = mysqli_query($conn, $sql);
         background: #333;
     }
 
+    .view-btn:hover {
+        background-color: #F69B9A !important;
+        color: #880E4F !important;
+    }
 </style>
 
 <?php
@@ -98,7 +101,7 @@ if ($results) {
                         <input type="hidden" name="item_id" value="<?php echo $row['itemId']; ?>" />
                         <input type="hidden" name="type" value="add" />
                         <div align="center">
-                            <a href="./product/show.php?id=<?php echo $row['itemId']; ?>" class="btn btn-sm btn-outline-primary">View</a>
+                            <a href="./product/show.php?id=<?php echo $row['itemId']; ?>" style="background:#000; color:#fff; border:none; padding:8px 14px; border-radius:4px; text-decoration:none;" class="view-btn">View</a>
                             <button type="submit" class="add_to_cart">Add</button>
                         </div>
                     </div>

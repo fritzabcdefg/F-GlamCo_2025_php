@@ -13,16 +13,16 @@ $itemCount = $result ? mysqli_num_rows($result) : 0;
 <div class="container mt-4">
     <h2 class="mb-4" style="color:#C71585; font-weight:700;">Users</h2>
 
-    <table class="table table-striped">
+    <table class="table table-striped" style="border:1px solid #F8BBD0; border-radius:10px; overflow:hidden;">
         <thead>
-            <tr>
-                <th>ID</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Created At</th>
-                <th>Active</th>
-                <th>Actions</th>
-            </tr>
+            <tr style="background-color:#000000;">
+                <th style="color:#ffffff; font-weight:600; padding:12px; border-bottom:1px solid #F8BBD0;">ID</th>
+                <th style="color:#ffffff; font-weight:600; padding:12px; border-bottom:1px solid #F8BBD0;">Email</th>
+                <th style="color:#ffffff; font-weight:600; padding:12px; border-bottom:1px solid #F8BBD0;">Role</th>
+                <th style="color:#ffffff; font-weight:600; padding:12px; border-bottom:1px solid #F8BBD0;">Created At</th>
+                <th style="color:#ffffff; font-weight:600; padding:12px; border-bottom:1px solid #F8BBD0;">Active</th>
+                <th style="color:#ffffff; font-weight:600; padding:12px; border-bottom:1px solid #F8BBD0;">Actions</th>
+    </tr>
         </thead>
         <tbody>
             <?php if ($itemCount > 0): ?>
