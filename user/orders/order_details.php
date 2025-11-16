@@ -1,8 +1,9 @@
 <?php
 session_start();
-include('../includes/auth_user.php');
-include('../includes/header.php');
-include('../includes/config.php');
+include('../../includes/auth_user.php');
+include('../../includes/header.php');
+include('../../includes/config.php');
+
 
 $order_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 if (!$order_id) {
@@ -119,4 +120,4 @@ $grand_total = $total + $summary['shipping'];
     </div>
 </div>
 
-<?php include('../includes/footer.php'); ?>
+<?php include('../../includes/footer.php'); ?>

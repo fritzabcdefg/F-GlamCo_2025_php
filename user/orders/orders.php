@@ -1,8 +1,9 @@
 <?php
 session_start();
-include('../includes/auth_user.php');
-include('../includes/header.php');
-include('../includes/config.php');
+include('../../includes/auth_user.php');
+include('../../includes/header.php');
+include('../../includes/config.php');
+
 
 // Get customer_id for logged-in user
 $customer_id = null;
@@ -74,6 +75,7 @@ $result = mysqli_stmt_get_result($stmt);
                 <th>Shipping</th>
                 <th>Subtotal</th>
                 <th>Total</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -88,6 +90,11 @@ $result = mysqli_stmt_get_result($stmt);
                 <td>₱<?php echo number_format($row['shipping'], 2); ?></td>
                 <td>₱<?php echo number_format($row['subtotal'], 2); ?></td>
                 <td><strong>₱<?php echo number_format($total, 2); ?></strong></td>
+                <td>
+                <a href="order_details.php?id=<?php echo $row['orderinfo_id']; ?>" 
+                class="btn btn-sm btn-primary">View</a>
+                 </td>
+
             </tr>
             <?php endwhile; ?>
         </tbody>

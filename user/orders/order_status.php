@@ -1,7 +1,8 @@
 <?php
 session_start();
-include('../includes/auth_user.php');
-include('../includes/config.php');
+include('../../includes/auth_user.php');
+include('../../includes/config.php');
+
 
 $order_id = isset($_POST['order_id']) ? intval($_POST['order_id']) : 0;
 $status = isset($_POST['status']) ? $_POST['status'] : '';
