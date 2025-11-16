@@ -1,6 +1,8 @@
 <?php
 session_start();
 include("../includes/config.php");
+
+$deactivated = false; 
 ?>
 
 <!doctype html>
@@ -13,13 +15,12 @@ include("../includes/config.php");
   <link rel="stylesheet" href="../includes/style/style.css">
 </head>
 <body>
-  
+ 
 <?php
 if (isset($_POST['submit'])) {
   $email = isset($_POST['email']) ? trim($_POST['email']) : '';
   $pass  = isset($_POST['password']) ? trim($_POST['password']) : '';
 
-  // server-side validation
   if ($email !== '' && $pass !== '' && filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $sql = "SELECT id, email, password, role, active FROM users WHERE email=? LIMIT 1";
     $stmt = mysqli_prepare($conn, $sql);
@@ -34,48 +35,62 @@ if (isset($_POST['submit'])) {
       $login_ok = false;
       $needs_rehash = false;
 
-      // Prefer PHP's password_verify for modern hashes
       if (password_verify($pass, $hashedPassword)) {
           $login_ok = true;
       } elseif (hash_equals($hashedPassword, sha1($pass))) {
-          // Legacy SHA1 match — accept login but mark for re-hash
           $login_ok = true;
           $needs_rehash = true;
       }
 
-      if ($login_ok && $active) {
-          if ($needs_rehash) {
-              $newHash = password_hash($pass, PASSWORD_DEFAULT);
-              $up = mysqli_prepare($conn, "UPDATE users SET password = ? WHERE id = ?");
-              if ($up) {
-                  mysqli_stmt_bind_param($up, 'si', $newHash, $user_id);
-                  mysqli_stmt_execute($up);
-                  mysqli_stmt_close($up);
+      if ($login_ok) {
+          if ($active) {
+              if ($needs_rehash) {
+                  $newHash = password_hash($pass, PASSWORD_DEFAULT);
+                  $up = mysqli_prepare($conn, "UPDATE users SET password = ? WHERE id = ?");
+                  if ($up) {
+                      mysqli_stmt_bind_param($up, 'si', $newHash, $user_id);
+                      mysqli_stmt_execute($up);
+                      mysqli_stmt_close($up);
+                  }
               }
-          }
 
-          $_SESSION['email']   = $email_db;
-          $_SESSION['user_id'] = $user_id;
-          $_SESSION['role']    = $role;
-          header("Location: ../index.php");
-          exit();
+              $_SESSION['email']   = $email_db;
+              $_SESSION['user_id'] = $user_id;
+              $_SESSION['role']    = $role;
+              header("Location: ../index.php");
+              exit();
+          } else {
+              // account is deactivated
+              $deactivated = true;
+          }
       }
     }
   }
 }
 ?>
+
 <div class="container">
-      <?php if (isset($_GET['error'])): ?>
-      <?php if ($_GET['error'] === 'unauthorized'): ?>
-        <div class="alert alert-danger text-center">
-          You must log in to access that page.
-        </div>
-      <?php elseif ($_GET['error'] === 'adminonly'): ?>
-        <div class="alert alert-warning text-center">
-          Admin access required to view that page.
-        </div>
-      <?php endif; ?>
+
+  <!-- Unauthorized/Admin alerts -->
+  <?php if (isset($_GET['error'])): ?>
+    <?php if ($_GET['error'] === 'unauthorized'): ?>
+      <div class="alert alert-danger text-center">
+        You must log in to access that page.
+      </div>
+    <?php elseif ($_GET['error'] === 'adminonly'): ?>
+      <div class="alert alert-warning text-center">
+        Admin access required to view that page.
+      </div>
     <?php endif; ?>
+  <?php endif; ?>
+
+<!-- Deactivated account alert -->
+<?php if ($deactivated): ?>
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <span class="d-block text-center">That account is no longer available or deactivated.</span>
+
+  </div>
+<?php endif; ?>
 
   <div class="auth-container">
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
