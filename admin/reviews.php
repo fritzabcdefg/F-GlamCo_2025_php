@@ -1,8 +1,8 @@
 <?php
 session_start();
-include('../includes/auth_admin.php');
-include('../includes/header.php');
-include('../includes/config.php');
+require_once __DIR__ . '/../includes/auth_admin.php';
+require_once __DIR__ . '/../includes/config.php';
+include __DIR__ . '/../includes/header.php';
 
 // list reviews
 $sql = "SELECT r.*, i.name AS item_name 
@@ -10,11 +10,19 @@ $sql = "SELECT r.*, i.name AS item_name
         JOIN items i ON r.item_id = i.item_id 
         ORDER BY r.created_at DESC";
 $res = mysqli_query($conn, $sql);
+$itemCount = $res ? mysqli_num_rows($res) : 0;
 ?>
 
 <div class="container mt-4">
-    <h3>Product Reviews</h3>
-    <table class="table table-striped">
+    <h2 class="mb-4" style="color:#ffffff; font-weight:700;">Product Reviews</h2>
+
+    <!-- Review count -->
+    <div class="alert alert-info">
+        Total Reviews: <?= $itemCount ?>
+    </div>
+
+    <!-- Reviews Table -->
+    <table class="table table-striped" style="border:1px solid #F8BBD0; border-radius:10px; overflow:hidden;">
         <thead>
             <tr>
                 <th>ID</th>
@@ -29,27 +37,46 @@ $res = mysqli_query($conn, $sql);
             </tr>
         </thead>
         <tbody>
-            <?php while ($row = mysqli_fetch_assoc($res)): ?>
-                <tr>
-                    <td><?php echo $row['id']; ?></td>
-                    <td><?php echo htmlspecialchars($row['item_name']); ?></td>
-                    <td><?php echo $row['user_id'] ?? 'N/A'; ?></td>
-                    <td><?php echo htmlspecialchars($row['user_name'] ?? 'Anonymous'); ?></td>
-                    <td><?php echo $row['rating']; ?></td>
-                    <td><?php echo htmlspecialchars($row['comment']); ?></td>
-                    <td><?php echo $row['is_visible'] ? 'Yes' : 'No'; ?></td>
-                    <td><?php echo $row['created_at']; ?></td>
-                    <td>
-                        <a href="reviews_delete.php?id=<?php echo $row['id']; ?>" 
-                           class="btn btn-sm btn-danger" 
-                           onclick="return confirm('Delete review?')">Delete</a>
-                        <a href="reviews_toggle.php?id=<?php echo $row['id']; ?>" 
-                           class="btn btn-sm btn-secondary">Toggle Visible</a>
-                    </td>
-                </tr>
-            <?php endwhile; ?>
+            <?php if ($itemCount > 0): ?>
+                <?php while ($row = mysqli_fetch_assoc($res)): ?>
+                    <tr>
+                        <td><?= (int)$row['id']; ?></td>
+                        <td><?= htmlspecialchars($row['item_name']); ?></td>
+                        <td><?= $row['user_id'] ?? 'N/A'; ?></td>
+                        <td><?= htmlspecialchars($row['user_name'] ?? 'Anonymous'); ?></td>
+                        <td>
+                            <!-- Rating badge -->
+                            <span class="badge bg-primary"><?= (int)$row['rating']; ?>/5</span>
+                        </td>
+                        <td><?= htmlspecialchars($row['comment']); ?></td>
+                        <td>
+                            <?php if ($row['is_visible']): ?>
+                                <span class="badge bg-success">Yes</span>
+                            <?php else: ?>
+                                <span class="badge bg-secondary">No</span>
+                            <?php endif; ?>
+                        </td>
+                        <td><?= htmlspecialchars($row['created_at']); ?></td>
+                        <td>
+                            <!-- Delete -->
+                            <a href="reviews_delete.php?id=<?= (int)$row['id']; ?>" 
+                               class="btn btn-sm btn-danger" 
+                               onclick="return confirm('Delete review?')">
+                                <i class="fa-solid fa-trash"></i> Delete
+                            </a>
+                            <!-- Toggle visibility -->
+                            <a href="reviews_toggle.php?id=<?= (int)$row['id']; ?>" 
+                               class="btn btn-sm btn-warning ms-1">
+                                <i class="fa-regular fa-eye-slash"></i> Toggle Visible
+                            </a>
+                        </td>
+                    </tr>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <tr><td colspan="9">No reviews found.</td></tr>
+            <?php endif; ?>
         </tbody>
     </table>
 </div>
 
-<?php include('../includes/footer.php'); ?>
+<?php include __DIR__ . '/../includes/footer.php'; ?>

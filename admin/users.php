@@ -11,7 +11,7 @@ $itemCount = $result ? mysqli_num_rows($result) : 0;
 ?>
 
 <div class="container mt-4">
-    <h2 class="mb-4" style="color:#C71585; font-weight:700;">Users</h2>
+    <h2 class="mb-4" style="color:#ffffff; font-weight:700;">Users</h2>
 
     <table class="table table-striped" style="border:1px solid #F8BBD0; border-radius:10px; overflow:hidden;">
         <thead>

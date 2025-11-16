@@ -4,33 +4,41 @@ require_once __DIR__ . '/../includes/auth_admin.php';
 require_once __DIR__ . '/../includes/config.php';
 include __DIR__ . '/../includes/header.php';
 
-// Query orders from salesPerOrder view
-$sql = "SELECT orderinfo_id, total, status FROM salesperorder ORDER BY orderinfo_id DESC";
+// Query sales from salesperorder view
+$sql = "SELECT orderinfo_id, total, status FROM salesperorder ORDER BY total DESC";
 $result = mysqli_query($conn, $sql);
 $itemCount = $result ? mysqli_num_rows($result) : 0;
+
+// Compute grand total
+$grandTotal = 0;
+if ($result) {
+    foreach ($result as $row) {
+        $grandTotal += $row['total'];
+    }
+}
 ?>
 
 <div class="container mt-4">
-    <h2 class="mb-4" style="color:#ffffff; font-weight:700;">Orders</h2>
+    <h2 class="mb-4" style="color:#C71585; font-weight:700;">Sales Report</h2>
 
-    <!-- Order count -->
+    <!-- Sales count -->
     <div class="alert alert-info">
         Total Orders: <?= $itemCount ?>
     </div>
 
-    <!-- Orders Table -->
+    <!-- Sales Table -->
     <table class="table table-striped" style="border:1px solid #F8BBD0; border-radius:10px; overflow:hidden;">
         <thead>
             <tr>
                 <th>Order #</th>
-                <th>Total</th>
+                <th>Total Sales</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             <?php if ($itemCount > 0): ?>
-                <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                <?php foreach ($result as $row): ?>
                     <tr>
                         <td><?= (int)$row['orderinfo_id']; ?></td>
                         <td>₱<?= number_format($row['total'], 2); ?></td>
@@ -44,26 +52,21 @@ $itemCount = $result ? mysqli_num_rows($result) : 0;
                             <?php endif; ?>
                         </td>
                         <td>
-                            <!-- View details -->
                             <a href="orderDetails.php?id=<?= (int)$row['orderinfo_id']; ?>" 
                                class="btn btn-sm btn-primary">
                                 <i class="fa-regular fa-eye"></i> View
                             </a>
-                            <!-- Future actions: cancel, mark delivered -->
-                            <a href="updateStatus.php?id=<?= (int)$row['orderinfo_id']; ?>&status=Delivered" 
-                               class="btn btn-sm btn-success ms-1">
-                                <i class="fa-solid fa-check"></i> Mark Delivered
-                            </a>
-                            <a href="updateStatus.php?id=<?= (int)$row['orderinfo_id']; ?>&status=Cancelled" 
-                               class="btn btn-sm btn-danger ms-1"
-                               onclick="return confirm('Cancel this order?');">
-                                <i class="fa-solid fa-times"></i> Cancel
-                            </a>
                         </td>
                     </tr>
-                <?php endwhile; ?>
+                <?php endforeach; ?>
+                <!-- Grand Total Row -->
+                <tr style="font-weight:bold; background:#f8f9fa;">
+                    <td colspan="1">Grand Total</td>
+                    <td>₱<?= number_format($grandTotal, 2); ?></td>
+                    <td colspan="2"></td>
+                </tr>
             <?php else: ?>
-                <tr><td colspan="4">No orders found.</td></tr>
+                <tr><td colspan="4">No sales records found.</td></tr>
             <?php endif; ?>
         </tbody>
     </table>
