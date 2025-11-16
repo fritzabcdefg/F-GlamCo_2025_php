@@ -84,9 +84,10 @@ if (session_status() === PHP_SESSION_NONE) { session_start(); }
         <button class="btn btn-sm text-pink" type="submit"><i class="fas fa-search"></i></button>
       </form>
       <a class="nav-link text-pink <?php echo basename($_SERVER['PHP_SELF']) === 'index.php' ? 'active' : ''; ?>" href="/F&LGlamCo/index.php">All</a>
-      <a class="nav-link text-pink" href="#">Eye Makeup</a>
-      <a class="nav-link text-pink" href="#">Face Makeup</a>
-      <a class="nav-link text-pink" href="#">Lip Makeup</a>
+      <a class="nav-link text-pink" href="/F&LGlamCo/index.php?category=Eye Makeup">Eye Makeup</a>
+      <a class="nav-link text-pink" href="/F&LGlamCo/index.php?category=Face Makeup">Face Makeup</a>
+      <a class="nav-link text-pink" href="/F&LGlamCo/index.php?category=Lip Makeup">Lip Makeup</a>
+
     </div>
 
     <!-- Right Section -->

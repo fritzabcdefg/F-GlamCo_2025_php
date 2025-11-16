@@ -3,14 +3,33 @@ session_start();
 include('./includes/header.php');
 include('./includes/config.php');
 
-$sql = "SELECT i.item_id AS itemId, i.name, i.supplier_name, i.sell_price, s.quantity,
-               (SELECT filename FROM product_images WHERE item_id = i.item_id ORDER BY created_at ASC LIMIT 1) AS main_image
-        FROM items i
-        INNER JOIN stocks s USING (item_id)
-        WHERE s.quantity > 0
-        ORDER BY i.item_id ASC";
+// Get category filter from URL
+$categoryFilter = isset($_GET['category']) ? trim($_GET['category']) : null;
 
-$results = mysqli_query($conn, $sql);
+if ($categoryFilter) {
+    // Filter by category name
+    $sql = "SELECT i.item_id AS itemId, i.name, i.supplier_name, i.sell_price, s.quantity,
+                   (SELECT filename FROM product_images WHERE item_id = i.item_id ORDER BY created_at ASC LIMIT 1) AS main_image
+            FROM items i
+            INNER JOIN stocks s USING (item_id)
+            INNER JOIN categories c ON i.category_id = c.category_id
+            WHERE s.quantity > 0 AND c.name = ?
+            ORDER BY i.item_id ASC";
+
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "s", $categoryFilter);
+    mysqli_stmt_execute($stmt);
+    $results = mysqli_stmt_get_result($stmt);
+} else {
+    // Show all items if no category filter
+    $sql = "SELECT i.item_id AS itemId, i.name, i.supplier_name, i.sell_price, s.quantity,
+                   (SELECT filename FROM product_images WHERE item_id = i.item_id ORDER BY created_at ASC LIMIT 1) AS main_image
+            FROM items i
+            INNER JOIN stocks s USING (item_id)
+            WHERE s.quantity > 0
+            ORDER BY i.item_id ASC";
+    $results = mysqli_query($conn, $sql);
+}
 ?>
 
 <style>
@@ -77,40 +96,46 @@ $results = mysqli_query($conn, $sql);
     }
 </style>
 
-<?php
-if ($results) {
-    echo '<ul class="products">';
-    while ($row = mysqli_fetch_assoc($results)) {
-        $mainImage = !empty($row['main_image']) ? $row['main_image'] : './assets/no-image.png';
-        ?>
-        <li class="product">
-            <form method="POST" action="./cart/cart_update.php">
-                <div class="product-content">
-                    <div class="product-thumb">
-                        <img src="<?php echo htmlspecialchars($mainImage); ?>" width="80" height="80" style="margin-bottom:6px;">
-                    </div>
-                    <h3><?php echo htmlspecialchars($row['supplier_name'] . ' - ' . $row['name']); ?></h3>
-                    <div class="product-info">
-                        Price: ₱<?php echo number_format($row['sell_price'], 2); ?>
-                        <fieldset>
-                            <label>
-                                <span>Quantity</span>
-                                <input type="number" name="item_qty" value="1" min="1" max="<?php echo $row['quantity']; ?>"/>
-                            </label>
-                        </fieldset>
-                        <input type="hidden" name="item_id" value="<?php echo $row['itemId']; ?>" />
-                        <input type="hidden" name="type" value="add" />
-                        <div align="center">
-                            <a href="./product/show.php?id=<?php echo $row['itemId']; ?>" style="background:#000; color:#fff; border:none; padding:8px 14px; border-radius:4px; text-decoration:none;" class="view-btn">View</a>
-                            <button type="submit" class="add_to_cart">Add</button>
+<div class="container mt-4">
+
+    <?php
+    if ($results && mysqli_num_rows($results) > 0) {
+        echo '<ul class="products">';
+        while ($row = mysqli_fetch_assoc($results)) {
+            $mainImage = !empty($row['main_image']) ? $row['main_image'] : './assets/no-image.png';
+            ?>
+            <li class="product">
+                <form method="POST" action="./cart/cart_update.php">
+                    <div class="product-content">
+                        <div class="product-thumb">
+                            <img src="<?php echo htmlspecialchars($mainImage); ?>" width="80" height="80" style="margin-bottom:6px;">
+                        </div>
+                        <h3><?php echo htmlspecialchars($row['supplier_name'] . ' - ' . $row['name']); ?></h3>
+                        <div class="product-info">
+                            Price: ₱<?php echo number_format($row['sell_price'], 2); ?>
+                            <fieldset>
+                                <label>
+                                    <span>Quantity</span>
+                                    <input type="number" name="item_qty" value="1" min="1" max="<?php echo $row['quantity']; ?>"/>
+                                </label>
+                            </fieldset>
+                            <input type="hidden" name="item_id" value="<?php echo $row['itemId']; ?>" />
+                            <input type="hidden" name="type" value="add" />
+                            <div align="center">
+                                <a href="./product/show.php?id=<?php echo $row['itemId']; ?>" style="background:#000; color:#fff; border:none; padding:8px 14px; border-radius:4px; text-decoration:none;" class="view-btn">View</a>
+                                <button type="submit" class="add_to_cart">Add</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </form>
-        </li>
-        <?php
+                </form>
+            </li>
+            <?php
+        }
+        echo '</ul>';
+    } else {
+        echo "<p>No products found in this category.</p>";
     }
-    echo '</ul>';
-}
-include('./includes/footer.php');
-?>
+    ?>
+</div>
+
+<?php include('./includes/footer.php'); ?>

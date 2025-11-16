@@ -11,12 +11,13 @@ if ($term === '') {
 }
 
 $like = '%' . $term . '%';
-// prepared statement searching item name and category name
-$sql = "SELECT i.item_id AS itemId, i.name, i.img_path, i.sell_price, s.quantity, c.name AS category_name
+
+// Search by item name or supplier name
+$sql = "SELECT i.item_id AS itemId, i.name, i.supplier_name, i.sell_price, s.quantity,
+               (SELECT filename FROM product_images WHERE item_id = i.item_id ORDER BY created_at ASC LIMIT 1) AS main_image
         FROM items i
-        LEFT JOIN categories c ON i.category_id = c.category_id
         LEFT JOIN stocks s USING (item_id)
-        WHERE (i.name LIKE ? OR c.name LIKE ?) AND (s.quantity IS NULL OR s.quantity > 0)
+        WHERE (i.name LIKE ? OR i.supplier_name LIKE ?) AND s.quantity > 0
         ORDER BY i.item_id ASC";
 
 $stmt = mysqli_prepare($conn, $sql);
@@ -28,52 +29,114 @@ if (!$stmt) {
 
 mysqli_stmt_bind_param($stmt, 'ss', $like, $like);
 mysqli_stmt_execute($stmt);
-$res = mysqli_stmt_get_result($stmt);
-
-$products_item = '<ul class="products">';
-if ($res) {
-    while ($row = mysqli_fetch_assoc($res)) {
-        $name   = htmlspecialchars($row['name']);
-        $img    = htmlspecialchars($row['img_path']);
-        $price  = htmlspecialchars($row['sell_price']);
-        $qty    = (int)$row['quantity'];
-        $itemId = (int)$row['itemId'];
-
-        $products_item .= <<<EOT
-        <li class="product">
-            <form method="POST" action="./cart/cart_update.php">
-                <div class="product-content">
-                    <h3>{$name}</h3>
-                    <div class="product-thumb">
-                        <img src="./item/{$img}" width="50px" height="50px">
-                    </div>
-                    <div class="product-info">
-                        Price: {$price}
-                        <fieldset>
-                            <label>
-                                <span>Quantity</span>
-                                <input type="number" size="2" maxlength="2" name="item_qty" value="1" min="1" max="{$qty}"/>
-                            </label>
-                        </fieldset>
-                        <input type="hidden" name="item_id" value="{$itemId}" />
-                        <input type="hidden" name="type" value="add" />
-                        <div align="center">
-                            <a href="./product/show.php?id={$itemId}" class="btn btn-sm btn-outline-primary">View</a>
-                            <button type="submit" class="add_to_cart">Add</button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </li>
-EOT;
-    }
-}
-$products_item .= '</ul>';
+$results = mysqli_stmt_get_result($stmt);
 ?>
+
+<style>
+    ul.products {
+        padding: 0;
+        margin: 0 auto;
+        max-width: 960px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    ul.products li {
+        background-color: #fff;
+        width: 240px;
+        height: 360px;
+        margin: 12px;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        text-align: center;
+    }
+
+    ul.products li h3 {
+        margin: 8px 0;
+        font-size: 1em;
+        color: #333;
+        background: none;
+    }
+
+    .product-thumb img {
+        max-width: 100%;
+        max-height: 120px;
+        object-fit: contain;
+        margin-bottom: 8px;
+    }
+
+    .product-info {
+        font-size: 0.9em;
+        color: #444;
+    }
+
+    .add_to_cart {
+        background: #000;
+        color: #fff;
+        border: none;
+        padding: 8px 14px;
+        cursor: pointer;
+        border-radius: 4px;
+        margin-top: 8px;
+    }
+
+    .add_to_cart:hover {
+        background: #333;
+    }
+
+    .view-btn:hover {
+        background-color: #F69B9A !important;
+        color: #880E4F !important;
+    }
+</style>
 
 <div class="container mt-4">
     <h3>Search results for "<?php echo htmlspecialchars($term); ?>"</h3>
-    <?php echo $products_item; ?>
+
+    <?php
+    if ($results && mysqli_num_rows($results) > 0) {
+        echo '<ul class="products">';
+        while ($row = mysqli_fetch_assoc($results)) {
+            $mainImage = !empty($row['main_image']) ? $row['main_image'] : './assets/no-image.png';
+            ?>
+            <li class="product">
+                <form method="POST" action="./cart/cart_update.php">
+                    <div class="product-content">
+                        <div class="product-thumb">
+                            <img src="<?php echo htmlspecialchars($mainImage); ?>" width="80" height="80" style="margin-bottom:6px;">
+                        </div>
+                        <h3><?php echo htmlspecialchars($row['supplier_name'] . ' - ' . $row['name']); ?></h3>
+                        <div class="product-info">
+                            Price: ₱<?php echo number_format($row['sell_price'], 2); ?>
+                            <fieldset>
+                                <label>
+                                    <span>Quantity</span>
+                                    <input type="number" name="item_qty" value="1" min="1" max="<?php echo $row['quantity']; ?>"/>
+                                </label>
+                            </fieldset>
+                            <input type="hidden" name="item_id" value="<?php echo $row['itemId']; ?>" />
+                            <input type="hidden" name="type" value="add" />
+                            <div align="center">
+                                <a href="./product/show.php?id=<?php echo $row['itemId']; ?>" style="background:#000; color:#fff; border:none; padding:8px 14px; border-radius:4px; text-decoration:none;" class="view-btn">View</a>
+                                <button type="submit" class="add_to_cart">Add</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </li>
+            <?php
+        }
+        echo '</ul>';
+    } else {
+        echo "<p>No products found for your search.</p>";
+    }
+    ?>
 </div>
 
 <?php include('./includes/footer.php'); ?>
