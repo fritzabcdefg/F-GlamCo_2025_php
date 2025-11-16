@@ -88,7 +88,7 @@ if (session_status() === PHP_SESSION_NONE) { session_start(); }
     <!-- Right Section -->
     <ul class="navbar-nav d-flex align-items-center gap-3">
       <li class="nav-item">
-        <a class="nav-link text-pink" href="/F&LGlamCo/cart/view_cart.php"><i class="fas fa-shopping-bag"></i> MY BAG</a>
+        <a class="nav-link text-pink" href="/F&LGlamCo/cart/view_cart.php"><i class="fas fa-shopping-bag"></i> </a>
       </li>
 
       <?php if (isset($_SESSION['user_id'])): ?>

@@ -8,7 +8,7 @@ include('../includes/config.php');
     body {
         margin: 0;
         padding: 0;
-        background: #f9f9f9;
+        background: #000000ff;
     }
     .cart-container {
         width: 100%;
@@ -28,7 +28,7 @@ include('../includes/config.php');
         border-bottom: 1px solid #ddd;
     }
     .cart-table th {
-        background: #007bff;
+        background: #F8BBD0;
         color: #fff;
     }
     .cart-actions {
@@ -39,17 +39,17 @@ include('../includes/config.php');
         margin-left: 10px;
         padding: 8px 16px;
         border: none;
-        background: #007bff;
+        background: #F8BBD0;
         color: #fff;
         text-decoration: none;
         border-radius: 4px;
         cursor: pointer;
     }
     .cart-actions a.button {
-        background: #28a745;
+        background: #F8BBD0;
     }
     .cart-actions a.button.checkout {
-        background: #ffc107;
+        background: #F8BBD0;
         color: #000;
     }
 </style>
@@ -99,9 +99,9 @@ include('../includes/config.php');
         </table>
 
         <div class="cart-actions">
-            <a href="index.php" class="button">➕ Add More Items</a>
-            <button type="submit">🔄 Update</button>
-            <a href="checkout.php" class="button checkout">✅ Checkout</a>
+            <a href="index.php" class="button"> Add More Items</a>
+            <button type="submit"> Update</button>
+            <a href="checkout.php" class="button checkout"> Checkout</a>
         </div>
     </form>
 </div>
