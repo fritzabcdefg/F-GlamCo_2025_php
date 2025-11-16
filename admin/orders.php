@@ -48,16 +48,7 @@ $itemCount = $result ? mysqli_num_rows($result) : 0;
                             <a href="orderDetails.php?id=<?= (int)$row['orderinfo_id']; ?>" 
                                class="btn btn-sm btn-primary">
                                 <i class="fa-regular fa-eye"></i> View
-                            </a>
-                            <!-- Future actions: cancel, mark delivered -->
-                            <a href="updateStatus.php?id=<?= (int)$row['orderinfo_id']; ?>&status=Delivered" 
-                               class="btn btn-sm btn-success ms-1">
-                                <i class="fa-solid fa-check"></i> Mark Delivered
-                            </a>
-                            <a href="updateStatus.php?id=<?= (int)$row['orderinfo_id']; ?>&status=Cancelled" 
-                               class="btn btn-sm btn-danger ms-1"
-                               onclick="return confirm('Cancel this order?');">
-                                <i class="fa-solid fa-times"></i> Cancel
+                            
                             </a>
                         </td>
                     </tr>
