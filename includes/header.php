@@ -49,7 +49,7 @@ if (session_status() === PHP_SESSION_NONE) { session_start(); }
       <a href="/F&LGlamCo/admin/users.php" class="sidebar-btn">Users</a>
       <a href="/F&LGlamCo/admin/orders.php" class="sidebar-btn">Orders</a>
     <?php else: ?>
-      <a href="/F&LGlamCo/user/orders.php" class="sidebar-btn">My Orders</a>
+      <a href="/F&LGlamCo/user/orders/orders.php" class="sidebar-btn">My Orders</a>
     <?php endif; ?>
 
     <!-- Bottom section -->
