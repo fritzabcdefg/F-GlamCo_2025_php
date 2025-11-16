@@ -1,6 +1,6 @@
 <?php
 ?>
-<footer style="margin-top:40px; padding:24px 16px; background-color:#FFFFFF; text-align:center; font-family:sans-serif; color:#333;">
+<footer style="width:100%; background-color:#FFFFFF; padding:24px 16px; text-align:center; font-family:sans-serif; color:#333; border-top:1px solid #ccc;">
     <div style="margin-bottom:16px;">
         <div style="font-weight:600; margin-bottom:8px;">ABOUT US &nbsp; | &nbsp; FAQ &nbsp; | &nbsp; SITEMAP</div>
         <div style="font-weight:600;">Privacy Policy &nbsp; | &nbsp; Terms and Conditions &nbsp; | &nbsp; Certificate of Registration</div>
@@ -23,6 +23,3 @@
 
     <p style="margin-top:16px; font-size:0.9em;">©2025 F&amp;LGlamCo</p>
 </footer>
-
-</body>
-</html>
