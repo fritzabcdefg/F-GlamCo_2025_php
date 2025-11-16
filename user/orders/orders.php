@@ -36,7 +36,7 @@ $result = mysqli_stmt_get_result($stmt);
         min-height: 100vh;
         padding: 20px;
         box-sizing: border-box;
-        background: #f9f9f9;
+        background: #000000;
     }
     .orders-table {
         width: 100%;
@@ -50,8 +50,8 @@ $result = mysqli_stmt_get_result($stmt);
         border-bottom: 1px solid #ddd;
     }
     .orders-table th {
-        background: #007bff;
-        color: #fff;
+        background: #F8BBD0;
+        color: #000000ff;
     }
     .status-badge {
         padding: 4px 10px;
@@ -65,7 +65,7 @@ $result = mysqli_stmt_get_result($stmt);
 </style>
 
 <div class="orders-container">
-    <h1 align="center">📦 My Orders</h1>
+    <h1 align="center"> My Orders</h1>
     <table class="orders-table">
         <thead>
             <tr>
