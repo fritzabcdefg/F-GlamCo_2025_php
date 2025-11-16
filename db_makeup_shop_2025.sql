@@ -198,3 +198,46 @@ INSERT INTO `users` (`id`, `email`, `password`, `role`, `active`, `created_at`, 
 INSERT INTO `customers` (`customer_id`, `title`, `lname`, `fname`, `addressline`, `town`, `zipcode`, `phone`, `user_id`, `image`) VALUES
 (1, '', 'Cadao', 'Fritzie', '205 ML QUEZON ST NEW LOWER BICUTN TAGUIG CITY', 'TAGUIG', '1632', '09664259993', 1, 'Snaptik.app_74656941751832609616 (2).jpg');
 COMMIT;
+
+INSERT INTO `items` (`item_id`, `name`, `cost_price`, `sell_price`, `supplier_name`, `category_id`) VALUES
+(1, 'Mat Rev Mrs Kisses', 2500.00, 2889.89, 'CHARLOTTE TILBURY', 2),
+(2, '3D Voluming Gloss B07 Peach 70% 5.3G', 250.00, 450.00, 'FWEE', 2),
+(3, 'Hollywood Flawless Filter 3 Fair', 1800.00, 2189.00, 'CHARLOTTE TILBURY', 3),
+(4, 'FENTY BEAUTY PRO FILTR HYDRATING PRIMER SOFT', 1260.00, 1599.99, 'FENTY', 3),
+(5, 'Creme Cheek Blush Purr', 589.00, 658.89, 'ISSY', 3),
+(6, 'Precision Fluid Liner in Pitch Black', 450.00, 569.00, 'ISSY', 1),
+(7, 'Lip Butter Balm Sweet Mint', 880.00, 999.00, 'SUMMER FRIDAYS', 2),
+(8, 'Tusm Foundation Shell', 580.00, 759.00, 'TEVIANT', 3),
+(9, 'The Porefessional Face Primer - 22ML', 480.00, 699.00, 'The Pore', 3);
+
+INSERT INTO `stocks` (`item_id`, `quantity`) VALUES
+(1, 200),
+(2, 50),
+(3, 100),
+(4, 200),
+(5, 200),
+(6, 100),
+(7, 400),
+(8, 25),
+(9, 60);
+
+INSERT INTO `product_images` (`id`, `item_id`, `filename`, `created_at`) VALUES
+(1, 1, '/F&LGlamCo/product/images/1763302294_3a1d08f0_CHARLOTTE_TILBURY__Mat_Rev_Mrs_Kisses__2_.png', '2025-11-16 14:11:34'),
+(2, 1, '/F&LGlamCo/product/images/1763302294_ecef6919_CHARLOTTE_TILBURY__Mat_Rev_Mrs_Kisses__3_.png', '2025-11-16 14:11:34'),
+(3, 1, '/F&LGlamCo/product/images/1763302294_5f27f507_CHARLOTTE_TILBURY__Mat_Rev_Mrs_Kisses.png', '2025-11-16 14:11:34'),
+(4, 2, '/F&LGlamCo/product/images/1763304349_381b23d3_FWEE_3D_Voluming_Gloss_B07_Peach_70__5.3G__2_.png', '2025-11-16 14:45:49'),
+(5, 2, '/F&LGlamCo/product/images/1763304349_81a2d118_FWEE_3D_Voluming_Gloss_B07_Peach_70__5.3G.png', '2025-11-16 14:45:49'),
+(6, 3, '/F&LGlamCo/product/images/1763304524_710fc686_CHARLOTTE_TILBURY_Hollywood_Flawless_Filter_3_Fair__2_.png', '2025-11-16 14:48:44'),
+(7, 3, '/F&LGlamCo/product/images/1763304524_cdc3609f_CHARLOTTE_TILBURY_Hollywood_Flawless_Filter_3_Fair__3_.png', '2025-11-16 14:48:44'),
+(8, 3, '/F&LGlamCo/product/images/1763304524_721590a0_CHARLOTTE_TILBURY_Hollywood_Flawless_Filter_3_Fair.png', '2025-11-16 14:48:44'),
+(9, 4, '/F&LGlamCo/product/images/1763306206_3e18d70d_FENTY_FENTY_BEAUTY_PRO_FILTR_HYDRATING_PRIMER_SOFT_SILK_30ML__2_.png', '2025-11-16 15:16:46'),
+(10, 4, '/F&LGlamCo/product/images/1763306206_3d3f4aee_FENTY_FENTY_BEAUTY_PRO_FILTR_HYDRATING_PRIMER_SOFT_SILK_30ML__3_.png', '2025-11-16 15:16:46'),
+(11, 4, '/F&LGlamCo/product/images/1763306206_15200df9_FENTY_FENTY_BEAUTY_PRO_FILTR_HYDRATING_PRIMER_SOFT_SILK_30ML.png', '2025-11-16 15:16:46'),
+(12, 5, '/F&LGlamCo/product/images/1763306902_465b374e_ISSY_Creme_Cheek_Blush_Purr__2_.png', '2025-11-16 15:28:22'),
+(13, 5, '/F&LGlamCo/product/images/1763306902_ea3e0138_ISSY_Creme_Cheek_Blush_Purr.png', '2025-11-16 15:28:22'),
+(14, 6, '/F&LGlamCo/product/images/1763306954_6beaa3cd_ISSY_Precision_Fluid_Liner_in_Pitch_Black.png', '2025-11-16 15:29:14'),
+(15, 7, '/F&LGlamCo/product/images/1763307031_5ad98522_SUMMER_FRIDAYS_Lip_Butter_Balm_Sweet_Mint__2_.png', '2025-11-16 15:30:31'),
+(16, 7, '/F&LGlamCo/product/images/1763307031_f21c4dad_SUMMER_FRIDAYS_Lip_Butter_Balm_Sweet_Mint__3_.png', '2025-11-16 15:30:31'),
+(17, 7, '/F&LGlamCo/product/images/1763307031_384ab6a0_SUMMER_FRIDAYS_Lip_Butter_Balm_Sweet_Mint.png', '2025-11-16 15:30:31'),
+(18, 8, '/F&LGlamCo/product/images/1763307077_f950f8cc_TEVIANT_Tusm_Foundation_Shell.png', '2025-11-16 15:31:17'),
+(19, 9, '/F&LGlamCo/product/images/1763307143_ea6b84c6_The_Porefessional_Face_Primer_-_22ML.png', '2025-11-16 15:32:23');
