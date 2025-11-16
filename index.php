@@ -33,71 +33,129 @@ if ($categoryFilter) {
 ?>
 
 <style>
-    ul.products {
+    .products {
         padding: 0;
         margin: 0 auto;
-        max-width: 960px;
+        max-width: 1100px;
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
+        gap: 20px;
     }
 
-    ul.products li {
+    .product {
         background-color: #fff;
-        width: 240px;
-        height: 360px;
+        width: 500px; /* bigger container */
+        min-height: 250px;
         margin: 12px;
-        padding: 12px;
+        padding: 16px;
         border: 1px solid #ccc;
-        border-radius: 6px;
+        border-radius: 8px;
         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        text-align: center;
     }
 
-    ul.products li h3 {
-        margin: 8px 0;
-        font-size: 1em;
-        color: #333;
-        background: none;
+    .product-content {
+        display: flex;
+        flex-direction: row;
+        gap: 16px;
+        flex-grow: 1;
+    }
+
+    .product-thumb {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .product-thumb img {
         max-width: 100%;
-        max-height: 120px;
+        max-height: 200px;
         object-fit: contain;
-        margin-bottom: 8px;
+        border-radius: 6px;
     }
 
-    .product-info {
-        font-size: 0.9em;
+    .product-details {
+        flex: 2;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+
+    .product-details h4 {
+        margin: 0;
+        font-size: 1.1em;
+        color: #C71585; /* brand color */
+        font-weight: 600;
+    }
+
+    .product-details h5 {
+        margin: 4px 0;
+        font-size: 1em;
+        color: #333;
+    }
+
+    .product-details .price {
+        font-size: 1em;
+        font-weight: bold;
+        margin: 6px 0;
         color: #444;
     }
 
-    .add_to_cart {
-        background: #000;
-        color: #fff;
+    .product-details fieldset {
         border: none;
-        padding: 8px 14px;
-        cursor: pointer;
-        border-radius: 4px;
-        margin-top: 8px;
+        padding: 0;
+        margin: 6px 0;
     }
 
-    .add_to_cart:hover {
-        background: #333;
+    .product-details input[type="number"] {
+        width: 80px;
+        padding: 4px;
+    }
+
+    .product-actions {
+        margin-top: auto;
+        display: flex;
+        justify-content: flex-start;
+        gap: 10px;
+    }
+
+    .view-btn,
+    .add_to_cart {
+        flex: 1;
+        text-align: center;
+        padding: 10px;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+        font-size: 0.9em;
+    }
+
+    .view-btn {
+        background: #000;
+        color: #fff;
+        text-decoration: none;
     }
 
     .view-btn:hover {
         background-color: #F69B9A !important;
         color: #880E4F !important;
     }
+
+    .add_to_cart {
+        background: #000;
+        color: #fff;
+    }
+
+    .add_to_cart:hover {
+        background: #333;
+    }
 </style>
 
 <div class="container mt-4">
-
     <?php
     if ($results && mysqli_num_rows($results) > 0) {
         echo '<ul class="products">';
@@ -107,26 +165,34 @@ if ($categoryFilter) {
             <li class="product">
                 <form method="POST" action="./cart/cart_update.php">
                     <div class="product-content">
+                        <!-- Left: Image -->
                         <div class="product-thumb">
-                            <img src="<?php echo htmlspecialchars($mainImage); ?>" width="80" height="80" style="margin-bottom:6px;">
+                            <img src="<?php echo htmlspecialchars($mainImage); ?>" alt="Product Image">
                         </div>
-                        <h3><?php echo htmlspecialchars($row['supplier_name'] . ' - ' . $row['name']); ?></h3>
-                        <div class="product-info">
-                            Price: ₱<?php echo number_format($row['sell_price'], 2); ?>
+
+                        <!-- Right: Details -->
+                        <div class="product-details">
+                            <h4><?php echo htmlspecialchars($row['supplier_name']); ?></h4>
+                            <h5><?php echo htmlspecialchars($row['name']); ?></h5>
+                            <div class="price">₱<?php echo number_format($row['sell_price'], 2); ?></div>
                             <fieldset>
                                 <label>
                                     <span>Quantity</span>
                                     <input type="number" name="item_qty" value="1" min="1" max="<?php echo $row['quantity']; ?>"/>
                                 </label>
                             </fieldset>
-                            <input type="hidden" name="item_id" value="<?php echo $row['itemId']; ?>" />
-                            <input type="hidden" name="type" value="add" />
-                            <div align="center">
-                                <a href="./product/show.php?id=<?php echo $row['itemId']; ?>" style="background:#000; color:#fff; border:none; padding:8px 14px; border-radius:4px; text-decoration:none;" class="view-btn">View</a>
+
+                            <!-- Bottom: Actions -->
+                            <div class="product-actions">
+                                <a href="./product/show.php?id=<?php echo $row['itemId']; ?>" class="view-btn">View</a>
                                 <button type="submit" class="add_to_cart">Add</button>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Hidden inputs -->
+                    <input type="hidden" name="item_id" value="<?php echo $row['itemId']; ?>" />
+                    <input type="hidden" name="type" value="add" />
                 </form>
             </li>
             <?php
@@ -137,5 +203,6 @@ if ($categoryFilter) {
     }
     ?>
 </div>
+
 
 <?php include('./includes/footer.php'); ?>

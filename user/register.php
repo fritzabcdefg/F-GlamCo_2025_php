@@ -67,17 +67,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <div class="auth-container">
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
       <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
+        <label for="email" class="loginform-label">Email</label>
         <input type="email" class="form-control" id="email" name="email" required>
       </div>
 
       <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
+        <label for="password" class="loginform-label">Password</label>
         <input type="password" class="form-control" id="password" name="password" required>
       </div>
 
       <div class="mb-3">
-        <label for="confirmPass" class="form-label">Confirm Password</label>
+        <label for="confirmPass" class="loginform-label">Confirm Password</label>
         <input type="password" class="form-control" id="confirmPass" name="confirmPass" required>
       </div>
 

@@ -13,7 +13,6 @@ try {
 
     mysqli_query($conn, 'START TRANSACTION');
 
-    // Get customer_id and email
     $customer_id = null;
     $customer_email = null;
     $selCust = mysqli_prepare($conn, "
@@ -86,16 +85,21 @@ try {
     $html_body .= "<tr><td colspan='3' align='right'><strong>Grand Total</strong></td><td><strong>₱" . number_format($grand_total, 2) . "</strong></td></tr>";
     $html_body .= "</table>";
 
-    // ✅ Send emails
     smtp_send_mail("test@mailtrap.io", "New Order Placed", $html_body);
+
     if ($customer_email) {
-        smtp_send_mail($customer_email, "Your Order Confirmation", $html_body);
+    $res = smtp_send_mail($customer_email, "Your Order Confirmation", $html_body);
+    if (!$res['success']) {
+        error_log("Failed to send confirmation to $customer_email: " . $res['error']);
+    }
+    } else {
+        error_log("No customer email found for user_id " . $_SESSION['user_id']);
     }
 
-    // ✅ Clear cart
+
+
     unset($_SESSION['cart_products']);
 
-    // ✅ Redirect to thank you page
     header('Location: ../thank_you.php');
     exit;
 
