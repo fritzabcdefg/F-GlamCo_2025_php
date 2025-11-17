@@ -49,25 +49,19 @@ include('../includes/config.php');
         border-radius: 4px;
         cursor: pointer;
     }
-    .cart-actions a.button {
-        background: #F8BBD0;
-    }
     .cart-actions a.button.checkout {
         background: #F8BBD0;
         color: #000;
     }
-    .delete-icon {
+    .remove-btn {
         background: none;
         border: none;
         cursor: pointer;
-        padding: 0;
-    }
-    .delete-icon i {
         color: #C71585;
         font-size: 1.2rem;
         transition: color 0.2s ease;
     }
-    .delete-icon i:hover {
+    .remove-btn:hover {
         color: #880E4F;
     }
 </style>
@@ -78,11 +72,13 @@ include('../includes/config.php');
         <table class="cart-table">
             <thead>
                 <tr>
+                    <th>Select</th>
                     <th>Quantity</th>
                     <th>Name</th>
+                    <th>Brand</th>
                     <th>Price</th>
                     <th>Total</th>
-                    <th>Remove</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -94,14 +90,24 @@ include('../includes/config.php');
                         $product_qty   = $cart_itm["item_qty"];
                         $product_price = $cart_itm["item_price"];
                         $product_code  = $cart_itm["item_id"];
+                        $product_brand = $cart_itm["supplier_name"]; // must be stored in session when adding to cart
                         $subtotal      = $product_price * $product_qty;
 
                         echo '<tr>';
+                        // Select column (checked by default)
+                        echo '<td><input type="checkbox" name="checkout_select[]" value="' . $product_code . '" checked /></td>';
+                        // Quantity
                         echo '<td><input type="number" min="1" name="product_qty[' . $product_code . ']" value="' . $product_qty . '" style="width:60px;text-align:center;" /></td>';
+                        // Name
                         echo '<td>' . htmlspecialchars($product_name) . '</td>';
+                        // Brand
+                        echo '<td>' . htmlspecialchars($product_brand) . '</td>';
+                        // Price
                         echo '<td>₱' . number_format($product_price, 2) . '</td>';
+                        // Total
                         echo '<td>₱' . number_format($subtotal, 2) . '</td>';
-                        echo '<td><input type="checkbox" name="remove_code[]" value="' . $product_code . '" /></td>';
+                        // Action (remove button)
+                        echo '<td><button type="submit" name="remove_code" value="' . $product_code . '" class="remove-btn"><i class="fas fa-trash"></i></button></td>';
                         echo '</tr>';
 
                         $total += $subtotal;
@@ -109,7 +115,7 @@ include('../includes/config.php');
                 }
                 ?>
                 <tr>
-                    <td colspan="5" style="text-align:right;font-weight:bold;">
+                    <td colspan="7" style="text-align:right;font-weight:bold;">
                         Amount Payable : ₱<?php echo sprintf("%01.2f", $total); ?>
                     </td>
                 </tr>
@@ -117,7 +123,7 @@ include('../includes/config.php');
         </table>
 
         <div class="cart-actions">
-            <a href="index.php" class="button"> Add More Items</a>
+            <a href="../index.php" class="button"> Shop More</a>
             <button type="submit"> Update</button>
             <a href="checkout.php" class="button checkout"> Checkout</a>
         </div>

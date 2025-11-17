@@ -10,6 +10,7 @@ if (!isset($_SESSION["cart_products"]) || count($_SESSION["cart_products"]) === 
     exit;
 }
 
+$selectedIds = isset($_SESSION['checkout_selected']) ? $_SESSION['checkout_selected'] : [];
 $total = 0;
 $shipping = 80.00; // flat shipping fee
 ?>
@@ -63,9 +64,10 @@ $shipping = 80.00; // flat shipping fee
         background: #28a745;
     }
 </style>
+
 <div class="checkout-container">
     <h1 align="center" style="color:#F69b9A;">Order Summary</h1>
-    <form method="POST" action="process_checkout.php">
+    <form method="POST" action="place_order.php">
         
         <!-- Items Table -->
         <table class="checkout-table mb-4">
@@ -73,25 +75,33 @@ $shipping = 80.00; // flat shipping fee
                 <tr>
                     <th>Quantity</th>
                     <th>Name</th>
+                    <th>Brand</th>
                     <th>Price</th>
                     <th>Subtotal</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($_SESSION["cart_products"] as $cart_itm): 
-                    $product_name  = $cart_itm["item_name"];
-                    $product_qty   = $cart_itm["item_qty"];
-                    $product_price = $cart_itm["item_price"];
-                    $subtotal      = $product_price * $product_qty;
-                    $total += $subtotal;
+                <?php 
+                foreach ($_SESSION["cart_products"] as $cart_itm): 
+                    if (in_array($cart_itm["item_id"], $selectedIds)) {
+                        $product_name  = $cart_itm["item_name"];
+                        $product_qty   = $cart_itm["item_qty"];
+                        $product_price = $cart_itm["item_price"];
+                        $product_brand = $cart_itm["supplier_name"];
+                        $subtotal      = $product_price * $product_qty;
+                        $total += $subtotal;
                 ?>
                 <tr>
                     <td><?php echo $product_qty; ?></td>
                     <td><?php echo htmlspecialchars($product_name); ?></td>
+                    <td><?php echo htmlspecialchars($product_brand); ?></td>
                     <td>₱<?php echo number_format($product_price, 2); ?></td>
                     <td>₱<?php echo number_format($subtotal, 2); ?></td>
                 </tr>
-                <?php endforeach; ?>
+                <?php 
+                    }
+                endforeach; 
+                ?>
             </tbody>
         </table>
 
@@ -115,6 +125,5 @@ $shipping = 80.00; // flat shipping fee
         </div>
     </form>
 </div>
-
 
 <?php include('../includes/footer.php'); ?>
