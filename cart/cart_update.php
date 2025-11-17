@@ -68,21 +68,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Save selected items for checkout
-    if (isset($_POST['checkout_select']) && is_array($_POST['checkout_select'])) {
-        $_SESSION['checkout_selected'] = array_map('intval', $_POST['checkout_select']);
-    } else {
-        $_SESSION['checkout_selected'] = [];
-    }
+// Save selected items
+if (isset($_POST['checkout_select']) && is_array($_POST['checkout_select'])) {
+    $_SESSION['checkout_selected'] = array_map('intval', $_POST['checkout_select']);
+}
 
-    // Decide where to go
-    if (isset($_POST['go_checkout'])) {
+// Restrict checkout if none selected
+if (isset($_POST['go_checkout'])) {
+    if (empty($_SESSION['checkout_selected'])) {
+        echo "<script>alert('Please select an item first.'); window.location.href='view_cart.php';</script>";
+        exit;
+    } else {
         header('Location: checkout.php');
         exit;
-    } else {
-        header('Location: view_cart.php');
-        exit;
     }
+}
+
 }
 
 

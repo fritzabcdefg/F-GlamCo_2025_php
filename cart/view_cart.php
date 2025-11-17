@@ -26,12 +26,6 @@ include('../includes/config.php');
     <h1 align="center" style="color:#F69b9A;">Your Shopping Bag</h1>
     <form method="POST" action="cart_update.php">
 
-        <!-- Select All / Deselect All controls -->
-        <div class="select-controls">
-            <button type="button" id="selectAllBtn">Select All</button>
-            <button type="button" id="deselectAllBtn">Deselect All</button>
-        </div>
-
         <table class="cart-table">
             <thead>
                 <tr>
@@ -56,8 +50,11 @@ include('../includes/config.php');
                         $product_brand = $cart_itm["supplier_name"];
                         $subtotal      = $product_price * $product_qty;
 
+                        // Check if item is in checkout_selected
+                        $checked = (isset($_SESSION['checkout_selected']) && in_array($product_code, $_SESSION['checkout_selected'])) ? 'checked' : '';
+
                         echo '<tr>';
-                        echo '<td><input type="checkbox" class="selectItem" name="checkout_select[]" value="' . $product_code . '" checked></td>';
+                        echo '<td><input type="checkbox" class="selectItem" name="checkout_select[]" value="' . $product_code . '" ' . $checked . '></td>';
                         echo '<td><input type="number" min="1" name="product_qty[' . $product_code . ']" value="' . $product_qty . '" style="width:60px;text-align:center;"></td>';
                         echo '<td>' . htmlspecialchars($product_name) . '</td>';
                         echo '<td>' . htmlspecialchars($product_brand) . '</td>';
@@ -86,18 +83,5 @@ include('../includes/config.php');
     </form>
 </div>
 
-<script>
-    const selectAllBtn = document.getElementById('selectAllBtn');
-    const deselectAllBtn = document.getElementById('deselectAllBtn');
-    const checkboxes = document.querySelectorAll('.selectItem');
-
-    selectAllBtn.addEventListener('click', () => {
-        checkboxes.forEach(cb => cb.checked = true);
-    });
-
-    deselectAllBtn.addEventListener('click', () => {
-        checkboxes.forEach(cb => cb.checked = false);
-    });
-</script>
 
 <?php include('../includes/footer.php'); ?>
