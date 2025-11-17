@@ -4,6 +4,9 @@ include('../includes/header.php');
 include('../includes/config.php');
 ?>
 
+<!-- Font Awesome for trash icon -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 <style>
     body {
         margin: 0;
@@ -21,6 +24,7 @@ include('../includes/config.php');
         border-collapse: collapse;
         background: #fff;
         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        color: #000000;
     }
     .cart-table th, .cart-table td {
         padding: 12px;
@@ -29,7 +33,7 @@ include('../includes/config.php');
     }
     .cart-table th {
         background: #F8BBD0;
-        color: #fff;
+        color: #000000;
     }
     .cart-actions {
         text-align: right;
@@ -40,7 +44,7 @@ include('../includes/config.php');
         padding: 8px 16px;
         border: none;
         background: #F8BBD0;
-        color: #fff;
+        color: #000000ff;
         text-decoration: none;
         border-radius: 4px;
         cursor: pointer;
@@ -52,10 +56,24 @@ include('../includes/config.php');
         background: #F8BBD0;
         color: #000;
     }
+    .delete-icon {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+    }
+    .delete-icon i {
+        color: #C71585;
+        font-size: 1.2rem;
+        transition: color 0.2s ease;
+    }
+    .delete-icon i:hover {
+        color: #880E4F;
+    }
 </style>
 
 <div class="cart-container">
-    <h1 align="center">Your Shopping Bag</h1>
+    <h1 align="center" style="color:#F8BBD0;">Your Shopping Bag</h1>
     <form method="POST" action="cart_update.php">
         <table class="cart-table">
             <thead>
