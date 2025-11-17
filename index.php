@@ -74,6 +74,7 @@ if ($categoryFilter) {
         border-radius: 6px;
     }
     .product-details {
+        color: #000000;
         flex: 2;
         display: flex;
         flex-direction: column;
@@ -158,7 +159,7 @@ if ($categoryFilter) {
                             <div class="price">₱<?php echo number_format($row['sell_price'], 2); ?></div>
                             <fieldset>
                                 <label>
-                                    <span>Quantity</span>
+                                    <span>Quantity:</span>
                                     <input type="number" name="item_qty" value="1" min="1" max="<?php echo $row['quantity']; ?>"/>
                                 </label>
                             </fieldset>
