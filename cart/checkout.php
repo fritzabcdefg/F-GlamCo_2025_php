@@ -36,6 +36,7 @@ $shipping = 80.00; // flat shipping fee
         padding: 12px;
         text-align: center;
         border-bottom: 1px solid #ddd;
+        color: #000000ff;
     }
     .checkout-table th {
         background: #F8BBD0;
@@ -62,9 +63,8 @@ $shipping = 80.00; // flat shipping fee
         background: #28a745;
     }
 </style>
-
 <div class="checkout-container">
-    <h1 align="center">✅ Checkout</h1>
+    <h1 align="center" style="color:#F69b9A;">Order Summary</h1>
     <form method="POST" action="process_checkout.php">
         
         <!-- Items Table -->

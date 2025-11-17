@@ -73,7 +73,7 @@ include('../includes/config.php');
 </style>
 
 <div class="cart-container">
-    <h1 align="center" style="color:#F8BBD0;">Your Shopping Bag</h1>
+    <h1 align="center" style="color:#F69b9A;">Your Shopping Bag</h1>
     <form method="POST" action="cart_update.php">
         <table class="cart-table">
             <thead>
