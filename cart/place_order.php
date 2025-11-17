@@ -127,7 +127,7 @@ try {
 
                         // Always send admin notification
             $adminSubject = "New Order Placed";
-            smtp_send_mail("inbox@YOURID.mailtrap.io", $adminSubject, $html);
+            smtp_send_mail("inbox@YOURID.mailtrap.io", $adminSubject, $html);  
 
         }
         $stmt->close();
