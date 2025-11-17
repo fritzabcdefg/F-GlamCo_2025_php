@@ -14,48 +14,79 @@ if (isset($_POST["type"]) && $_POST["type"] === 'add' && isset($_POST["item_qty"
                    (SELECT filename FROM product_images WHERE item_id = i.item_id ORDER BY created_at ASC LIMIT 1) AS main_image
             FROM items i
             INNER JOIN stocks s USING (item_id)
-            WHERE i.item_id = {$new_product['item_id']} LIMIT 1";
-    $result = mysqli_query($conn, $sql);
-    $row = mysqli_fetch_assoc($result);
+            WHERE i.item_id = " . intval($new_product['item_id']) . " LIMIT 1";
 
-    if ($row) {
-        $new_product["item_name"]     = $row['name'];
-        $new_product["item_price"]    = $row['sell_price'];
-        $new_product["item_stock"]    = $row['quantity'];
-        $new_product["item_image"]    = $row['main_image'];
-        $new_product["supplier_name"] = $row['supplier_name'];
+    $result = mysqli_query($conn, $sql);
+    if ($result) {
+        $row = mysqli_fetch_assoc($result);
+    } else {
+        $row = null;
     }
 
+    if ($row) {
+        $new_product["item_id"]       = (int)$row['itemId'];
+        $new_product["item_name"]     = $row['name'];
+        $new_product["item_price"]    = (float)$row['sell_price'];
+        $new_product["item_stock"]    = (int)$row['quantity']; // for validation
+        $new_product["item_image"]    = $row['main_image'];    // optional for display
+        $new_product["supplier_name"] = $row['supplier_name']; // brand
+        // normalize qty
+        $new_product["item_qty"]      = isset($new_product["item_qty"]) ? max(1, (int)$new_product["item_qty"]) : 1;
+    }
+
+    // Upsert into cart (keyed by item_id)
+    if (!isset($_SESSION["cart_products"])) {
+        $_SESSION["cart_products"] = [];
+    }
     $_SESSION["cart_products"][$new_product['item_id']] = $new_product;
+
+    // After add, return to referrer (index) and do not alter checkout selection
+    header('Location: ' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '../index.php'));
+    exit;
 }
 
-// 🔄 Update quantities, remove items, and handle checkout selection
-if (isset($_POST["product_qty"]) || isset($_POST["remove_code"]) || isset($_POST["checkout_select"])) {
+// 🔄 Update quantities, remove items, capture checkout selection, and decide redirect
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
     // Update quantities
-    if (isset($_POST["product_qty"]) && is_array($_POST["product_qty"])) {
+    if (isset($_POST["product_qty"]) && is_array($_POST["product_qty"]) && isset($_SESSION["cart_products"])) {
         foreach ($_POST["product_qty"] as $key => $value) {
-            if (is_numeric($value) && isset($_SESSION["cart_products"][$key])) {
-                $max_stock = $_SESSION["cart_products"][$key]["item_stock"];
-                $safe_qty  = max(1, min($value, $max_stock));
+            $key = (int)$key;
+            if (isset($_SESSION["cart_products"][$key])) {
+                $max_stock = isset($_SESSION["cart_products"][$key]["item_stock"]) ? (int)$_SESSION["cart_products"][$key]["item_stock"] : PHP_INT_MAX;
+                $safe_qty  = max(1, min((int)$value, $max_stock));
                 $_SESSION["cart_products"][$key]["item_qty"] = $safe_qty;
             }
         }
     }
 
-    // 🗑️ Remove items
+    // Remove item (single submit button behavior)
     if (isset($_POST["remove_code"])) {
-        $remove_id = intval($_POST["remove_code"]);
-        unset($_SESSION["cart_products"][$remove_id]);
+        $remove_id = (int)$_POST["remove_code"];
+        if (isset($_SESSION["cart_products"][$remove_id])) {
+            unset($_SESSION["cart_products"][$remove_id]);
+        }
     }
 
-    // ✅ Save selected items for checkout
+    // Save selected items for checkout
     if (isset($_POST['checkout_select']) && is_array($_POST['checkout_select'])) {
         $_SESSION['checkout_selected'] = array_map('intval', $_POST['checkout_select']);
     } else {
         $_SESSION['checkout_selected'] = [];
     }
+
+    // Decide where to go
+    if (isset($_POST['go_checkout'])) {
+        header('Location: checkout.php');
+        exit;
+    } else {
+        header('Location: view_cart.php');
+        exit;
+    }
 }
 
+
+// Fallback
 header('Location: view_cart.php');
 exit;
 ?>

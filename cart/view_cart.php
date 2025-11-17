@@ -8,67 +8,30 @@ include('../includes/config.php');
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 <style>
-    body {
-        margin: 0;
-        padding: 0;
-        background: #000000ff;
-    }
-    .cart-container {
-        width: 100%;
-        min-height: 100vh;
-        padding: 20px;
-        box-sizing: border-box;
-    }
-    .cart-table {
-        width: 100%;
-        border-collapse: collapse;
-        background: #fff;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        color: #000000;
-    }
-    .cart-table th, .cart-table td {
-        padding: 12px;
-        text-align: center;
-        border-bottom: 1px solid #ddd;
-    }
-    .cart-table th {
-        background: #F8BBD0;
-        color: #000000;
-    }
-    .cart-actions {
-        text-align: right;
-        margin-top: 20px;
-    }
-    .cart-actions a, .cart-actions button {
-        margin-left: 10px;
-        padding: 8px 16px;
-        border: none;
-        background: #F8BBD0;
-        color: #000000ff;
-        text-decoration: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-    .cart-actions a.button.checkout {
-        background: #F8BBD0;
-        color: #000;
-    }
-    .remove-btn {
-        background: none;
-        border: none;
-        cursor: pointer;
-        color: #C71585;
-        font-size: 1.2rem;
-        transition: color 0.2s ease;
-    }
-    .remove-btn:hover {
-        color: #880E4F;
-    }
+    body { margin:0; padding:0; background:#000000ff; }
+    .cart-container { width:100%; min-height:100vh; padding:20px; box-sizing:border-box; }
+    .cart-table { width:100%; border-collapse:collapse; background:#fff; box-shadow:0 2px 6px rgba(0,0,0,0.1); color:#000; }
+    .cart-table th, .cart-table td { padding:12px; text-align:center; border-bottom:1px solid #ddd; }
+    .cart-table th { background:#F8BBD0; color:#000; }
+    .cart-actions { text-align:right; margin-top:20px; }
+    .cart-actions a, .cart-actions button { margin-left:10px; padding:8px 16px; border:none; background:#F8BBD0; color:#000; text-decoration:none; border-radius:4px; cursor:pointer; }
+    .cart-actions a.button.checkout { background:#F8BBD0; color:#000; }
+    .remove-btn { background:none; border:none; cursor:pointer; color:#C71585; font-size:1.2rem; transition:color 0.2s ease; }
+    .remove-btn:hover { color:#880E4F; }
+    .select-controls { margin-bottom:10px; text-align:left; }
+    .select-controls button { margin-right:10px; padding:6px 12px; border:none; background:#F8BBD0; color:#000; border-radius:4px; cursor:pointer; }
 </style>
 
 <div class="cart-container">
     <h1 align="center" style="color:#F69b9A;">Your Shopping Bag</h1>
     <form method="POST" action="cart_update.php">
+
+        <!-- Select All / Deselect All controls -->
+        <div class="select-controls">
+            <button type="button" id="selectAllBtn">Select All</button>
+            <button type="button" id="deselectAllBtn">Deselect All</button>
+        </div>
+
         <table class="cart-table">
             <thead>
                 <tr>
@@ -90,23 +53,16 @@ include('../includes/config.php');
                         $product_qty   = $cart_itm["item_qty"];
                         $product_price = $cart_itm["item_price"];
                         $product_code  = $cart_itm["item_id"];
-                        $product_brand = $cart_itm["supplier_name"]; // must be stored in session when adding to cart
+                        $product_brand = $cart_itm["supplier_name"];
                         $subtotal      = $product_price * $product_qty;
 
                         echo '<tr>';
-                        // Select column (checked by default)
-                        echo '<td><input type="checkbox" name="checkout_select[]" value="' . $product_code . '" checked /></td>';
-                        // Quantity
-                        echo '<td><input type="number" min="1" name="product_qty[' . $product_code . ']" value="' . $product_qty . '" style="width:60px;text-align:center;" /></td>';
-                        // Name
+                        echo '<td><input type="checkbox" class="selectItem" name="checkout_select[]" value="' . $product_code . '" checked></td>';
+                        echo '<td><input type="number" min="1" name="product_qty[' . $product_code . ']" value="' . $product_qty . '" style="width:60px;text-align:center;"></td>';
                         echo '<td>' . htmlspecialchars($product_name) . '</td>';
-                        // Brand
                         echo '<td>' . htmlspecialchars($product_brand) . '</td>';
-                        // Price
                         echo '<td>₱' . number_format($product_price, 2) . '</td>';
-                        // Total
                         echo '<td>₱' . number_format($subtotal, 2) . '</td>';
-                        // Action (remove button)
                         echo '<td><button type="submit" name="remove_code" value="' . $product_code . '" class="remove-btn"><i class="fas fa-trash"></i></button></td>';
                         echo '</tr>';
 
@@ -123,13 +79,25 @@ include('../includes/config.php');
         </table>
 
         <div class="cart-actions">
-            <a href="../index.php" class="button"> Shop More</a>
-            <button type="submit"> Update</button>
-            <a href="checkout.php" class="button checkout"> Checkout</a>
+            <a href="../index.php" class="button">Shop More</a>
+            <button type="submit" name="update_cart" value="1">Update</button>
+            <button type="submit" name="go_checkout" value="1" class="button checkout">Checkout</button>
         </div>
     </form>
 </div>
 
-<?php
-include('../includes/footer.php');
-?>
+<script>
+    const selectAllBtn = document.getElementById('selectAllBtn');
+    const deselectAllBtn = document.getElementById('deselectAllBtn');
+    const checkboxes = document.querySelectorAll('.selectItem');
+
+    selectAllBtn.addEventListener('click', () => {
+        checkboxes.forEach(cb => cb.checked = true);
+    });
+
+    deselectAllBtn.addEventListener('click', () => {
+        checkboxes.forEach(cb => cb.checked = false);
+    });
+</script>
+
+<?php include('../includes/footer.php'); ?>
