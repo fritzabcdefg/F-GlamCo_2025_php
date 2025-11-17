@@ -43,7 +43,7 @@ $result = mysqli_stmt_get_result($stmt);
         border-collapse: collapse;
         background: #fff;
         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        color:#FFFFFF;
+        color:#000000;
     }
     .orders-table th, .orders-table td {
         padding: 12px;
@@ -66,7 +66,7 @@ $result = mysqli_stmt_get_result($stmt);
 </style>
 
 <div class="orders-container">
-    <h1 align="center"> My Orders</h1>
+    <h1 align="center" style="color:#F69b9A;"> My Orders</h1>
     <table class="orders-table">
         <thead>
             <tr>

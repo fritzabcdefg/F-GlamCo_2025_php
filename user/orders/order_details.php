@@ -35,12 +35,12 @@ $grand_total = $total + $summary['shipping'];
 <style>
     .order-details-container {
         padding: 20px;
-        background: #f9f9f9;
+        background: #000000ff;
     }
     .order-table {
         width: 100%;
         border-collapse: collapse;
-        background: #fff;
+        background: #000000ff;
         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         margin-bottom: 20px;
     }
@@ -50,7 +50,7 @@ $grand_total = $total + $summary['shipping'];
         border-bottom: 1px solid #ddd;
     }
     .order-table th {
-        background: #007bff;
+        background: #F8BBD0;
         color: #fff;
     }
     .order-actions {
@@ -72,7 +72,7 @@ $grand_total = $total + $summary['shipping'];
 </style>
 
 <div class="order-details-container">
-    <h2>🧾 Order #<?php echo $order_id; ?> Details</h2>
+    <h2 style="color:#F69b9A;"> Order #<?php echo $order_id; ?> Details</h2>
     <table class="order-table">
         <thead>
             <tr>

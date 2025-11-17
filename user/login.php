@@ -104,7 +104,7 @@ if (isset($_POST['submit'])) {
       </div>
       <button type="submit" class="btn btn-primary w-100 mb-3" name="submit">Sign in</button>
       <div class="text-center">
-        <p>Not a member? <a href="register.php">Register</a></p>
+        <p style="color:#000000"> Not a member? <a href="register.php">Register</a></p>
       </div>
     </form>
   </div>

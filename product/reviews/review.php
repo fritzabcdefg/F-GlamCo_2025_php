@@ -40,7 +40,7 @@ if (empty($items)) {
 }
 
 if (!isset($items[$index])) {
-    echo "<div class='container mt-4'><h3>✅ All products in this order have been reviewed!</h3></div>";
+    echo "<div class='container mt-4'><h3> All products in this order have been reviewed!</h3></div>";
     include('../../includes/footer.php');
     exit();
 }
@@ -52,7 +52,7 @@ $currentItem = $index + 1;
 
 <style>
     body {
-        background: #fff;
+        background: #000000ff;
         color: #000;
         font-family: Arial, sans-serif;
     }
