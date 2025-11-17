@@ -32,7 +32,6 @@ $items = mysqli_query($conn, $sql);
 <div class="container mt-4">
     <h2>Order #<?= htmlspecialchars($customer['orderinfo_id']) ?></h2>
 
-    <!-- Customer Info -->
     <div class="card mb-3">
         <div class="card-body">
             <h5 class="card-title"><?= htmlspecialchars($customer['lname'] . ' ' . $customer['fname']) ?></h5>
@@ -46,7 +45,6 @@ $items = mysqli_query($conn, $sql);
         </div>
     </div>
 
-    <!-- Items Table -->
     <table class="table table-striped table-bordered">
         <thead style="background-color:#F8BBD0; color:#000000;">
             <tr>
@@ -73,10 +71,8 @@ $items = mysqli_query($conn, $sql);
         </tbody>
     </table>
 
-    <!-- Grand Total -->
     <h4 class="mt-3">Grand Total: ₱<?= number_format($grandTotal, 2) ?></h4>
 
-    <!-- Update Status Form -->
         <form action="updateOrder.php" method="POST" class="mt-3">
             <input type="hidden" name="order_id" value="<?= (int)$orderId ?>">
             <div class="mb-3">
@@ -95,7 +91,7 @@ $items = mysqli_query($conn, $sql);
 </button>
 
 
-        </form>
+</form>
 </div>
 
 <?php include __DIR__ . '/../includes/footer.php'; ?>
