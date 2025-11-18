@@ -17,11 +17,7 @@ if (isset($_POST["type"]) && $_POST["type"] === 'add' && isset($_POST["item_qty"
             WHERE i.item_id = " . intval($new_product['item_id']) . " LIMIT 1";
 
     $result = mysqli_query($conn, $sql);
-    if ($result) {
-        $row = mysqli_fetch_assoc($result);
-    } else {
-        $row = null;
-    }
+    $row = $result ? mysqli_fetch_assoc($result) : null;
 
     if ($row) {
         $new_product["item_id"]       = (int)$row['itemId'];
@@ -30,15 +26,25 @@ if (isset($_POST["type"]) && $_POST["type"] === 'add' && isset($_POST["item_qty"
         $new_product["item_stock"]    = (int)$row['quantity']; // for validation
         $new_product["item_image"]    = $row['main_image'];    // optional for display
         $new_product["supplier_name"] = $row['supplier_name']; // brand
-        // normalize qty
         $new_product["item_qty"]      = isset($new_product["item_qty"]) ? max(1, (int)$new_product["item_qty"]) : 1;
     }
 
-    // Upsert into cart (keyed by item_id)
+    // Upsert into cart (merge quantities if item already exists)
     if (!isset($_SESSION["cart_products"])) {
         $_SESSION["cart_products"] = [];
     }
-    $_SESSION["cart_products"][$new_product['item_id']] = $new_product;
+
+    $id = $new_product['item_id'];
+    if (isset($_SESSION["cart_products"][$id])) {
+        // Merge quantity with existing
+        $existing_qty = (int)$_SESSION["cart_products"][$id]["item_qty"];
+        $max_stock    = isset($_SESSION["cart_products"][$id]["item_stock"]) ? (int)$_SESSION["cart_products"][$id]["item_stock"] : PHP_INT_MAX;
+        $new_qty      = min($existing_qty + $new_product["item_qty"], $max_stock);
+        $_SESSION["cart_products"][$id]["item_qty"] = $new_qty;
+    } else {
+        // Add as new item
+        $_SESSION["cart_products"][$id] = $new_product;
+    }
 
     // After add, return to referrer (index) and do not alter checkout selection
     header('Location: ' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '../index.php'));
@@ -60,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Remove item (single submit button behavior)
+    // Remove item
     if (isset($_POST["remove_code"])) {
         $remove_id = (int)$_POST["remove_code"];
         if (isset($_SESSION["cart_products"][$remove_id])) {
@@ -68,24 +74,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-// Save selected items
-if (isset($_POST['checkout_select']) && is_array($_POST['checkout_select'])) {
-    $_SESSION['checkout_selected'] = array_map('intval', $_POST['checkout_select']);
-}
+    // Save selected items
+    if (isset($_POST['checkout_select']) && is_array($_POST['checkout_select'])) {
+        $_SESSION['checkout_selected'] = array_map('intval', $_POST['checkout_select']);
+    }
 
-// Restrict checkout if none selected
-if (isset($_POST['go_checkout'])) {
-    if (empty($_SESSION['checkout_selected'])) {
-        echo "<script>alert('Please select an item first.'); window.location.href='view_cart.php';</script>";
-        exit;
-    } else {
-        header('Location: checkout.php');
-        exit;
+    // Restrict checkout if none selected
+    if (isset($_POST['go_checkout'])) {
+        if (empty($_SESSION['checkout_selected'])) {
+            echo "<script>alert('Please select an item first.'); window.location.href='view_cart.php';</script>";
+            exit;
+        } else {
+            header('Location: checkout.php');
+            exit;
+        }
     }
 }
-
-}
-
 
 // Fallback
 header('Location: view_cart.php');
