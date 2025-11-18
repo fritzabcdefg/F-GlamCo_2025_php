@@ -2,6 +2,19 @@
 session_start();
 include('../includes/header.php');
 include('../includes/config.php');
+
+// Handle checkout selection validation
+$alertMessage = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['go_checkout'])) {
+    if (empty($_POST['checkout_select'])) {
+        $alertMessage = "⚠️ Please select at least one item before proceeding to checkout.";
+    } else {
+        // Save selected IDs in session and redirect to checkout
+        $_SESSION['checkout_selected'] = $_POST['checkout_select'];
+        header("Location: checkout.php");
+        exit;
+    }
+}
 ?>
 
 <!-- Font Awesome for trash icon -->
@@ -18,13 +31,15 @@ include('../includes/config.php');
     .cart-actions a.button.checkout { background:#F8BBD0; color:#000; }
     .remove-btn { background:none; border:none; cursor:pointer; color:#C71585; font-size:1.2rem; transition:color 0.2s ease; }
     .remove-btn:hover { color:#880E4F; }
-    .select-controls { margin-bottom:10px; text-align:left; }
-    .select-controls button { margin-right:10px; padding:6px 12px; border:none; background:#F8BBD0; color:#000; border-radius:4px; cursor:pointer; }
+    .alert { color:#fff; background:#C71585; padding:10px; margin-bottom:15px; text-align:center; border-radius:4px; }
 </style>
 
 <div class="cart-container">
     <h1 align="center" style="color:#F69b9A;">Your Shopping Bag</h1>
-    <form method="POST" action="cart_update.php">
+
+    <?php if (!empty($alertMessage)) echo "<div class='alert'>$alertMessage</div>"; ?>
+
+    <form method="POST" action="view_cart.php">
 
         <table class="cart-table">
             <thead>
@@ -50,7 +65,6 @@ include('../includes/config.php');
                         $product_brand = $cart_itm["supplier_name"];
                         $subtotal      = $product_price * $product_qty;
 
-                        // Check if item is in checkout_selected
                         $checked = (isset($_SESSION['checkout_selected']) && in_array($product_code, $_SESSION['checkout_selected'])) ? 'checked' : '';
 
                         echo '<tr>';
@@ -82,6 +96,5 @@ include('../includes/config.php');
         </div>
     </form>
 </div>
-
 
 <?php include('../includes/footer.php'); ?>
