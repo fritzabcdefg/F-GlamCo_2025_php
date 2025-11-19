@@ -155,7 +155,7 @@ if ($revQ) {
                     <div class="mt-1 text-muted" style="font-size:0.85em;">
                         <?php echo $rev['created_at']; ?>
                         <?php if (isset($_SESSION['user_id']) && $rev['user_id'] == $_SESSION['user_id']): ?>
-                            <a href="reviews/edit.php?id=<?php echo $rev['id']; ?>" class="ms-2" style="color:#000000;">Edit</a>
+                            <a href="reviews/edit.php?id=<?php echo $rev['id']; ?>" class="ms-2 text-pink">Edit</a>
                         <?php endif; ?>
                     </div>
                 </div>
