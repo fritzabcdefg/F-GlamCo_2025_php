@@ -63,8 +63,7 @@ if (isset($_POST['upload_image']) && isset($_FILES['profile_image'])) {
 <div class="container">
   <div class="auth-container text-center">
     <img src="<?php echo $img; ?>" alt="Profile Image" class="profile-image mb-3">
-    <h5 class="mb-2"><?php echo htmlspecialchars($_SESSION['email'] ?? 'Your Account'); ?></h5>
-    <p class="note">JPG or PNG no larger than 5 MB</p>
+    <h5 style="color:#000000;"> <?php echo htmlspecialchars($_SESSION['email'] ?? 'Your Account'); ?></h5>
 
     <?php if (!empty($error)): ?>
       <div class="alert"><?php echo htmlspecialchars($error); ?></div>
