@@ -33,26 +33,31 @@ if (isset($_SESSION['user_id'])) {
   <title>F & L Glam Co</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+  <!-- Remove Montserrat if not needed -->
+  <!-- <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet"> -->
   <link href="/F&LGlamCo/includes/style/style.css" rel="stylesheet" type="text/css">
 
-
+  <style>
+    body, .navbar, .sidebar, .sidebar-btn, .nav-link, .navbar-brand, .sidebar-email {
+      font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+  </style>
 </head>
+
 <body>
 
-<!-- Hidden checkboxes -->
 <input type="checkbox" id="sidebarToggle" hidden>
 <input type="checkbox" id="logoutConfirm" hidden>
 
-<!-- Hidden checkbox for toggle -->
+
 <input type="checkbox" id="sidebarToggle" hidden>
 
 <!-- Sidebar -->
 <div id="mySidebar" class="sidebar">
   <div class="sidebar-panel text-center">
     <label for="sidebarToggle" class="closebtn"><i class="fas fa-times"></i> Close</label>
-
-    <img src="<?php echo htmlspecialchars($img); ?>" alt="Profile Picture"
+    <br>
+    <img src="<?php echo htmlspecialchars($img); ?>" alt=" "
          class="rounded-circle mb-2" style="width:100px;height:100px;object-fit:cover;">
     <h6 class="text-white mb-3"><?php echo htmlspecialchars($displayName); ?></h6>
 
@@ -100,10 +105,17 @@ if (isset($_SESSION['user_id'])) {
         <input class="form-control form-control-sm border-pink" type="search" placeholder="Search" name="search">
         <button class="btn btn-sm text-pink" type="submit"><i class="fas fa-search"></i></button>
       </form>
-      <a class="nav-link text-pink" href="/F&LGlamCo/index.php">All</a>
-      <a class="nav-link text-pink" href="/F&LGlamCo/index.php?category=Eye Makeup">Eye Makeup</a>
-      <a class="nav-link text-pink" href="/F&LGlamCo/index.php?category=Face Makeup">Face Makeup</a>
-      <a class="nav-link text-pink" href="/F&LGlamCo/index.php?category=Lip Makeup">Lip Makeup</a>
+     <a class="nav-link text-pink" href="/F&LGlamCo/index.php">All</a>
+    <?php
+    $catRes = mysqli_query($conn, "SELECT name FROM categories ORDER BY name ASC");
+    if ($catRes && mysqli_num_rows($catRes) > 0) {
+        while ($catRow = mysqli_fetch_assoc($catRes)) {
+            $catName = htmlspecialchars($catRow['name']);
+            echo '<a class="nav-link text-pink" href="/F&LGlamCo/index.php?category=' . urlencode($catRow['name']) . '">' . $catName . '</a>';
+        }
+    }
+    ?>
+
     </div>
 
     <!-- Right Section -->
@@ -122,7 +134,6 @@ if (isset($_SESSION['user_id'])) {
         </a>
       </li>
 
-      <!-- Sidebar toggle or login -->
       <?php if (isset($_SESSION['user_id'])): ?>
         <li class="nav-item">
           <label for="sidebarToggle" class="nav-link text-pink" style="cursor:pointer;">
@@ -131,7 +142,7 @@ if (isset($_SESSION['user_id'])) {
         </li>
       <?php else: ?>
         <li class="nav-item">
-          <a class="nav-link text-pink" href="/F&LGlamCo/user/login.php"><i class="fas fa-user"></i> LOGIN</a>
+          <a class="nav-link text-pink" href="/F&LGlamCo/user/login.php"><i class="fas fa-user"></i> Login</a>
         </li>
       <?php endif; ?>
     </ul>

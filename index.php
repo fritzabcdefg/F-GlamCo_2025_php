@@ -33,6 +33,14 @@ if ($categoryFilter) {
 ?>
 
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;600;700&display=swap');
+
+    body, .products, .product, .product-details, 
+    .product-details h4, .product-details h5, 
+    .product-details .price, .view-btn, .add_to_cart {
+        font-family: 'Helvetica Neue', 'Helvetica World', Arial, sans-serif;
+    }
+
     .products {
         padding: 0;
         margin: 0 auto;
@@ -74,7 +82,7 @@ if ($categoryFilter) {
         border-radius: 6px;
     }
     .product-details {
-        color: #000000;
+        color: #000;
         flex: 2;
         display: flex;
         flex-direction: column;
@@ -139,6 +147,7 @@ if ($categoryFilter) {
         background: #333;
     }
 </style>
+
 
 <div class="container mt-4">
     <?php

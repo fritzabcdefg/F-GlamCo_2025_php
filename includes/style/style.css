@@ -1,39 +1,38 @@
-/* === Base Styles === */
+/* Base Styles */
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Montserrat', sans-serif;
-  background-color: #000000;
-  color: #ffffff;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background-color: #000;
+  color: #fff;
 }
 
 h1, h2, h3 {
-  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-  color: #C71585; 
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #C71585;
 }
 
-/* === Glam Header Enhancements === */
+/* Navbar */
 .navbar {
-  background-color: #000000 !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); /* subtle shadow */
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  background-color: #000 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  padding: 1rem 0;
   min-height: 80px;
 }
 
 .navbar-brand {
   font-size: 1.8rem;
   font-weight: bold;
-  color: #ffffff !important;
+  color: #fff !important;
   letter-spacing: 1px;
   text-align: center;
   margin: 0 auto;
 }
 
 .text-pink {
-  color: #ffffff !important;
+  color: #fff !important;
   font-weight: bold;
-  font-family: Oswald, sans-serif;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .text-pink:hover,
@@ -66,38 +65,33 @@ h1, h2, h3 {
 }
 
 .navbar-toggler {
-  border-color: #000000;
+  border-color: #000;
 }
 
 .navbar-toggler-icon {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(203,245,160, 1)' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(203,245,160,1)' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
 }
 
-/* === Header Icons === */
 .navbar-nav .nav-link i {
   margin-right: 6px;
   font-size: 1.1em;
 }
-/* Sidebar base */
-/* Sidebar base */
+
+/* Sidebar */
 .sidebar {
   height: 100%;
-  width: 0;                  /* hidden by default */
+  width: 0;
   position: fixed;
   top: 0;
-  right: 0;                  /* stick to the right side */
-  background-color: #111;    /* dark panel background */
+  right: 0;
+  background-color: #111;
   overflow-x: hidden;
   transition: width 0.3s ease;
   padding-top: 60px;
   z-index: 9999;
-}
-
-/* Sidebar links styled as panel buttons */
-.sidebar {
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* pushes bottom section down */
+  justify-content: space-between;
 }
 
 .sidebar-panel {
@@ -135,73 +129,53 @@ h1, h2, h3 {
   color: #C71585;
 }
 
-.card .closebtn {
-  background-color: #000000;
-  border-radius: 6px;
-  padding: 6px 12px;
-  text-decoration: none;
-  color: #ffffff;
-  font-weight: bold;
-  border: 1px solid #F8BBD0;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-
-.card .closebtn:hover {
-  background-color: #c82333;
-  color: #fff;
-}
-
-
 /* Toggle open when checkbox is checked */
 #sidebarToggle:checked ~ .sidebar {
-  width: 250px; /* slide in from right */
+  width: 250px;
 }
 
-/* Hamburger (3-line) button */
+
 .openbtn {
-  font-size: 1.5rem;   /* size of the icon */
+  font-size: 1.5rem;   
   cursor: pointer;
   background: none;
   border: none;
-  color: #ffffff;      /* <-- white color */
+  color: #fff;      
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 .openbtn:hover {
-  color: #F69b9A;      /* optional hover color (pink) */
+  color: #F69b9A;      
 }
 
-
-/* === Dropdown Menu === */
 .dropdown-menu {
   background-color: #FFF0F5;
   border: 1px solid #F8BBD0;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .dropdown-item {
   color: #6A1B9A;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-
 .dropdown-item:hover {
   background-color: #F8BBD0;
   color: #4A4A4A;
 }
 
-/* === Search Button Override === */
 .btn-outline-success {
   border-color: #F8BBD0 !important;
   color: #C71585 !important;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-
 .btn-outline-success:hover {
   background-color: #F8BBD0 !important;
   color: #880E4F !important;
 }
 
-/* === Buttons === */
 button, .button, .btn-primary {
-  background-color: #000000 !important;
+  background-color: #000 !important;
   border: none !important;
-  color: #ffffff !important;
+  color: #fff !important;
   font-weight: bold;
   min-width: 100px;
   padding: 10px;
@@ -209,16 +183,16 @@ button, .button, .btn-primary {
   cursor: pointer;
   text-decoration: none;
   border-radius: 3px;
-  font: 12px/15px Arial, Helvetica, sans-serif;
-  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  line-height: 15px;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
 }
-
 button:hover, .button:hover, .btn-primary:hover {
   background-color: #F69b9A !important;
   color: #C71585 !important;
 }
 
-/* === Alerts === */
 .alert {
   border: 1px solid #F8BBD0;
   background-color: #FFE4E1;
@@ -227,59 +201,46 @@ button:hover, .button:hover, .btn-primary:hover {
   border-radius: 4px;
   display: block;
   margin-top: 4px;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-/* === Auth Page Container === */
-/* === Admin Container Styling === */
-/*.container {
-  background-color: #ffffff;
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(200, 100, 150, 0.1);
-  max-width: 1000px;
-  margin: 40px auto;
-}*/
-
-/* === Admin Table Styling === */
 table.table {
-  background-color: #ffffff;
+  background-color: #fff;
   border: 1px solid #F8BBD0;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(200, 100, 150, 0.1);
   border-collapse: separate;
   border-spacing: 0;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-/* Header row */
 table.table thead {
-  background-color: #000000 !important;
+  background-color: #000 !important;
 }
 
 table.table thead th {
-  color: #000000 !important;
+  color: #000 !important;
   font-weight: 600;
   padding: 12px;
 }
 
-/* Hover effect */
 table.table-striped tbody tr:hover {
   background-color: #F8BBD0;
   cursor: pointer;
 }
 
-/* Cell text */
 table.table td {
   color: #6A1B9A;
   vertical-align: middle;
   padding: 10px;
 }
 
-/* Action buttons */
 table.table .btn-sm {
   font-size: 0.85rem;
   padding: 6px 12px;
   border-radius: 6px;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 table.table .btn-warning {
@@ -300,51 +261,53 @@ table.table .btn-secondary {
   border: none;
 }
 
-/* === Badge Styling === */
 .badge-success {
   background-color: #CBF5A0;
   color: #4A4A4A;
   font-weight: 600;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .badge-secondary {
   background-color: #D1C4E9;
   color: #4A148C;
   font-weight: 600;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-/* === Table Title Styling === */
 .container h2 {
   color: #C71585;
   font-weight: 700;
   margin-bottom: 20px;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-/* === Auth Page Container === */
 .auth-container {
-  background-color: #ffffff;
+  background-color: #fff;
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(200, 100, 150, 0.1);
-  border: 1px solid #ffffff;
+  border: 1px solid #fff;
   max-width: 500px;
   margin: 40px auto;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .form-label {
-  color: #ffffff !important;
+  color: #fff !important;
   font-weight: 600;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
+
 .loginform-label {
-  color: #000000 !important;
+  color: #000 !important;
   font-weight: 600;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 
 .auth-container .form-control {
   border: 1px solid #F8BBD0;
-  background-color: #FFF;
+  background-color: #fff;
   border-radius: 5px;
 }
 
@@ -357,7 +320,6 @@ table.table .btn-secondary {
   color: #880E4F;
 }
 
-/* === Shopping Cart Sidebar === */
 ul.shopping-cart {
   position: fixed;
   top: 100px;
@@ -369,6 +331,7 @@ ul.shopping-cart {
   font-size: 0.8em;
   border: 1px solid #F8BBD0;
   box-shadow: 0 2px 8px rgba(200, 100, 150, 0.1);
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 ul.shopping-cart .cart-itm {
@@ -397,13 +360,12 @@ ul.shopping-cart .cart-itm .remove-itm a {
   color: #C2185B;
 }
 
-/* === Cart View Tables === */
 .cart-view-table-front {
   font-size: 0.7em;
   position: fixed;
   right: 10px;
   max-width: 350px;
-  font-family: Arial;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .cart-view-table-front h3 {
@@ -414,11 +376,12 @@ ul.shopping-cart .cart-itm .remove-itm a {
 
 .cart-view-table-front, .cart-view-table-back {
   max-width: 700px;
-  background-color: #FFF;
+  background-color: #fff;
   margin: auto;
   padding: 10px;
   box-shadow: 1px 1px 15px rgba(200, 100, 150, 0.12);
   border: 1px solid #F8BBD0;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .cart-view-table-front table th, .cart-view-table-back table th {
@@ -444,19 +407,20 @@ ul.shopping-cart .cart-itm .remove-itm a {
   float: right;
 }
 
-/* === Profile Page Styling === */
+
 .profile-card.card {
-  background-color: #ffffff !important; /* white card body */
-  border: 1px solid #000000 !important;
+  background-color: #fff !important;
+  border: 1px solid #000 !important;
   border-radius: 10px !important;
   box-shadow: 0 2px 8px rgba(200, 100, 150, 0.1) !important;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .profile-card .card-header {
-  background-color: #000000 !important; /* black header */
-  color: #ffffff !important;
+  background-color: #000 !important;
+  color: #fff !important;
   font-weight: bold !important;
-  border-bottom: 1px solid #ffffff !important;
+  border-bottom: 1px solid #fff !important;
 }
 
 .profile-card .card-header h5 {
@@ -465,12 +429,13 @@ ul.shopping-cart .cart-itm .remove-itm a {
 }
 
 .profile-card .btn.btn-primary {
-  background-color: #ffffff !important;
+  background-color: #fff !important;
   color: #4A4A4A !important;
   border: none !important;
   font-size: 0.85em;
   padding: 7px 12px;
   border-radius: 6px;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .profile-card .btn.btn-primary:hover {
@@ -489,6 +454,7 @@ ul.shopping-cart .cart-itm .remove-itm a {
 
 .profile-table {
   margin-top: 8px;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .profile-table th {
@@ -508,63 +474,64 @@ ul.shopping-cart .cart-itm .remove-itm a {
   padding-bottom: 8px;
 }
 
-/* === Profile Edit Page Styling === */
 .profile-edit input.form-control {
   border: 1px solid #F8BBD0;
   border-radius: 6px;
   background-color: #FFF8FB;
   color: #6A1B9A;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .profile-edit label {
   color: #880E4F;
   font-weight: 600;
   font-size: 0.9rem;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .profile-edit .btn.btn-primary {
-  background-color: #000000 !important;
-  color: #ffffff !important;
+  background-color: #000 !important;
+  color: #fff !important;
   border: none !important;
   border-radius: 6px;
   font-weight: 600;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .profile-edit .btn.btn-primary:hover {
-  background-color: #F69b9A !important;
+  background-color: #F69B9A !important;
   color: #880E4F !important;
 }
 
-/* === Product Admin Action Buttons === */
-/* === Refined Action Buttons === */
 .action-bar {
   display: flex;
   justify-content: flex-start;
-  gap: 16px; /* space between buttons */
+  gap: 16px;
   margin: 24px 0;
   flex-wrap: wrap;
 }
 
 .action-button {
-  background-color: #ffffff;
-  color: #000000;
+  background-color: #fff;
+  color: #000;
   font-weight: 600;
   padding: 12px 28px;
   font-size: 1rem;
   border: none;
-  border-radius: 20px; /* semi-round */
+  border-radius: 20px;
   box-shadow: 0 2px 6px rgba(200, 100, 150, 0.1);
   transition: all 0.3s ease;
   text-decoration: none;
   display: inline-block;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .action-button:hover {
-  background-color: #F69b9A;
+  background-color: #F69B9A;
   color: #880E4F;
   box-shadow: 0 4px 10px rgba(200, 100, 150, 0.2);
 }
-/* === Item List Table === */
+
 .item-list-wrapper {
   margin: 30px auto;
   max-width: 900px;
@@ -573,6 +540,7 @@ ul.shopping-cart .cart-itm .remove-itm a {
   border: 1px solid #F8BBD0;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(200, 100, 150, 0.1);
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .section-title {
@@ -581,12 +549,14 @@ ul.shopping-cart .cart-itm .remove-itm a {
   margin-bottom: 10px;
   font-weight: bold;
   text-align: center;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .item-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .item-table th {
@@ -602,7 +572,7 @@ ul.shopping-cart .cart-itm .remove-itm a {
   padding: 10px;
   border-bottom: 1px solid #FCE4EC;
   vertical-align: middle;
-  color: #ffffff;
+  color: #fff;
 }
 
 .item-thumb {
@@ -626,23 +596,23 @@ ul.shopping-cart .cart-itm .remove-itm a {
   color: #E53935;
 }
 
-/* Profile Picture Container */
+
 .profile-picture-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;   /* stack image + text vertically */
-  background-color: #FFF0F5; /* soft pink background */
+  flex-direction: column;
+  background-color: #FFF0F5;
   border: 1px solid #F8BBD0;
   border-radius: 12px;
   padding: 20px;
   max-width: 350px;
-  margin: 40px auto;        /* center horizontally */
+  margin: 40px auto;
   box-shadow: 0 4px 12px rgba(200, 100, 150, 0.15);
   text-align: center;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-/* Profile Image */
 .profile-picture-container img {
   width: 150px;
   height: 150px;
@@ -653,53 +623,54 @@ ul.shopping-cart .cart-itm .remove-itm a {
   margin-bottom: 15px;
 }
 
-/* Caption text */
 .profile-picture-container h5 {
   color: #880E4F;
   font-weight: bold;
   margin-bottom: 10px;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .profile-picture-container .note {
   font-size: 0.85rem;
   color: #6A1B9A;
   margin-bottom: 15px;
-}
-/* === Profile Details Container === */
-.profile-details-container {
-  background-color: #FFF0F5;       /* soft pink background */
-  border: 1px solid #F8BBD0;       /* light pink border */
-  border-radius: 12px;             /* rounded corners */
-  padding: 30px;
-  max-width: 600px;
-  margin: 40px auto;               /* center horizontally */
-  box-shadow: 0 4px 12px rgba(200, 100, 150, 0.15);
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-/* Title */
+.profile-details-container {
+  background-color: #FFF0F5;
+  border: 1px solid #F8BBD0;
+  border-radius: 12px;
+  padding: 30px;
+  max-width: 600px;
+  margin: 40px auto;
+  box-shadow: 0 4px 12px rgba(200, 100, 150, 0.15);
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
 .profile-details-container h3 {
   text-align: center;
   color: #C71585;
   font-weight: bold;
   margin-bottom: 20px;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-/* Labels */
 .profile-details-container label {
   color: #880E4F;
   font-weight: 600;
   font-size: 0.9rem;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-/* Inputs */
 .profile-details-container .form-control {
   border: 1px solid #F8BBD0;
   border-radius: 6px;
   background-color: #FFF8FB;
   color: #6A1B9A;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-/* Button */
 .profile-details-container button {
   background-color: #000 !important;
   color: #fff !important;
@@ -708,10 +679,11 @@ ul.shopping-cart .cart-itm .remove-itm a {
   padding: 10px 20px;
   width: 100%;
   margin-top: 15px;
+  font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .profile-details-container button:hover {
-  background-color: #F69b9A !important;
+  background-color: #F69B9A !important;
   color: #880E4F !important;
 }
 

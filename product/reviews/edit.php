@@ -37,7 +37,7 @@ if ($review['user_id'] != $_SESSION['user_id']) {
     body {
         background: #000000ff;
         color: #000;
-        font-family: Arial, sans-serif;
+        font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
     .review-container {
         max-width: 700px;
@@ -113,6 +113,7 @@ if ($review['user_id'] != $_SESSION['user_id']) {
             <form method="POST" action="update.php">
                 <input type="hidden" name="review_id" value="<?php echo $review['id']; ?>">
                 <input type="hidden" name="item_id" value="<?php echo $review['item_id']; ?>">
+                <input type="hidden" name="orderinfo_id" value="<?php echo $review['orderinfo_id']; ?>">
 
                 <div class="mb-3">
                     <label>Your name</label>

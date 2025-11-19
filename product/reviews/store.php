@@ -20,7 +20,7 @@ if ($item_id <= 0 || $comment === '') {
     exit();
 }
 
-// basic foul-word filter
+// foul-word filter
 $banned = ['fuck','shit','bitch','damn','asshole','crap','dick','piss','puta','bobo','tanga'];
 $commentFiltered = $comment;
 foreach ($banned as $bad) {
@@ -37,21 +37,20 @@ foreach ($banned as $bad) {
 
 $comment_esc = $commentFiltered;
 
-// insert review
-$ins = mysqli_prepare($conn, "INSERT INTO reviews (item_id, user_id, user_name, rating, comment) VALUES (?, ?, ?, ?, ?)");
+// insert review with orderinfo_id
+$ins = mysqli_prepare($conn, "INSERT INTO reviews (item_id, orderinfo_id, user_id, user_name, rating, comment) VALUES (?, ?, ?, ?, ?, ?)");
 if ($ins) {
-    mysqli_stmt_bind_param($ins, 'iisss', $item_id, $user_id, $user_name, $rating, $comment_esc);
+    mysqli_stmt_bind_param($ins, 'iiisss', $item_id, $orderId, $user_id, $user_name, $rating, $comment_esc);
     $res = mysqli_stmt_execute($ins);
     mysqli_stmt_close($ins);
 } else {
     $res = false;
 }
 
-// ✅ Redirect to next product in the order
+// redirect
 if ($orderId > 0) {
     header("Location: review.php?order={$orderId}&index={$nextIndex}");
 } else {
-    // fallback: go back to product page
     header("Location: ../../product/show.php?id={$item_id}");
 }
 exit();

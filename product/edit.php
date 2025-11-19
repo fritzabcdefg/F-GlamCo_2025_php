@@ -40,6 +40,12 @@ if ($catRes) {
                 <input type="text" name="name" class="form-control" 
                        value="<?php echo htmlspecialchars($item['name']); ?>">
             </div>
+
+            <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea name="description" class="form-control" rows="4" 
+                          placeholder="Enter item description"><?php echo htmlspecialchars($item['description']); ?></textarea>
+            </div>
             
             <div class="mb-3">
                 <label class="form-label">Category</label>
@@ -56,14 +62,14 @@ if ($catRes) {
             
             <div class="mb-3">
                 <label class="form-label">Cost Price</label>
-               <input type="number" name="cost_price" class="form-control" step="0.01"
-                 value="<?php echo htmlspecialchars($item['cost_price']); ?>">
+                <input type="number" name="cost_price" class="form-control" step="0.01"
+                       value="<?php echo htmlspecialchars($item['cost_price']); ?>">
             </div>
             
             <div class="mb-3">
                 <label class="form-label">Sell Price</label>
-                 <input type="number" name="sell_price" class="form-control" step="0.01"
-             value="<?php echo htmlspecialchars($item['sell_price']); ?>">
+                <input type="number" name="sell_price" class="form-control" step="0.01"
+                       value="<?php echo htmlspecialchars($item['sell_price']); ?>">
             </div>
             
             <div class="mb-3">
@@ -92,7 +98,7 @@ if ($catRes) {
                             <div style="margin-bottom:6px;">
                                 <label style="font-size:0.85em; color:#ffffff; display:flex; align-items:center; gap:6px;">
                                     <input type="checkbox" name="delete_images[]" value="<?php echo $imgRow['id']; ?>"> Remove
-                                    </label>
+                                </label>
                             </div>
                         </div>
                 <?php

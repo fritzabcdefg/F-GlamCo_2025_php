@@ -56,6 +56,7 @@ CREATE TABLE `categories` (
 CREATE TABLE `items` (
   `item_id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
+  `description` TEXT DEFAULT NULL,
   `cost_price` DECIMAL(10,2) DEFAULT NULL,
   `sell_price` DECIMAL(10,2) DEFAULT NULL,
   `supplier_name` VARCHAR(45) DEFAULT NULL,
@@ -89,21 +90,6 @@ CREATE TABLE `product_images` (
     ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- --------------------------------------------------------
--- Table: products
--- --------------------------------------------------------
-CREATE TABLE `products` (
-  `product_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(45) NOT NULL,
-  `cost_price` DECIMAL(3,2) DEFAULT NULL,
-  `sell_price` DECIMAL(3,2) DEFAULT NULL,
-  `quantity` INT(11) DEFAULT NULL,
-  `supplier_name` VARCHAR(45) DEFAULT NULL,
-  `category_id` INT(11) DEFAULT NULL,
-  PRIMARY KEY (`product_id`),
-  CONSTRAINT `products_category_fk` FOREIGN KEY (`category_id`) REFERENCES `categories`(`category_id`)
-    ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 -- Table: orderinfo
@@ -134,11 +120,12 @@ CREATE TABLE `orderline` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
--- Table: reviews
+-- Table: reviews (fixed)
 -- --------------------------------------------------------
 CREATE TABLE `reviews` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `item_id` INT(11) NOT NULL,
+  `orderinfo_id` INT(11) DEFAULT NULL,
   `user_id` BIGINT(20) UNSIGNED DEFAULT NULL,
   `user_name` VARCHAR(100) DEFAULT NULL,
   `rating` TINYINT(1) DEFAULT NULL,
@@ -146,7 +133,12 @@ CREATE TABLE `reviews` (
   `is_visible` TINYINT(1) NOT NULL DEFAULT 1,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
+  KEY `idx_reviews_item_id` (`item_id`),
+  KEY `idx_reviews_orderinfo_id` (`orderinfo_id`),
+  KEY `idx_reviews_user_id` (`user_id`),
   CONSTRAINT `reviews_item_fk` FOREIGN KEY (`item_id`) REFERENCES `items`(`item_id`)
+    ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `reviews_order_fk` FOREIGN KEY (`orderinfo_id`) REFERENCES `orderinfo`(`orderinfo_id`)
     ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `reviews_user_fk` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)
     ON DELETE SET NULL ON UPDATE CASCADE
@@ -196,19 +188,26 @@ INSERT INTO `users` (`id`, `email`, `password`, `role`, `active`, `created_at`, 
 (2, 'fritziecadao@gmail.com', 'd033e22ae348aeb5660fc2140aec35850c4da997', 'admin', 1, NULL, NULL);
 
 INSERT INTO `customers` (`customer_id`, `title`, `lname`, `fname`, `addressline`, `town`, `zipcode`, `phone`, `user_id`, `image`) VALUES
-(1, '', 'Cadao', 'Fritzie', '205 ML QUEZON ST NEW LOWER BICUTN TAGUIG CITY', 'TAGUIG', '1632', '09664259993', 1, 'Snaptik.app_74656941751832609616 (2).jpg');
-COMMIT;
+(1, '', 'Cadao', 'Fritzie', '205 ML QUEZON ST NEW LOWER BICUTN TAGUIG CITY', 'TAGUIG', '1632', '09664259993', 1, 'Snaptik.app_74656941751832609616 (2).jpg'),
+(2, 'Ms.', 'Cadao', 'Admin', '205 ML QUEZON ST NEW LOWER BICUTN TAGUIG CITY', 'TAGUIG', '1632', '09664259993', 2, 'Profile.jpg');
 
-INSERT INTO `items` (`item_id`, `name`, `cost_price`, `sell_price`, `supplier_name`, `category_id`) VALUES
-(1, 'Mat Rev Mrs Kisses', 2500.00, 2889.89, 'CHARLOTTE TILBURY', 2),
-(2, '3D Voluming Gloss B07 Peach 70% 5.3G', 250.00, 450.00, 'FWEE', 2),
-(3, 'Hollywood Flawless Filter 3 Fair', 1800.00, 2189.00, 'CHARLOTTE TILBURY', 3),
-(4, 'FENTY BEAUTY PRO FILTR HYDRATING PRIMER SOFT', 1260.00, 1599.99, 'FENTY', 3),
-(5, 'Creme Cheek Blush Purr', 589.00, 658.89, 'ISSY', 3),
-(6, 'Precision Fluid Liner in Pitch Black', 450.00, 569.00, 'ISSY', 1),
-(7, 'Lip Butter Balm Sweet Mint', 880.00, 999.00, 'SUMMER FRIDAYS', 2),
-(8, 'Tusm Foundation Shell', 580.00, 759.00, 'TEVIANT', 3),
-(9, 'The Porefessional Face Primer - 22ML', 480.00, 699.00, 'The Pore', 3);
+INSERT INTO `items` (`item_id`, `name`, `description`, `cost_price`, `sell_price`, `supplier_name`, `category_id`) VALUES
+(1, 'Mat Rev Mrs Kisses', 'A luxurious matte lipstick in Mrs Kisses shade, offering long-lasting wear and rich color.', 2500.00, 2889.89, 'CHARLOTTE TILBURY', 2),
+(2, '3D Voluming Gloss B07 Peach 70% 5.3G', 'High-shine volumizing lip gloss in Peach shade, adds plumpness and hydration.', 250.00, 450.00, 'FWEE', 2),
+(3, 'Hollywood Flawless Filter 3 Fair', 'A complexion booster that blurs, smooths, and illuminates for a radiant glow.', 1800.00, 2189.00, 'CHARLOTTE TILBURY', 3),
+(4, 'PRO FILTR HYDRATING PRIMER SOFT', 'Hydrating primer that preps skin for foundation, leaving a soft, smooth finish.', 1260.00, 1599.99, 'FENTY BEAUTY', 3),
+(5, 'Creme Cheek Blush Purr', 'Cream blush in Purr shade, blends seamlessly for a natural flush of color.', 589.00, 658.89, 'ISSY', 3),
+(6, 'Precision Fluid Liner in Pitch Black', 'Ultra-precise liquid eyeliner in deep black, perfect for sharp lines and definition.', 450.00, 569.00, 'ISSY', 1),
+(7, 'Lip Butter Balm Sweet Mint', 'Nourishing lip balm with a sweet mint flavor, provides hydration and shine.', 880.00, 999.00, 'SUMMER FRIDAYS', 2),
+(8, 'Tusm Foundation Shell', 'Lightweight foundation in Shell shade, offering buildable coverage and a natural finish.', 580.00, 759.00, 'TEVIANT', 3),
+(9, 'The Porefessional Face Primer - 22ML', 'Oil-free primer that minimizes the look of pores and creates a smooth base.', 480.00, 699.00, 'THE PORE', 3),
+(10, 'Match Stix Matte Contour Skinstick • 7.1g', 'Matte contour stick that defines and sculpts with a creamy, blendable formula.', 2089.00, 2350.00, 'FENTY BEAUTY', 3),
+(11, 'Easy Bake Loose Powder • 20g', 'Lightweight loose powder that sets makeup and controls shine for a flawless finish.', 2450.00, 2600.00, 'Huda Beauty', 3),
+(12, 'Impeccable Setting Spray', 'Long-lasting setting spray that locks makeup in place while keeping skin refreshed.', 2090.00, 2320.00, 'Anastasia Beverly Hills', 3),
+(13, 'Perfect Strokes Universal Volumizing Mascara', 'Volumizing mascara that lifts and defines lashes with a universal brush design.', 1250.00, 1550.00, 'Rare Beauty', 1),
+(14, 'Effortless Natural Lash Collection', 'A curated set of natural-looking false lashes for effortless everyday wear.', 1400.00, 1680.00, 'Velour Lashes', 3);
+
+
 
 INSERT INTO `stocks` (`item_id`, `quantity`) VALUES
 (1, 200),
@@ -219,7 +218,12 @@ INSERT INTO `stocks` (`item_id`, `quantity`) VALUES
 (6, 100),
 (7, 400),
 (8, 25),
-(9, 60);
+(9, 60),
+(10, 500),
+(11, 25),
+(12, 56),
+(13, 325),
+(14, 100);
 
 INSERT INTO `product_images` (`id`, `item_id`, `filename`, `created_at`) VALUES
 (1, 1, '/F&LGlamCo/product/images/1763302294_3a1d08f0_CHARLOTTE_TILBURY__Mat_Rev_Mrs_Kisses__2_.png', '2025-11-16 14:11:34'),
@@ -240,4 +244,21 @@ INSERT INTO `product_images` (`id`, `item_id`, `filename`, `created_at`) VALUES
 (16, 7, '/F&LGlamCo/product/images/1763307031_f21c4dad_SUMMER_FRIDAYS_Lip_Butter_Balm_Sweet_Mint__3_.png', '2025-11-16 15:30:31'),
 (17, 7, '/F&LGlamCo/product/images/1763307031_384ab6a0_SUMMER_FRIDAYS_Lip_Butter_Balm_Sweet_Mint.png', '2025-11-16 15:30:31'),
 (18, 8, '/F&LGlamCo/product/images/1763307077_f950f8cc_TEVIANT_Tusm_Foundation_Shell.png', '2025-11-16 15:31:17'),
-(19, 9, '/F&LGlamCo/product/images/1763307143_ea6b84c6_The_Porefessional_Face_Primer_-_22ML.png', '2025-11-16 15:32:23');
+(19, 9, '/F&LGlamCo/product/images/1763307143_ea6b84c6_The_Porefessional_Face_Primer_-_22ML.png', '2025-11-16 15:32:23'),
+(20, 10, '/F&LGlamCo/product/images/1763557377_eb8ee557_Fenty_Beauty_Match_Stix_Matte_Contour_Skinstick_____7.1g__2_.png', '2025-11-19 13:02:57'),
+(21, 10, '/F&LGlamCo/product/images/1763557377_ae6c8f45_Fenty_Beauty_Match_Stix_Matte_Contour_Skinstick_____7.1g__3_.png', '2025-11-19 13:02:57'),
+(22, 10, '/F&LGlamCo/product/images/1763557377_7662cca9_Fenty_Beauty_Match_Stix_Matte_Contour_Skinstick_____7.1g.png', '2025-11-19 13:02:57'),
+(23, 11, '/F&LGlamCo/product/images/1763563712_e33695eb_Huda_Beauty_Easy_Bake_Loose_Powder_____20g__2_.png', '2025-11-19 14:48:32'),
+(24, 11, '/F&LGlamCo/product/images/1763563712_16791cba_Huda_Beauty_Easy_Bake_Loose_Powder_____20g__3_.png', '2025-11-19 14:48:32'),
+(25, 11, '/F&LGlamCo/product/images/1763563712_8e161473_Huda_Beauty_Easy_Bake_Loose_Powder_____20g.png', '2025-11-19 14:48:32'),
+(26, 12, '/F&LGlamCo/product/images/1763563890_f1876068_Anastasia_Beverly_Hills_Impeccable_Setting_Spray__2_.png', '2025-11-19 14:51:30'),
+(27, 12, '/F&LGlamCo/product/images/1763563890_e2dd0e54_Anastasia_Beverly_Hills_Impeccable_Setting_Spray__3_.png', '2025-11-19 14:51:30'),
+(28, 12, '/F&LGlamCo/product/images/1763563890_36997ce0_Anastasia_Beverly_Hills_Impeccable_Setting_Spray.png', '2025-11-19 14:51:30'),
+(29, 13, '/F&LGlamCo/product/images/1763564082_047cead6_Rare_Beauty_Perfect_Strokes_Universal_Volumizing_Mascara__2_.png', '2025-11-19 14:54:42'),
+(30, 13, '/F&LGlamCo/product/images/1763564082_a6b17bb7_Rare_Beauty_Perfect_Strokes_Universal_Volumizing_Mascara__3_.png', '2025-11-19 14:54:42'),
+(31, 13, '/F&LGlamCo/product/images/1763564082_c077c72e_Rare_Beauty_Perfect_Strokes_Universal_Volumizing_Mascara.png', '2025-11-19 14:54:42'),
+(32, 14, '/F&LGlamCo/product/images/1763564380_857c6339_Velour_Lashes_Effortless_Natural_Lash_Collection__2_.png', '2025-11-19 14:59:40'),
+(33, 14, '/F&LGlamCo/product/images/1763564380_05c17290_Velour_Lashes_Effortless_Natural_Lash_Collection__3_.png', '2025-11-19 14:59:40'),
+(34, 14, '/F&LGlamCo/product/images/1763564380_610749a2_Velour_Lashes_Effortless_Natural_Lash_Collection.png', '2025-11-19 14:59:40');
+
+COMMIT;

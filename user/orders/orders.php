@@ -78,9 +78,16 @@ $result = mysqli_stmt_get_result($stmt);
             </tr>
         </thead>
         <tbody>
-            <?php while ($row = mysqli_fetch_assoc($result)): 
+           <?php while ($row = mysqli_fetch_assoc($result)): 
                 $total = $row['subtotal'] + $row['shipping'];
                 $statusClass = 'status-' . strtolower($row['status']);
+
+                $reviewCheck = mysqli_prepare($conn, "SELECT COUNT(*) FROM reviews WHERE orderinfo_id = ? AND customer_id = ?");
+                mysqli_stmt_bind_param($reviewCheck, 'ii', $row['orderinfo_id'], $customer_id);
+                mysqli_stmt_execute($reviewCheck);
+                mysqli_stmt_bind_result($reviewCheck, $reviewCount);
+                mysqli_stmt_fetch($reviewCheck);
+                mysqli_stmt_close($reviewCheck);
             ?>
             <tr>
                 <td><?php echo $row['orderinfo_id']; ?></td>
@@ -90,20 +97,20 @@ $result = mysqli_stmt_get_result($stmt);
                 <td>₱<?php echo number_format($row['subtotal'], 2); ?></td>
                 <td><strong>₱<?php echo number_format($total, 2); ?></strong></td>
                 <td>
-                <a href="order_details.php?id=<?php echo $row['orderinfo_id']; ?>" 
-                class="btn btn-sm btn-primary">View</a>
-                 </td>
+                    <a href="order_details.php?id=<?php echo $row['orderinfo_id']; ?>" 
+                    class="btn btn-sm btn-primary">View</a>
+                </td>
                 <td>
-                    <?php if ($row['status'] === 'Delivered'): ?>
-                       <a href="../../product/reviews/review.php?order=<?php echo $row['orderinfo_id']; ?>&index=0" 
-                     class="btn btn-sm btn-primary">Review</a>
+                    <?php if ($row['status'] === 'Delivered' && $reviewCount == 0): ?>
+                        <a href="../../product/reviews/review.php?order=<?php echo $row['orderinfo_id']; ?>&index=0" 
+                        class="btn btn-sm btn-primary">Review</a>
                     <?php else: ?>
                         <button class="btn btn-sm btn-secondary" disabled>Review</button>
                     <?php endif; ?>
                 </td>
-
             </tr>
             <?php endwhile; ?>
+
         </tbody>
     </table>
 </div>

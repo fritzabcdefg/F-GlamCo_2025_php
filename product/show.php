@@ -36,9 +36,26 @@ $reviews = [];
 if ($revQ) {
     while ($r = mysqli_fetch_assoc($revQ)) $reviews[] = $r;
 }
+
+// calculate average rating
+$ratingSum = 0;
+$ratingCount = 0;
+foreach ($reviews as $rev) {
+    if (!empty($rev['rating'])) {
+        $ratingSum += intval($rev['rating']);
+        $ratingCount++;
+    }
+}
+$averageRating = $ratingCount > 0 ? round($ratingSum / $ratingCount, 0) : 0;
+
+// calculate markup price (30%)
+$markupPrice = $item['sell_price'] * 1.3;
 ?>
 
 <style>
+    body {
+        font-family: 'Helvetica Neue', 'Helvetica World', Arial, sans-serif;
+    }
     .image-slideshow {
         display: flex;
         gap: 10px;
@@ -51,31 +68,59 @@ if ($revQ) {
         background: #fff;
         flex-shrink: 0;
     }
-      .text-pink { color: #e83e8c; } /* Bootstrap pink */
-    .bg-pink { background-color: #e83e8c !important; }
-
-    /* ✅ White background containers */
     .product-container {
         background-color: #fff;
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
+    .h2-dark {
+        color: #000;
+        font-weight: bold;
+        font-size: 1.6em;
+        margin-bottom: 10px;
+    }
+    .product-details {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 15px;
+    }
+    .original-price {
+        color: red;
+        text-decoration: line-through;
+        margin-right: 10px;
+        font-weight: bold;
+    }
+    .real-price {
+        color: #000;
+        font-weight: bold;
+    }
+    .star-rating {
+        font-size: 1.5em;
+        color: #FFD700;
+        letter-spacing: 8px;
+    }
+    .star-rating .empty {
+        color: #ccc;
+    }
     .review-container {
-        background-color: #000000ff;
+        background-color: #fff;
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        color: #000;
     }
-    .h2-dark{
-        color: #000000;
+    .review-container h5 {
+        color: #000;
         font-weight: bold;
-        font-size: 1.5em;
+        margin-bottom: 15px;
     }
-
-    .product-details p{
-        color: #000000;
-        font-size: 1.2em;
+    .btn-add {
+        font-size: 1.0em;      
+        padding: 10px 20px;    
+        width: auto;           
+        margin-top: 3px;      
     }
 </style>
 
@@ -94,48 +139,67 @@ if ($revQ) {
         </div>
 
         <div class="col-md-6 text-dark">
-            <h2><?php echo htmlspecialchars($item['supplier_name']); ?> </h2>
-            <div class ="h2-dark"><?php echo htmlspecialchars($item['name']); ?></h2> </div> <br>
-            <div class = "product-details p"> 
-            <p>Price: ₱<?php echo number_format($item['sell_price'], 2); ?></p>
-            <p>Cost Price: ₱<?php echo number_format($item['cost_price'], 2); ?></p>
-            <p>In stock: <?php echo htmlspecialchars($item['quantity']); ?></p>
+            <h2><?php echo htmlspecialchars($item['supplier_name']); ?></h2>
+            <div class="h2-dark"><?php echo htmlspecialchars($item['name']); ?></div>
+
+            <div class="product-details"> 
+                <p>
+                    <span class="original-price">₱<?php echo number_format($markupPrice, 2); ?></span>
+                    <span class="real-price">₱<?php echo number_format($item['sell_price'], 2); ?></span>
+                </p>
+
+                <div>
+                    <span class="star-rating">
+                        <?php
+                        for ($i = 1; $i <= 5; $i++) {
+                            if ($i <= $averageRating) {
+                                echo "&#9733;"; // filled star
+                            } else {
+                                echo "<span class='empty'>&#9733;</span>"; // empty star
+                            }
+                        }
+                        ?>
+                    </span>
+                    <span>(<?php echo $averageRating; ?>/5 from <?php echo $ratingCount; ?> reviews)</span>
+                </div>
+
+                <p>In stock: <?php echo htmlspecialchars($item['quantity']); ?></p>
             </div>
 
             <!-- Add to cart form -->
-            <form method="POST" action="../cart/cart_update.php">
+            <form method="POST" action="../cart/cart_update.php" class="mt-3">
                 <input type="hidden" name="type" value="add">
                 <input type="hidden" name="item_id" value="<?php echo $item['item_id']; ?>">
-                <input type="number" name="item_qty" value="1" min="1" max="<?php echo (int)$item['quantity']; ?>">
-                <button class="btn btn-primary">Add to Bag</button>
+
+                <div class="d-flex flex-column align-items-start gap-3">
+                    <input type="number" 
+                        name="item_qty" 
+                        value="1" 
+                        min="1" 
+                        max="<?php echo (int)$item['quantity']; ?>" 
+                        class="form-control" 
+                        style="width:120px;">
+
+                    <button class="btn btn-primary btn-add" name="submit">Add to Bag</button>
+                </div>
             </form>
+
+            <div class="mt-3">
+                <h5 style>Description:</h5>
+                <p><?php echo nl2br(htmlspecialchars($item['description'])); ?></p>
+            </div>
         </div>
     </div>
 
     <hr />
 
-    <!-- Reviews Section -->
+    <!-- ✅ Reviews stay at bottom -->
     <div class="reviews mt-4 review-container">
-        <?php
-        $ratingSum = 0;
-        $ratingCount = 0;
-        foreach ($reviews as $rev) {
-            if (!empty($rev['rating'])) {
-                $ratingSum += intval($rev['rating']);
-                $ratingCount++;
-            }
-        }
-        $averageRating = $ratingCount > 0 ? round($ratingSum / $ratingCount, 2) : 0;
-        ?>
-
-        <!-- Ratings -->
-        <h5 class="text-pink fw-bold">
-            RATINGS - <span class="badge bg-pink text-white"><?php echo $averageRating; ?>/5</span>
-        </h5>
-
-        <!-- Reviews -->
-        <h5 class="text-pink fw-bold">
-            REVIEWS <span class="badge bg-pink text-white">(<?php echo count($reviews); ?>)</span>
+        <h5 class="d-flex align-items-center gap-2">
+            <span>REVIEWS</span>
+            <span class="badge bg-dark text-white">
+                <?php echo count($reviews); ?>
+            </span>
         </h5>
 
         <?php if (count($reviews) === 0): ?>
@@ -143,11 +207,21 @@ if ($revQ) {
         <?php else: ?>
             <?php foreach ($reviews as $rev): ?>
                 <div class="p-3 mb-2 border rounded" style="background-color:#ffe6f0;">
-                    <strong style="color:#000000;">
+                    <strong style="color:#000;">
                         <?php echo htmlspecialchars($rev['user_name'] ?? 'Anonymous'); ?>
                     </strong>
                     <?php if (!empty($rev['rating'])): ?>
-                        <span class="badge bg-pink text-white ms-2">Rating: <?php echo intval($rev['rating']); ?>/5</span>
+                        <span class="star-rating ms-2">
+                            <?php
+                            for ($i = 1; $i <= 5; $i++) {
+                                if ($i <= intval($rev['rating'])) {
+                                    echo "&#9733;";
+                                } else {
+                                    echo "<span class='empty'>&#9733;</span>";
+                                }
+                            }
+                            ?>
+                        </span>
                     <?php endif; ?>
                     <div class="mt-2 text-dark">
                         <?php echo nl2br(htmlspecialchars($rev['comment'])); ?>
@@ -155,7 +229,7 @@ if ($revQ) {
                     <div class="mt-1 text-muted" style="font-size:0.85em;">
                         <?php echo $rev['created_at']; ?>
                         <?php if (isset($_SESSION['user_id']) && $rev['user_id'] == $_SESSION['user_id']): ?>
-                            <a href="reviews/edit.php?id=<?php echo $rev['id']; ?>" class="ms-2" style="color:#000000;">Edit</a>
+                            <a href="reviews/edit.php?id=<?php echo $rev['id']; ?>" class="ms-2" style="color:#000;">Edit</a>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -163,6 +237,6 @@ if ($revQ) {
         <?php endif; ?>
     </div>
 </div>
+<br>
 
 <?php include('../includes/footer.php'); ?>
-

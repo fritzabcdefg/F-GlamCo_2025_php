@@ -4,6 +4,37 @@ include('../includes/header.php');
 include('../includes/config.php');
 
 $alertMessage = '';
+
+// --- Handle remove action ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_code'])) {
+    $removeId = $_POST['remove_code'];
+    if (isset($_SESSION["cart_products"])) {
+        foreach ($_SESSION["cart_products"] as $key => $cart_itm) {
+            if ($cart_itm["item_id"] == $removeId) {
+                unset($_SESSION["cart_products"][$key]);
+                break;
+            }
+        }
+        // reindex array
+        $_SESSION["cart_products"] = array_values($_SESSION["cart_products"]);
+    }
+}
+
+// --- Handle update quantities ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_cart'])) {
+    if (isset($_POST['product_qty']) && is_array($_POST['product_qty'])) {
+        foreach ($_POST['product_qty'] as $id => $qty) {
+            foreach ($_SESSION["cart_products"] as &$cart_itm) {
+                if ($cart_itm["item_id"] == $id) {
+                    $cart_itm["item_qty"] = max(1, intval($qty));
+                }
+            }
+        }
+        unset($cart_itm); // break reference
+    }
+}
+
+// --- Handle checkout validation ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['go_checkout'])) {
     if (empty($_POST['checkout_select'])) {
         $alertMessage = "⚠️ Please select at least one item before proceeding to checkout.";
@@ -53,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['go_checkout'])) {
             <tbody>
                 <?php
                 $total = 0;
-                if (isset($_SESSION["cart_products"])) {
+                if (isset($_SESSION["cart_products"]) && count($_SESSION["cart_products"]) > 0) {
                     foreach ($_SESSION["cart_products"] as $cart_itm) {
                         $product_name  = $cart_itm["item_name"];
                         $product_qty   = $cart_itm["item_qty"];
@@ -76,6 +107,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['go_checkout'])) {
 
                         $total += $subtotal;
                     }
+                } else {
+                    echo '<tr><td colspan="7">Your cart is empty.</td></tr>';
                 }
                 ?>
                 <tr>

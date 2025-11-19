@@ -23,6 +23,11 @@ if ($catRes) {
         </div>
 
         <div class="mb-3">
+            <label>Description</label>
+            <textarea name="description" class="form-control" rows="4" placeholder="Enter item description"></textarea>
+        </div>
+
+        <div class="mb-3">
             <label>Category</label>
             <select name="category_id" class="form-control" required>
                 <option value="">-- Select category --</option>
