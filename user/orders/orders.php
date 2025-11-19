@@ -111,4 +111,4 @@ $result = mysqli_stmt_get_result($stmt);
     </table>
 </div>
 
-<?php include('./includes/footer.php'); ?>
+<?php include('../../includes/footer.php'); ?>
