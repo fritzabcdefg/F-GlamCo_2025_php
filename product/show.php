@@ -143,7 +143,7 @@ if ($revQ) {
         <?php else: ?>
             <?php foreach ($reviews as $rev): ?>
                 <div class="p-3 mb-2 border rounded" style="background-color:#ffe6f0;">
-                    <strong class="text-pink">
+                    <strong style="color:#000000;">
                         <?php echo htmlspecialchars($rev['user_name'] ?? 'Anonymous'); ?>
                     </strong>
                     <?php if (!empty($rev['rating'])): ?>
@@ -155,7 +155,7 @@ if ($revQ) {
                     <div class="mt-1 text-muted" style="font-size:0.85em;">
                         <?php echo $rev['created_at']; ?>
                         <?php if (isset($_SESSION['user_id']) && $rev['user_id'] == $_SESSION['user_id']): ?>
-                            <a href="reviews/edit.php?id=<?php echo $rev['id']; ?>" class="ms-2 text-pink">Edit</a>
+                            <a href="reviews/edit.php?id=<?php echo $rev['id']; ?>" style="color:#000000;">Edit</a>
                         <?php endif; ?>
                     </div>
                 </div>
