@@ -4,7 +4,6 @@ require_once __DIR__ . '/../includes/auth_admin.php';
 require_once __DIR__ . '/../includes/config.php';
 include __DIR__ . '/../includes/header.php';
 
-// Fetch users from database
 $sql = "SELECT id, email, role, created_at, active FROM users ORDER BY id DESC";
 $result = mysqli_query($conn, $sql);
 $itemCount = $result ? mysqli_num_rows($result) : 0;

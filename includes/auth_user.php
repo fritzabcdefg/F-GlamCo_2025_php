@@ -1,5 +1,4 @@
 <?php
-// user auth check - include at top of pages that require any logged-in user
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }

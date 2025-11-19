@@ -24,7 +24,6 @@ $sql = "UPDATE users SET role = ? WHERE id = ?";
 if ($stmt = $conn->prepare($sql)) {
     $stmt->bind_param('si', $role, $user_id);
     if ($stmt->execute()) {
-        // if admin changed their own role, update session immediately
         if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $user_id) {
             $_SESSION['role'] = $role;
         }

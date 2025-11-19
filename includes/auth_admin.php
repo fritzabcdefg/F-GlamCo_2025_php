@@ -1,5 +1,4 @@
 <?php
-// admin auth check - include at top of admin/CRUD pages before any output
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }

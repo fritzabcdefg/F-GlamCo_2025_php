@@ -7,7 +7,6 @@ if (isset($_POST['submit'])) {
     $name = trim($_POST['name']);
     $description = trim($_POST['description']);
 
-    // keep values for repopulation on error
     $_SESSION['cat_name'] = $name;
     $_SESSION['cat_description'] = $description;
 
@@ -27,7 +26,6 @@ if (isset($_POST['submit'])) {
     }
 
     if ($res) {
-        // clear session-backed form values
         unset($_SESSION['cat_name'], $_SESSION['cat_description']);
         header('Location: index.php');
         exit();

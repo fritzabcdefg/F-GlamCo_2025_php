@@ -8,8 +8,6 @@ include __DIR__ . '/../includes/header.php';
 $sql = "SELECT orderinfo_id, total, status FROM salesperorder ORDER BY total DESC";
 $result = mysqli_query($conn, $sql);
 $itemCount = $result ? mysqli_num_rows($result) : 0;
-
-// Compute grand total
 $grandTotal = 0;
 if ($result) {
     foreach ($result as $row) {

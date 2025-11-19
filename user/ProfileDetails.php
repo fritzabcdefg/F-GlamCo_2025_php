@@ -41,7 +41,7 @@ if (isset($_POST['submit'])) {
     }
 
     if (!empty($ok)) {
-        // ✅ Auto-login refresh
+        // Auto-login refresh
         $sqlUser = "SELECT id, email, role FROM users WHERE id = ?";
         $stmtUser = mysqli_prepare($conn, $sqlUser);
         mysqli_stmt_bind_param($stmtUser, 'i', $user_id);

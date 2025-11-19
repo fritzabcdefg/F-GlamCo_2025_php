@@ -16,28 +16,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         mysqli_stmt_store_result($check);
 
         if (mysqli_stmt_num_rows($check) === 0) {
-            // ⚠️ For production, use password_hash() instead of sha1
+            // For production, use password_hash() instead of sha1
             $hashed = sha1($pass);
 
             $insert = mysqli_prepare($conn, "INSERT INTO users (email, password, role, active) VALUES (?, ?, 'customer', 1)");
             mysqli_stmt_bind_param($insert, 'ss', $email, $hashed);
 
             if (mysqli_stmt_execute($insert)) {
-                // ✅ Get new user ID
+                // Get new user ID
                 $newUserId = mysqli_insert_id($conn);
 
-                // ✅ Create blank customer row linked to this user
+                // Create blank customer row linked to this user
                 $insCustomer = mysqli_prepare($conn, "INSERT INTO customers (user_id) VALUES (?)");
                 mysqli_stmt_bind_param($insCustomer, 'i', $newUserId);
                 mysqli_stmt_execute($insCustomer);
                 mysqli_stmt_close($insCustomer);
 
-                // ✅ Auto-login: set session
+                // Auto-login: set session
                 $_SESSION['user_id'] = $newUserId;
                 $_SESSION['email']   = $email;
                 $_SESSION['role']    = 'customer';
 
-                // ✅ Redirect to ProfilePicture step
+                // Redirect to ProfilePicture step
                 header("Location: ProfilePicture.php");
                 exit();
             } else {

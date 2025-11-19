@@ -3,13 +3,11 @@ session_start();
 include('../includes/header.php');
 include('../includes/config.php');
 
-// Handle checkout selection validation
 $alertMessage = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['go_checkout'])) {
     if (empty($_POST['checkout_select'])) {
         $alertMessage = "⚠️ Please select at least one item before proceeding to checkout.";
     } else {
-        // Save selected IDs in session and redirect to checkout
         $_SESSION['checkout_selected'] = $_POST['checkout_select'];
         header("Location: checkout.php");
         exit;
@@ -17,7 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['go_checkout'])) {
 }
 ?>
 
-<!-- Font Awesome for trash icon -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 <style>

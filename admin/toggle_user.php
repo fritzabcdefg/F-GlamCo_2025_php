@@ -4,7 +4,6 @@ require_once __DIR__ . '/../includes/auth_admin.php';
 
 session_start();
 
-// require POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: users.php');
     exit;
@@ -17,14 +16,12 @@ if (!isset($_POST['id']) || !is_numeric($_POST['id'])) {
 
 $user_id = (int) $_POST['id'];
 
-// fetch current active value
 $sql = "SELECT active FROM users WHERE id = ? LIMIT 1";
 if ($stmt = $conn->prepare($sql)) {
     $stmt->bind_param('i', $user_id);
     $stmt->execute();
     $stmt->bind_result($active);
     if ($stmt->fetch() === null) {
-        // no user found
         $stmt->close();
         header('Location: users.php');
         exit;

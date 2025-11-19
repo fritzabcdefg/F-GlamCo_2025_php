@@ -3,6 +3,7 @@ session_start();
 include("../includes/config.php");
 
 $deactivated = false; 
+$login_error = false; 
 ?>
 
 <!doctype html>
@@ -63,8 +64,16 @@ if (isset($_POST['submit'])) {
               // account is deactivated
               $deactivated = true;
           }
+      } else {
+          // password didn’t match
+          $login_error = true;
       }
+    } else {
+      // no user found with that email
+      $login_error = true;
     }
+  } else {
+    $login_error = true;
   }
 }
 ?>
@@ -84,27 +93,35 @@ if (isset($_POST['submit'])) {
     <?php endif; ?>
   <?php endif; ?>
 
-<!-- Deactivated account alert -->
-<?php if ($deactivated): ?>
-  <div class="alert alert-danger alert-dismissible fade show" role="alert">
-    <span class="d-block text-center">That account is no longer available or deactivated.</span>
+  <!-- Deactivated account -->
+  <?php if ($deactivated): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <span class="d-block text-center">That account is no longer available or deactivated.</span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <?php endif; ?>
 
-  </div>
-<?php endif; ?>
+  <!-- Wrong email/password -->
+  <?php if ($login_error): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <span class="d-block text-center">Invalid email or password. Please try again.</span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <?php endif; ?>
 
   <div class="auth-container">
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
       <div class="mb-3">
-        <label for="form2Example1" class="loginform-label ">Email address</label>
+        <label for="form2Example1" class="loginform-label">Email address</label>
         <input type="email" id="form2Example1" class="form-control" name="email" required />
       </div>
       <div class="mb-3">
-        <label for="form2Example2" class="loginform-label ">Password</label>
+        <label for="form2Example2" class="loginform-label">Password</label>
         <input type="password" id="form2Example2" class="form-control" name="password" required />
       </div>
       <button type="submit" class="btn btn-primary w-100 mb-3" name="submit">Sign in</button>
       <div class="text-center">
-        <p style="color:#000000"> Not a member? <a href="register.php">Register</a></p>
+        <p style="color:#000000">Not a member? <a href="register.php">Register</a></p>
       </div>
     </form>
   </div>

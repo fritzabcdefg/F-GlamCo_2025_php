@@ -15,14 +15,12 @@ include __DIR__ . '/../includes/header.php';
 $orderId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $_SESSION['orderId'] = $orderId;
 
-// Fetch customer + order summary
 $sql = "SELECT lname, fname, addressline, town, zipcode, phone, orderinfo_id, status 
         FROM orderdetails 
         WHERE orderinfo_id = $orderId LIMIT 1";
 $result = mysqli_query($conn, $sql);
 $customer = mysqli_fetch_assoc($result);
 
-// Fetch order items
 $sql = "SELECT name, quantity, sell_price 
         FROM orderdetails 
         WHERE orderinfo_id = $orderId";

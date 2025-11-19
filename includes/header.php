@@ -2,8 +2,7 @@
 if (session_status() === PHP_SESSION_NONE) { session_start(); } 
 include(__DIR__ . "/config.php");
 
-// Defaults
-$img = '/F&LGlamCo/assets/default-avatar.png';
+$img = '/F&LGlamCo/uploads/default-avatar.png';
 $displayName = 'Guest';
 $orderCount = 0;
 
@@ -18,7 +17,6 @@ if (isset($_SESSION['user_id'])) {
         }
     }
 
-    // Order count
     $orderRes = mysqli_query($conn, "SELECT COUNT(*) AS total FROM orderinfo WHERE customer_id = {$userId}");
     if ($orderRes) {
         $orderRow = mysqli_fetch_assoc($orderRes);

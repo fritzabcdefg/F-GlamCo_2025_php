@@ -2,7 +2,6 @@
 session_start();
 include('../includes/config.php');
 
-// 🛒 Add item to cart
 if (isset($_POST["type"]) && $_POST["type"] === 'add' && isset($_POST["item_qty"]) && $_POST["item_qty"] > 0) {
     $new_product = [];
     foreach ($_POST as $key => $value) {
@@ -29,7 +28,6 @@ if (isset($_POST["type"]) && $_POST["type"] === 'add' && isset($_POST["item_qty"
         $new_product["item_qty"]      = isset($new_product["item_qty"]) ? max(1, (int)$new_product["item_qty"]) : 1;
     }
 
-    // Upsert into cart (merge quantities if item already exists)
     if (!isset($_SESSION["cart_products"])) {
         $_SESSION["cart_products"] = [];
     }
@@ -46,12 +44,10 @@ if (isset($_POST["type"]) && $_POST["type"] === 'add' && isset($_POST["item_qty"
         $_SESSION["cart_products"][$id] = $new_product;
     }
 
-    // After add, return to referrer (index) and do not alter checkout selection
     header('Location: ' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '../index.php'));
     exit;
 }
 
-// 🔄 Update quantities, remove items, capture checkout selection, and decide redirect
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Update quantities
@@ -91,7 +87,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Fallback
 header('Location: view_cart.php');
 exit;
 ?>

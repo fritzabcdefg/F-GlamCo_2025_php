@@ -111,7 +111,6 @@ function smtp_send_mail($to, $subject, $html_body, $from = null, $from_name = nu
 
 	fclose($fp);
 
-	// Accept 250/221 as success indicators
 	if (stripos($resp, '250') !== false || stripos($resp, '221') !== false) {
 		return ['success' => true];
 	}

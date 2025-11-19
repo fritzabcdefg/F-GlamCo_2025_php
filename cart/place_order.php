@@ -13,7 +13,6 @@ try {
 
     mysqli_query($conn, 'START TRANSACTION');
 
-    // --- Get customer_id and email ---
     $customer_id = null;
     $customer_email = null;
 
@@ -38,14 +37,12 @@ try {
         mysqli_stmt_close($selUser);
     }
 
-        // --- Insert into orderinfo ---
     $shipping = 80.00;
     $stmt1 = mysqli_prepare($conn, 'INSERT INTO orderinfo(customer_id, date_placed, date_shipped, shipping) VALUES (?, NOW(), NOW(), ?)');
     mysqli_stmt_bind_param($stmt1, 'id', $customer_id, $shipping);
     mysqli_stmt_execute($stmt1);
     $orderinfo_id = mysqli_insert_id($conn);
 
-    // --- Prepare reusable statements ---
     $stmt2 = mysqli_prepare($conn, 'INSERT INTO orderline(orderinfo_id, item_id, quantity) VALUES (?, ?, ?)');
     $stmt3 = mysqli_prepare($conn, 'UPDATE stocks SET quantity = quantity - ? WHERE item_id = ?');
 
@@ -61,7 +58,6 @@ try {
     }
 
     mysqli_commit($conn);
-    // --- Build email using orderdetails view ---
     $iq = "SELECT fname, lname, addressline, town, zipcode, phone, status, name, quantity, sell_price 
            FROM orderdetails 
            WHERE orderinfo_id = ?";
@@ -77,7 +73,6 @@ try {
             $to = $customer_email;
             $fname = $first['fname'];
 
-            // Customer info block
             $customerInfo .= '<table style="width:100%; font-size:14px; margin-bottom:20px;">';
             $customerInfo .= '<tr><td style="padding:6px;"><strong>Name:</strong></td><td>' . htmlspecialchars($first['fname'] . ' ' . $first['lname']) . '</td></tr>';
             $customerInfo .= '<tr><td style="padding:6px;"><strong>Shipping Address:</strong></td><td>' . htmlspecialchars($first['addressline']) . ', ' . htmlspecialchars($first['town']) . ' ' . htmlspecialchars($first['zipcode']) . '</td></tr>';
@@ -85,7 +80,6 @@ try {
             $customerInfo .= '<tr><td style="padding:6px;"><strong>Status:</strong></td><td>' . htmlspecialchars($first['status']) . '</td></tr>';
             $customerInfo .= '</table>';
 
-            // Items table
             $itemsHtml .= '<table style="width:100%; border-collapse:collapse; border:1px solid #ccc;">';
             $itemsHtml .= '<thead><tr style="background:#f9f9f9;">
                 <th style="text-align:left; padding:8px; border:1px solid #ccc;">Item</th>
@@ -93,7 +87,7 @@ try {
                 <th style="text-align:right; padding:8px; border:1px solid #ccc;">Price</th>
                 <th style="text-align:right; padding:8px; border:1px solid #ccc;">Total</th>
             </tr></thead><tbody>';
-            // First item row
+
             $total = (float)$first['sell_price'] * (int)$first['quantity'];
             $grand += $total;
             $itemsHtml .= '<tr>
@@ -103,7 +97,6 @@ try {
                 <td style="padding:8px; text-align:right; border:1px solid #ccc;">₱' . number_format($total,2) . '</td>
             </tr>';
 
-            // Remaining items
             while ($ir = $ires->fetch_assoc()) {
                 $total = (float)$ir['sell_price'] * (int)$ir['quantity'];
                 $grand += $total;

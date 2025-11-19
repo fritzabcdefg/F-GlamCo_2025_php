@@ -192,7 +192,6 @@ $results = mysqli_stmt_get_result($stmt);
                         </div>
                     </div>
 
-                    <!-- Hidden inputs -->
                     <input type="hidden" name="item_id" value="<?php echo $row['itemId']; ?>" />
                     <input type="hidden" name="type" value="add" />
                 </form>

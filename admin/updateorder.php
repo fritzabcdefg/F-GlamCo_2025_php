@@ -4,7 +4,6 @@ include('../includes/auth_admin.php');
 include("../includes/config.php");
 include("../includes/header.php");
 
-// require POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: orders.php');
     exit;

@@ -8,7 +8,6 @@ if (!$user_id) {
     exit;
 }
 
-// Fetch current image (if any)
 $img = 'http://bootdey.com/img/Content/avatar/avatar1.png';
 $sql = "SELECT image FROM customers WHERE user_id = ? LIMIT 1";
 $stmt = mysqli_prepare($conn, $sql);

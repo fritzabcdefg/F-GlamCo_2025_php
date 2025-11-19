@@ -170,7 +170,6 @@ if ($categoryFilter) {
                         </div>
                     </div>
 
-                    <!-- Hidden inputs -->
                     <input type="hidden" name="item_id" value="<?php echo $row['itemId']; ?>" />
                     <input type="hidden" name="item_name" value="<?php echo htmlspecialchars($row['name']); ?>" />
                     <input type="hidden" name="item_price" value="<?php echo $row['sell_price']; ?>" />

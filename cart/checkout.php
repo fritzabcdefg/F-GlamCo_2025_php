@@ -4,7 +4,6 @@ include('../includes/auth_user.php');
 include('../includes/header.php');
 include('../includes/config.php');
 
-// If no cart items, redirect back
 if (!isset($_SESSION["cart_products"]) || count($_SESSION["cart_products"]) === 0) {
     header("Location: view_cart.php");
     exit;
@@ -12,7 +11,7 @@ if (!isset($_SESSION["cart_products"]) || count($_SESSION["cart_products"]) === 
 
 $selectedIds = isset($_SESSION['checkout_selected']) ? $_SESSION['checkout_selected'] : [];
 $total = 0;
-$shipping = 80.00; // flat shipping fee
+$shipping = 80.00; 
 ?>
 
 <style>
@@ -105,7 +104,6 @@ $shipping = 80.00; // flat shipping fee
             </tbody>
         </table>
 
-        <!-- Summary Table -->
         <table class="checkout-table">
             <tbody>
                 <tr>

@@ -3,7 +3,6 @@ session_start();
 include("../includes/config.php");
 include("../includes/header.php");
 
-// basic server-side validation
 $email       = isset($_POST['email']) ? trim($_POST['email']) : '';
 $password    = isset($_POST['password']) ? trim($_POST['password']) : '';
 $confirmPass = isset($_POST['confirmPass']) ? trim($_POST['confirmPass']) : '';
@@ -28,7 +27,6 @@ if (strlen($password) < 8) {
     exit();
 }
 
-// check for existing email
 $chk = mysqli_prepare($conn, "SELECT id FROM users WHERE email = ? LIMIT 1");
 mysqli_stmt_bind_param($chk, 's', $email);
 mysqli_stmt_execute($chk);

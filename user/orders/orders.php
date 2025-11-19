@@ -4,8 +4,6 @@ include('../../includes/auth_user.php');
 include('../../includes/header.php');
 include('../../includes/config.php');
 
-
-// Get customer_id for logged-in user
 $customer_id = null;
 $selCust = mysqli_prepare($conn, "SELECT customer_id FROM customers WHERE user_id = ? LIMIT 1");
 mysqli_stmt_bind_param($selCust, 'i', $_SESSION['user_id']);
@@ -14,7 +12,6 @@ mysqli_stmt_bind_result($selCust, $customer_id);
 mysqli_stmt_fetch($selCust);
 mysqli_stmt_close($selCust);
 
-// Fetch orders for this customer
 $sql = "SELECT o.orderinfo_id, o.date_placed, o.date_shipped, o.shipping, o.status,
                (SELECT SUM(ol.quantity * i.sell_price)
                 FROM orderline ol
