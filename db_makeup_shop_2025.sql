@@ -205,8 +205,9 @@ INSERT INTO `items` (`item_id`, `name`, `description`, `cost_price`, `sell_price
 (11, 'Easy Bake Loose Powder • 20g', 'Lightweight loose powder that sets makeup and controls shine for a flawless finish.', 2450.00, 2600.00, 'Huda Beauty', 3),
 (12, 'Impeccable Setting Spray', 'Long-lasting setting spray that locks makeup in place while keeping skin refreshed.', 2090.00, 2320.00, 'Anastasia Beverly Hills', 3),
 (13, 'Perfect Strokes Universal Volumizing Mascara', 'Volumizing mascara that lifts and defines lashes with a universal brush design.', 1250.00, 1550.00, 'Rare Beauty', 1),
-(14, 'Effortless Natural Lash Collection', 'A curated set of natural-looking false lashes for effortless everyday wear.', 1400.00, 1680.00, 'Velour Lashes', 3);
-
+(14, 'Effortless Natural Lash Collection', 'A curated set of natural-looking false lashes for effortless everyday wear.', 1400.00, 1680.00, 'Velour Lashes', 3),
+(15, 'Mini Soft Glam Eye Shadow Palette', NULL, 2480.00, 2270.00, 'Anastasia Beverly Hills', 1),
+(16, 'Kind Words Matte Lipstick • 3.5g', NULL, 1100.00, 1450.00, 'Rare Beauty', 2);
 
 
 INSERT INTO `stocks` (`item_id`, `quantity`) VALUES
