@@ -14,19 +14,33 @@ if (isset($_POST['submit'])) {
         exit();
     }
 
-    $upd = mysqli_prepare($conn, "UPDATE categories SET name = ?, description = ? WHERE category_id = ?");
-    if ($upd) {
-        mysqli_stmt_bind_param($upd, 'ssi', $name, $description, $id);
-        $res = mysqli_stmt_execute($upd);
-        mysqli_stmt_close($upd);
-    } else {
-        $res = false;
-    }
+    try {
+        $conn->begin_transaction();
 
-    if ($res) {
-        header('Location: index.php');
+        $upd = mysqli_prepare($conn, "UPDATE categories SET name = ?, description = ? WHERE category_id = ?");
+        if ($upd) {
+            mysqli_stmt_bind_param($upd, 'ssi', $name, $description, $id);
+            $res = mysqli_stmt_execute($upd);
+            mysqli_stmt_close($upd);
+        } else {
+            $res = false;
+        }
+
+        if ($res) {
+            $conn->commit();
+            header('Location: index.php');
+            exit();
+        } else {
+            $conn->rollback();
+            $_SESSION['cat_name_error'] = 'Failed to update category.';
+            header("Location: edit.php?id={$id}");
+            exit();
+        }
+    } catch (Exception $e) {
+        $conn->rollback();
+        $_SESSION['cat_name_error'] = 'Transaction error.';
+        header("Location: edit.php?id={$id}");
         exit();
-    } else {
-        echo 'Error: ' . mysqli_error($conn);
     }
 }
+?>

@@ -6,12 +6,18 @@ include('../includes/config.php');
 
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $category = null;
-if ($id) {
-    $sql = "SELECT * FROM categories WHERE category_id = {$id} LIMIT 1";
-    $res = mysqli_query($conn, $sql);
-    if ($res && mysqli_num_rows($res) > 0) {
-        $category = mysqli_fetch_assoc($res);
+try {
+    $conn->begin_transaction();
+    if ($id) {
+        $sql = "SELECT * FROM categories WHERE category_id = {$id} LIMIT 1";
+        $res = mysqli_query($conn, $sql);
+        if ($res && mysqli_num_rows($res) > 0) {
+            $category = mysqli_fetch_assoc($res);
+        }
     }
+    $conn->commit();
+} catch (Exception $e) {
+    $conn->rollback();
 }
 ?>
 

@@ -12,6 +12,22 @@ if (!isset($_SESSION["cart_products"]) || count($_SESSION["cart_products"]) === 
 $selectedIds = isset($_SESSION['checkout_selected']) ? $_SESSION['checkout_selected'] : [];
 $total = 0;
 $shipping = 80.00; 
+
+try {
+    $conn->begin_transaction();
+
+    foreach ($_SESSION["cart_products"] as $cart_itm) {
+        if (in_array($cart_itm["item_id"], $selectedIds)) {
+            $subtotal = $cart_itm["item_price"] * $cart_itm["item_qty"];
+            $total += $subtotal;
+        }
+    }
+
+    $conn->commit();
+} catch (Exception $e) {
+    $conn->rollback();
+    $total = 0;
+}
 ?>
 
 <style>
@@ -67,8 +83,6 @@ $shipping = 80.00;
 <div class="checkout-container">
     <h1 align="center" style="color:#F69b9A;">Order Summary</h1>
     <form method="POST" action="place_order.php">
-        
-        <!-- Items Table -->
         <table class="checkout-table mb-4">
             <thead>
                 <tr>
@@ -88,14 +102,13 @@ $shipping = 80.00;
                         $product_price = $cart_itm["item_price"];
                         $product_brand = $cart_itm["supplier_name"];
                         $subtotal      = $product_price * $product_qty;
-                        $total += $subtotal;
                 ?>
                 <tr>
-                    <td><?php echo $product_qty; ?></td>
-                    <td><?php echo htmlspecialchars($product_name); ?></td>
-                    <td><?php echo htmlspecialchars($product_brand); ?></td>
-                    <td>₱<?php echo number_format($product_price, 2); ?></td>
-                    <td>₱<?php echo number_format($subtotal, 2); ?></td>
+                    <td><?= $product_qty; ?></td>
+                    <td><?= htmlspecialchars($product_name); ?></td>
+                    <td><?= htmlspecialchars($product_brand); ?></td>
+                    <td>₱<?= number_format($product_price, 2); ?></td>
+                    <td>₱<?= number_format($subtotal, 2); ?></td>
                 </tr>
                 <?php 
                     }
@@ -108,11 +121,11 @@ $shipping = 80.00;
             <tbody>
                 <tr>
                     <td style="text-align:right;font-weight:bold;">Shipping Fee:</td>
-                    <td style="text-align:center;">₱<?php echo number_format($shipping, 2); ?></td>
+                    <td style="text-align:center;">₱<?= number_format($shipping, 2); ?></td>
                 </tr>
                 <tr>
                     <td style="text-align:right;font-weight:bold;">Total Amount:</td>
-                    <td style="text-align:center;"><strong>₱<?php echo number_format($total + $shipping, 2); ?></strong></td>
+                    <td style="text-align:center;"><strong>₱<?= number_format($total + $shipping, 2); ?></strong></td>
                 </tr>
             </tbody>
         </table>

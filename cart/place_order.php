@@ -10,7 +10,8 @@ try {
         exit;
     }
 
-    mysqli_query($conn, 'START TRANSACTION');
+    // Start transaction
+    $conn->begin_transaction();
 
     $customer_id = null;
     $customer_email = null;
@@ -36,7 +37,7 @@ try {
         mysqli_stmt_close($selUser);
     }
 
-        $shipping = 80.00;
+    $shipping = 80.00;
     $stmt1 = mysqli_prepare($conn, 'INSERT INTO orderinfo(customer_id, date_placed, date_shipped, shipping) VALUES (?, NOW(), NOW(), ?)');
     mysqli_stmt_bind_param($stmt1, 'id', $customer_id, $shipping);
     mysqli_stmt_execute($stmt1);
@@ -56,7 +57,8 @@ try {
         mysqli_stmt_execute($stmt3);
     }
 
-    mysqli_commit($conn);
+    // Commit transaction if all queries succeed
+    $conn->commit();
 
     $iq = "SELECT fname, lname, addressline, town, zipcode, phone, status, name, quantity, sell_price 
            FROM orderdetails 
@@ -74,7 +76,6 @@ try {
             $to = $customer_email;
             $fname = $first['fname'];
 
-            // Build customer info table
             $customerInfo .= '<table style="width:100%; font-size:14px; margin-bottom:20px;">';
             $customerInfo .= '<tr><td><strong>Name:</strong></td><td>' . htmlspecialchars($first['fname'] . ' ' . $first['lname']) . '</td></tr>';
             $customerInfo .= '<tr><td><strong>Shipping Address:</strong></td><td>' . htmlspecialchars($first['addressline']) . ', ' . htmlspecialchars($first['town']) . ' ' . htmlspecialchars($first['zipcode']) . '</td></tr>';
@@ -82,7 +83,6 @@ try {
             $customerInfo .= '<tr><td><strong>Status:</strong></td><td>' . htmlspecialchars($first['status']) . '</td></tr>';
             $customerInfo .= '</table>';
 
-            // Build items table
             $itemsHtml .= '<table style="width:100%; border-collapse:collapse; border:1px solid #ccc;">';
             $itemsHtml .= '<thead><tr style="background:#f9f9f9;">
                 <th>Item</th><th>Qty</th><th>Price</th><th>Total</th>
@@ -113,27 +113,24 @@ try {
 
             $grandTotal = $grand + $shipping;
 
-        // Compose styled email
-        $html = '<div style="font-family:Arial, sans-serif; font-size:14px; color:#333;">';
-        $html .= '<h2 style="color:#e83e8c;">Order Confirmation — Order #' . (int)$orderinfo_id . '</h2>';
-        $html .= '<p>Hi <strong>' . htmlspecialchars($fname) . '</strong>,</p>';
-        $html .= '<p>Thank you for your order! Below are your order details:</p>';
-        $html .= '<hr style="border:0; border-top:1px solid #ccc;">';
-        $html .= '<h4 style="margin-bottom:5px;">Shipping Information</h4>';
-        $html .= $customerInfo;
-        $html .= '<h4 style="margin-bottom:5px;">Items Ordered</h4>';
-        $html .= $itemsHtml;
-        $html .= '<table style="width:100%; margin-top:20px; font-size:15px;">';
-        $html .= '<tr><td style="text-align:right; padding:6px;">Subtotal:</td><td style="text-align:right; padding:6px;"><strong>₱' . number_format($grand,2) . '</strong></td></tr>';
-        $html .= '<tr><td style="text-align:right; padding:6px;">Shipping:</td><td style="text-align:right; padding:6px;"><strong>₱' . number_format($shipping,2) . '</strong></td></tr>';
-        $html .= '<tr><td style="text-align:right; padding:6px;">Grand Total:</td><td style="text-align:right; padding:6px;"><strong>₱' . number_format($grandTotal,2) . '</strong></td></tr>';
-        $html .= '</table>';
-        $html .= '<hr style="border:0; border-top:1px solid #ccc; margin-top:30px;">';
-        $html .= '<p style="font-size:13px; color:#666;">If you have any questions, feel free to reply to this email. Thank you for shopping with <strong>F & L Glam Co</strong>!</p>';
-        $html .= '</div>';
+            $html = '<div style="font-family:Arial, sans-serif; font-size:14px; color:#333;">';
+            $html .= '<h2 style="color:#e83e8c;">Order Confirmation — Order #' . (int)$orderinfo_id . '</h2>';
+            $html .= '<p>Hi <strong>' . htmlspecialchars($fname) . '</strong>,</p>';
+            $html .= '<p>Thank you for your order! Below are your order details:</p>';
+            $html .= '<hr style="border:0; border-top:1px solid #ccc;">';
+            $html .= '<h4 style="margin-bottom:5px;">Shipping Information</h4>';
+            $html .= $customerInfo;
+            $html .= '<h4 style="margin-bottom:5px;">Items Ordered</h4>';
+            $html .= $itemsHtml;
+            $html .= '<table style="width:100%; margin-top:20px; font-size:15px;">';
+            $html .= '<tr><td style="text-align:right; padding:6px;">Subtotal:</td><td style="text-align:right; padding:6px;"><strong>₱' . number_format($grand,2) . '</strong></td></tr>';
+            $html .= '<tr><td style="text-align:right; padding:6px;">Shipping:</td><td style="text-align:right; padding:6px;"><strong>₱' . number_format($shipping,2) . '</strong></td></tr>';
+            $html .= '<tr><td style="text-align:right; padding:6px;">Grand Total:</td><td style="text-align:right; padding:6px;"><strong>₱' . number_format($grandTotal,2) . '</strong></td></tr>';
+            $html .= '</table>';
+            $html .= '<hr style="border:0; border-top:1px solid #ccc; margin-top:30px;">';
+            $html .= '<p style="font-size:13px; color:#666;">If you have any questions, feel free to reply to this email. Thank you for shopping with <strong>F & L Glam Co</strong>!</p>';
+            $html .= '</div>';
 
-
-            // Send emails
             if (!empty($to)) {
                 $customerSubject = "Order #" . (int)$orderinfo_id . " Placed";
                 smtp_send_mail($to, $customerSubject, $html);
@@ -147,10 +144,9 @@ try {
     header('Location: ../thank_you.php');
     exit;
 
-} catch (mysqli_sql_exception $e) {
-    // Only output HTML if there’s an error
+} catch (Exception $e) {
+    $conn->rollback();
     include('../includes/header.php');
     echo "<div class='alert alert-danger text-center mt-4'>Error: " . htmlspecialchars($e->getMessage()) . "</div>";
     include('../includes/footer.php');
-    mysqli_rollback($conn);
 }

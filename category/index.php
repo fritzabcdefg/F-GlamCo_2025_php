@@ -4,9 +4,20 @@ include('../includes/auth_admin.php');
 include('../includes/header.php');
 include('../includes/config.php');
 
-$sql = "SELECT * FROM categories";
-$result = mysqli_query($conn, $sql);
-$count = $result ? mysqli_num_rows($result) : 0;
+try {
+    $conn->begin_transaction();
+    $sql = "SELECT * FROM categories";
+    $result = mysqli_query($conn, $sql);
+    if (!$result) {
+        throw new Exception("Query failed");
+    }
+    $count = mysqli_num_rows($result);
+    $conn->commit();
+} catch (Exception $e) {
+    $conn->rollback();
+    $count = 0;
+    $result = false;
+}
 ?>
 
 <div class="container mt-4">
@@ -25,12 +36,12 @@ $count = $result ? mysqli_num_rows($result) : 0;
             <?php if ($count > 0): ?>
                 <?php while ($row = mysqli_fetch_assoc($result)): ?>
                     <tr>
-                        <td><?php echo (int)$row['category_id']; ?></td>
-                        <td><?php echo htmlspecialchars($row['name']); ?></td>
-                        <td><?php echo htmlspecialchars($row['description']); ?></td>
+                        <td><?= (int)$row['category_id']; ?></td>
+                        <td><?= htmlspecialchars($row['name']); ?></td>
+                        <td><?= htmlspecialchars($row['description']); ?></td>
                         <td>
-                            <a href="edit.php?id=<?php echo (int)$row['category_id']; ?>" class="btn btn-sm btn-outline-primary">Edit</a>
-                            <a href="delete.php?id=<?php echo (int)$row['category_id']; ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this category?');">Delete</a>
+                            <a href="edit.php?id=<?= (int)$row['category_id']; ?>" class="btn btn-sm btn-outline-primary">Edit</a>
+                            <a href="delete.php?id=<?= (int)$row['category_id']; ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this category?');">Delete</a>
                         </td>
                     </tr>
                 <?php endwhile; ?>

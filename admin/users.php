@@ -2,7 +2,6 @@
 session_start();
 require_once __DIR__ . '/../includes/config.php';
 
-// ✅ Admin-only access enforcement
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../user/login.php?error=unauthorized");
     exit();
@@ -14,10 +13,19 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 
 include __DIR__ . '/../includes/header.php';
 
-// Fetch users
-$sql = "SELECT id, email, role, created_at, active FROM users ORDER BY id DESC";
-$result = mysqli_query($conn, $sql);
-$itemCount = $result ? mysqli_num_rows($result) : 0;
+try {
+    $conn->begin_transaction();
+    $sql = "SELECT id, email, role, created_at, active FROM users ORDER BY id DESC";
+    $result = mysqli_query($conn, $sql);
+    if (!$result) {
+        throw new Exception("Query failed");
+    }
+    $itemCount = mysqli_num_rows($result);
+    $conn->commit();
+} catch (Exception $e) {
+    $conn->rollback();
+    $itemCount = 0;
+}
 ?>
 
 <div class="container mt-4">
@@ -52,15 +60,12 @@ $itemCount = $result ? mysqli_num_rows($result) : 0;
                             <?php endif; ?>
                         </td>
                         <td>
-                            <!-- Toggle Active/Inactive -->
                             <form action="toggle_user.php" method="POST" style="display:inline-block;">
                                 <input type="hidden" name="id" value="<?= (int)$row['id']; ?>">
                                 <button type="submit" class="btn btn-sm <?= $row['active'] ? 'btn-warning' : 'btn-success'; ?>">
                                     <?= $row['active'] ? 'Deactivate' : 'Activate'; ?>
                                 </button>
                             </form>
-
-                            <!-- Change Role -->
                             <form action="change_role.php" method="POST" style="display:inline-block; margin-left:8px;">
                                 <input type="hidden" name="id" value="<?= (int)$row['id']; ?>">
                                 <select name="role" class="form-select form-select-sm" style="display:inline-block; width:auto; vertical-align:middle;">

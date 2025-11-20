@@ -4,13 +4,28 @@ include('../includes/auth_admin.php');
 include('../includes/header.php');
 include('../includes/config.php');
 
-// Fetch categories
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../user/login.php?error=unauthorized");
+    exit();
+}
+
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    header("Location: ../index.php?error=adminonly");
+    exit();
+}
+
 $categories = [];
-$catRes = mysqli_query($conn, "SELECT category_id, name FROM categories ORDER BY name ASC");
-if ($catRes) {
-    while ($c = mysqli_fetch_assoc($catRes)) {
-        $categories[] = $c;
+try {
+    $conn->begin_transaction();
+    $catRes = mysqli_query($conn, "SELECT category_id, name FROM categories ORDER BY name ASC");
+    if ($catRes) {
+        while ($c = mysqli_fetch_assoc($catRes)) {
+            $categories[] = $c;
+        }
     }
+    $conn->commit();
+} catch (Exception $e) {
+    $conn->rollback();
 }
 ?>
 
@@ -19,7 +34,6 @@ if ($catRes) {
     <form method="POST" action="store.php" enctype="multipart/form-data">
         <div class="mb-3">
             <label>Name</label>
-            <!-- removed required -->
             <input type="text" name="name" class="form-control">
         </div>
 
@@ -33,8 +47,8 @@ if ($catRes) {
             <select name="category_id" class="form-control">
                 <option value="">-- Select category --</option>
                 <?php foreach ($categories as $cat): ?>
-                    <option value="<?php echo $cat['category_id']; ?>">
-                        <?php echo htmlspecialchars($cat['name']); ?>
+                    <option value="<?= $cat['category_id']; ?>">
+                        <?= htmlspecialchars($cat['name']); ?>
                     </option>
                 <?php endforeach; ?>
             </select>
@@ -69,6 +83,5 @@ if ($catRes) {
         <a href="index.php" class="btn btn-secondary">Cancel</a>
     </form>
 </div>
-
 
 <?php include('../includes/footer.php'); ?>

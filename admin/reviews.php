@@ -2,7 +2,6 @@
 session_start();
 require_once __DIR__ . '/../includes/config.php';
 
-// ✅ Admin-only access enforcement
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../user/login.php?error=unauthorized");
     exit();
@@ -14,24 +13,31 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 
 include __DIR__ . '/../includes/header.php';
 
-// List reviews
-$sql = "SELECT r.*, i.name AS item_name 
-        FROM reviews r 
-        JOIN items i ON r.item_id = i.item_id 
-        ORDER BY r.created_at DESC";
-$res = mysqli_query($conn, $sql);
-$itemCount = $res ? mysqli_num_rows($res) : 0;
+try {
+    $conn->begin_transaction();
+    $sql = "SELECT r.*, i.name AS item_name 
+            FROM reviews r 
+            JOIN items i ON r.item_id = i.item_id 
+            ORDER BY r.created_at DESC";
+    $res = mysqli_query($conn, $sql);
+    if (!$res) {
+        throw new Exception("Query failed");
+    }
+    $itemCount = mysqli_num_rows($res);
+    $conn->commit();
+} catch (Exception $e) {
+    $conn->rollback();
+    $itemCount = 0;
+}
 ?>
 
 <div class="container mt-4">
     <h2 class="mb-4" style="color:#ffffff; font-weight:700;">Product Reviews</h2>
 
-    <!-- Review count -->
     <div class="alert alert-info">
         Total Reviews: <?= $itemCount ?>
     </div>
 
-    <!-- Reviews Table -->
     <table class="table table-striped" style="border:1px solid #F8BBD0; border-radius:10px; overflow:hidden;">
         <thead>
             <tr>
@@ -55,7 +61,6 @@ $itemCount = $res ? mysqli_num_rows($res) : 0;
                         <td><?= $row['user_id'] ?? 'N/A'; ?></td>
                         <td><?= htmlspecialchars($row['user_name'] ?? 'Anonymous'); ?></td>
                         <td>
-                            <!-- Rating badge -->
                             <span class="badge bg-primary"><?= (int)$row['rating']; ?>/5</span>
                         </td>
                         <td><?= htmlspecialchars($row['comment']); ?></td>
@@ -68,13 +73,11 @@ $itemCount = $res ? mysqli_num_rows($res) : 0;
                         </td>
                         <td><?= htmlspecialchars($row['created_at']); ?></td>
                         <td>
-                            <!-- Delete -->
                             <a href="reviews_delete.php?id=<?= (int)$row['id']; ?>" 
                                class="btn btn-sm btn-danger" 
                                onclick="return confirm('Delete review?')">
                                 <i class="fa-solid fa-trash"></i> Delete
                             </a>
-                            <!-- Toggle visibility -->
                             <a href="reviews_toggle.php?id=<?= (int)$row['id']; ?>" 
                                class="btn btn-sm btn-warning ms-1">
                                 <i class="fa-regular fa-eye-slash"></i> Toggle Visible

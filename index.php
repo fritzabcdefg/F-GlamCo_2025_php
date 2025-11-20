@@ -3,38 +3,38 @@ session_start();
 include('./includes/header.php');
 include('./includes/config.php');
 
-
-
-
-
-
-
-
 $categoryFilter = isset($_GET['category']) ? trim($_GET['category']) : null;
 
-if ($categoryFilter) {
-    // Filter by category name
-    $sql = "SELECT i.item_id AS itemId, i.name, i.supplier_name, i.sell_price, s.quantity,
-                   (SELECT filename FROM product_images WHERE item_id = i.item_id ORDER BY created_at ASC LIMIT 1) AS main_image
-            FROM items i
-            INNER JOIN stocks s USING (item_id)
-            INNER JOIN categories c ON i.category_id = c.category_id
-            WHERE s.quantity > 0 AND c.name = ?
-            ORDER BY i.item_id ASC";
+try {
+    $conn->begin_transaction();
 
-    $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, "s", $categoryFilter);
-    mysqli_stmt_execute($stmt);
-    $results = mysqli_stmt_get_result($stmt);
-} else {
-    // Show all items if no category filter
-    $sql = "SELECT i.item_id AS itemId, i.name, i.supplier_name, i.sell_price, s.quantity,
-                   (SELECT filename FROM product_images WHERE item_id = i.item_id ORDER BY created_at ASC LIMIT 1) AS main_image
-            FROM items i
-            INNER JOIN stocks s USING (item_id)
-            WHERE s.quantity > 0
-            ORDER BY i.item_id ASC";
-    $results = mysqli_query($conn, $sql);
+    if ($categoryFilter) {
+        $sql = "SELECT i.item_id AS itemId, i.name, i.supplier_name, i.sell_price, s.quantity,
+                       (SELECT filename FROM product_images WHERE item_id = i.item_id ORDER BY created_at ASC LIMIT 1) AS main_image
+                FROM items i
+                INNER JOIN stocks s USING (item_id)
+                INNER JOIN categories c ON i.category_id = c.category_id
+                WHERE s.quantity > 0 AND c.name = ?
+                ORDER BY i.item_id ASC";
+
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "s", $categoryFilter);
+        mysqli_stmt_execute($stmt);
+        $results = mysqli_stmt_get_result($stmt);
+    } else {
+        $sql = "SELECT i.item_id AS itemId, i.name, i.supplier_name, i.sell_price, s.quantity,
+                       (SELECT filename FROM product_images WHERE item_id = i.item_id ORDER BY created_at ASC LIMIT 1) AS main_image
+                FROM items i
+                INNER JOIN stocks s USING (item_id)
+                WHERE s.quantity > 0
+                ORDER BY i.item_id ASC";
+        $results = mysqli_query($conn, $sql);
+    }
+
+    $conn->commit();
+} catch (Exception $e) {
+    $conn->rollback();
+    $results = false;
 }
 ?>
 
@@ -154,7 +154,6 @@ if ($categoryFilter) {
     }
 </style>
 
-
 <div class="container mt-4">
     <?php
     if ($results && mysqli_num_rows($results) > 0) {
@@ -166,29 +165,29 @@ if ($categoryFilter) {
                 <form method="POST" action="./cart/cart_update.php">
                     <div class="product-content">
                         <div class="product-thumb">
-                            <img src="<?php echo htmlspecialchars($mainImage); ?>" alt="Product Image">
+                            <img src="<?= htmlspecialchars($mainImage); ?>" alt="Product Image">
                         </div>
                         <div class="product-details">
-                            <h4><?php echo htmlspecialchars($row['supplier_name']); ?></h4>
-                            <h5><?php echo htmlspecialchars($row['name']); ?></h5>
-                            <div class="price">₱<?php echo number_format($row['sell_price'], 2); ?></div>
+                            <h4><?= htmlspecialchars($row['supplier_name']); ?></h4>
+                            <h5><?= htmlspecialchars($row['name']); ?></h5>
+                            <div class="price">₱<?= number_format($row['sell_price'], 2); ?></div>
                             <fieldset>
                                 <label>
                                     <span>Quantity:</span>
-                                    <input type="number" name="item_qty" value="1" min="1" max="<?php echo $row['quantity']; ?>"/>
+                                    <input type="number" name="item_qty" value="1" min="1" max="<?= $row['quantity']; ?>"/>
                                 </label>
                             </fieldset>
                             <div class="product-actions">
-                                <a href="./product/show.php?id=<?php echo $row['itemId']; ?>" class="view-btn">View</a>
+                                <a href="./product/show.php?id=<?= $row['itemId']; ?>" class="view-btn">View</a>
                                 <button type="submit" class="add_to_cart">Add</button>
                             </div>
                         </div>
                     </div>
 
-                    <input type="hidden" name="item_id" value="<?php echo $row['itemId']; ?>" />
-                    <input type="hidden" name="item_name" value="<?php echo htmlspecialchars($row['name']); ?>" />
-                    <input type="hidden" name="item_price" value="<?php echo $row['sell_price']; ?>" />
-                    <input type="hidden" name="supplier_name" value="<?php echo htmlspecialchars($row['supplier_name']); ?>" />
+                    <input type="hidden" name="item_id" value="<?= $row['itemId']; ?>" />
+                    <input type="hidden" name="item_name" value="<?= htmlspecialchars($row['name']); ?>" />
+                    <input type="hidden" name="item_price" value="<?= $row['sell_price']; ?>" />
+                    <input type="hidden" name="supplier_name" value="<?= htmlspecialchars($row['supplier_name']); ?>" />
                     <input type="hidden" name="type" value="add" />
                 </form>
             </li>

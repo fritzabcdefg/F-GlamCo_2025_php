@@ -16,22 +16,34 @@ if (isset($_POST['submit'])) {
         exit();
     }
 
-    $ins = mysqli_prepare($conn, "INSERT INTO categories (name, description) VALUES (?, ?)");
-    if ($ins) {
-        mysqli_stmt_bind_param($ins, 'ss', $name, $description);
-        $res = mysqli_stmt_execute($ins);
-        mysqli_stmt_close($ins);
-    } else {
-        $res = false;
-    }
+    try {
+        $conn->begin_transaction();
 
-    if ($res) {
-        unset($_SESSION['cat_name'], $_SESSION['cat_description']);
-        header('Location: index.php');
-        exit();
-    } else {
-        $_SESSION['cat_name_error'] = 'Failed to create category.';
+        $ins = mysqli_prepare($conn, "INSERT INTO categories (name, description) VALUES (?, ?)");
+        if ($ins) {
+            mysqli_stmt_bind_param($ins, 'ss', $name, $description);
+            $res = mysqli_stmt_execute($ins);
+            mysqli_stmt_close($ins);
+        } else {
+            $res = false;
+        }
+
+        if ($res) {
+            $conn->commit();
+            unset($_SESSION['cat_name'], $_SESSION['cat_description']);
+            header('Location: index.php');
+            exit();
+        } else {
+            $conn->rollback();
+            $_SESSION['cat_name_error'] = 'Failed to create category.';
+            header('Location: create.php');
+            exit();
+        }
+    } catch (Exception $e) {
+        $conn->rollback();
+        $_SESSION['cat_name_error'] = 'Transaction error.';
         header('Location: create.php');
         exit();
     }
 }
+?>

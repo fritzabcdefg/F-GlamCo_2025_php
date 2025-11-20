@@ -1,48 +1,58 @@
 <?php
 session_start();
+include('../includes/auth_user.php');
 include('../includes/header.php');
 include('../includes/config.php');
 
 $alertMessage = '';
 
-// --- Handle remove action ---
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_code'])) {
-    $removeId = $_POST['remove_code'];
-    if (isset($_SESSION["cart_products"])) {
-        foreach ($_SESSION["cart_products"] as $key => $cart_itm) {
-            if ($cart_itm["item_id"] == $removeId) {
-                unset($_SESSION["cart_products"][$key]);
-                break;
-            }
-        }
-        // reindex array
-        $_SESSION["cart_products"] = array_values($_SESSION["cart_products"]);
-    }
-}
+try {
+    $conn->begin_transaction();
 
-// --- Handle update quantities ---
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_cart'])) {
-    if (isset($_POST['product_qty']) && is_array($_POST['product_qty'])) {
-        foreach ($_POST['product_qty'] as $id => $qty) {
-            foreach ($_SESSION["cart_products"] as &$cart_itm) {
-                if ($cart_itm["item_id"] == $id) {
-                    $cart_itm["item_qty"] = max(1, intval($qty));
+    // --- Handle remove action ---
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_code'])) {
+        $removeId = $_POST['remove_code'];
+        if (isset($_SESSION["cart_products"])) {
+            foreach ($_SESSION["cart_products"] as $key => $cart_itm) {
+                if ($cart_itm["item_id"] == $removeId) {
+                    unset($_SESSION["cart_products"][$key]);
+                    break;
                 }
             }
+            $_SESSION["cart_products"] = array_values($_SESSION["cart_products"]);
         }
-        unset($cart_itm); // break reference
     }
-}
 
-// --- Handle checkout validation ---
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['go_checkout'])) {
-    if (empty($_POST['checkout_select'])) {
-        $alertMessage = "⚠️ Please select at least one item before proceeding to checkout.";
-    } else {
-        $_SESSION['checkout_selected'] = $_POST['checkout_select'];
-        header("Location: checkout.php");
-        exit;
+    // --- Handle update quantities ---
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_cart'])) {
+        if (isset($_POST['product_qty']) && is_array($_POST['product_qty'])) {
+            foreach ($_POST['product_qty'] as $id => $qty) {
+                foreach ($_SESSION["cart_products"] as &$cart_itm) {
+                    if ($cart_itm["item_id"] == $id) {
+                        $cart_itm["item_qty"] = max(1, intval($qty));
+                    }
+                }
+            }
+            unset($cart_itm);
+        }
     }
+
+    // --- Handle checkout validation ---
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['go_checkout'])) {
+        if (empty($_POST['checkout_select'])) {
+            $alertMessage = "⚠️ Please select at least one item before proceeding to checkout.";
+        } else {
+            $_SESSION['checkout_selected'] = $_POST['checkout_select'];
+            $conn->commit();
+            header("Location: checkout.php");
+            exit;
+        }
+    }
+
+    $conn->commit();
+} catch (Exception $e) {
+    $conn->rollback();
+    $alertMessage = "⚠️ An error occurred while updating your cart. Please try again.";
 }
 ?>
 
@@ -68,7 +78,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['go_checkout'])) {
     <?php if (!empty($alertMessage)) echo "<div class='alert'>$alertMessage</div>"; ?>
 
     <form method="POST" action="view_cart.php">
-
         <table class="cart-table">
             <thead>
                 <tr>
