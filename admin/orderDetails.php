@@ -71,25 +71,24 @@ $items = mysqli_query($conn, $sql);
 
     <h4 class="mt-3">Grand Total: ₱<?= number_format($grandTotal, 2) ?></h4>
 
-        <form action="updateOrder.php" method="POST" class="mt-3">
-            <input type="hidden" name="order_id" value="<?= (int)$orderId ?>">
-            <div class="mb-3">
-                <label for="status" class="form-label">Update Status</label>
-                <select class="form-select" id="status" name="status" required>
-                    <option value="">Select status...</option>
-                    <option value="Processing" <?= $customer['status'] === 'Processing' ? 'selected' : '' ?>>Processing</option>
-                    <option value="Shipped" <?= $customer['status'] === 'Shipped' ? 'selected' : '' ?>>Shipped</option>
-                    <option value="Delivered" <?= $customer['status'] === 'Delivered' ? 'selected' : '' ?>>Delivered</option>
-                    <option value="Cancelled" <?= $customer['status'] === 'Cancelled' ? 'selected' : '' ?>>Cancelled</option>
-                </select>
-            </div>
-            <button type="submit" title="Update Order"
-    style="background-color:#000000; border:4px solid #ffffff; color:#ffffff; font-weight:bold; font-size:1.0rem; text-align:center; cursor:pointer; padding:8px 17px; border-radius:4px; display:block; margin-left:auto; margin-right:0;">
-    Update Order
-</button>
-
-
-</form>
+    <form action="updateOrder.php" method="POST" class="mt-3">
+        <input type="hidden" name="order_id" value="<?= (int)$orderId ?>">
+        <div class="mb-3">
+            <label for="status" class="form-label">Update Status</label>
+            <!-- removed HTML5 "required" -->
+            <select class="form-select" id="status" name="status">
+                <option value="">Select status...</option>
+                <option value="Processing" <?= $customer['status'] === 'Processing' ? 'selected' : '' ?>>Processing</option>
+                <option value="Shipped" <?= $customer['status'] === 'Shipped' ? 'selected' : '' ?>>Shipped</option>
+                <option value="Delivered" <?= $customer['status'] === 'Delivered' ? 'selected' : '' ?>>Delivered</option>
+                <option value="Cancelled" <?= $customer['status'] === 'Cancelled' ? 'selected' : '' ?>>Cancelled</option>
+            </select>
+        </div>
+        <button type="submit" title="Update Order"
+            style="background-color:#000000; border:4px solid #ffffff; color:#ffffff; font-weight:bold; font-size:1.0rem; text-align:center; cursor:pointer; padding:8px 17px; border-radius:4px; display:block; margin-left:auto; margin-right:0;">
+            Update Order
+        </button>
+    </form>
 </div>
 <br>
 <?php include __DIR__ . '/../includes/footer.php'; ?>

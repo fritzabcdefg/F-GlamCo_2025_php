@@ -62,19 +62,19 @@ if ($catRes) {
             
             <div class="mb-3">
                 <label class="form-label">Cost Price</label>
-                <input type="number" name="cost_price" class="form-control" step="0.01"
+                <input type="text" name="cost_price" class="form-control"
                        value="<?php echo htmlspecialchars($item['cost_price']); ?>">
             </div>
             
             <div class="mb-3">
                 <label class="form-label">Sell Price</label>
-                <input type="number" name="sell_price" class="form-control" step="0.01"
+                <input type="text" name="sell_price" class="form-control"
                        value="<?php echo htmlspecialchars($item['sell_price']); ?>">
             </div>
             
             <div class="mb-3">
                 <label class="form-label">Quantity</label>
-                <input type="number" name="quantity" class="form-control" 
+                <input type="text" name="quantity" class="form-control"
                        value="<?php echo htmlspecialchars($item['quantity']); ?>">
             </div>
             
@@ -87,7 +87,6 @@ if ($catRes) {
             <div class="mb-3">
                 <label class="form-label">Current Images</label><br />
                 <?php
-                // show images from product_images table
                 $imgRes = mysqli_query($conn, "SELECT * FROM product_images WHERE item_id = {$item['item_id']} ORDER BY created_at ASC");
                 if ($imgRes && mysqli_num_rows($imgRes) > 0):
                     while ($imgRow = mysqli_fetch_assoc($imgRes)):
@@ -114,7 +113,7 @@ if ($catRes) {
                 ?>
 
                 <label class="form-label">Add Images</label>
-                <input type="file" name="img_paths[]" class="form-control" multiple accept="image/*">
+                <input type="file" name="img_paths[]" class="form-control" multiple>
                 <small class="form-text text-muted">Select one or more images to add to the gallery.</small>
             </div>
             
@@ -123,5 +122,6 @@ if ($catRes) {
         </form>
     <?php endif; ?>
 </div>
+
 
 <?php include('../includes/footer.php'); ?>

@@ -9,9 +9,17 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$status = isset($_POST['status']) ? $_POST['status'] : '';
-
+$status = isset($_POST['status']) ? trim($_POST['status']) : '';
 $orderId = isset($_SESSION['orderId']) ? (int) $_SESSION['orderId'] : 0;
+
+// Allowed statuses (replacement for HTML5 "required" + select options)
+$allowed_statuses = ['Processing', 'Shipped', 'Delivered', 'Cancelled'];
+
+if ($orderId <= 0 || !in_array($status, $allowed_statuses, true)) {
+    echo "<p class='error'>Invalid order status. Please select a valid option.</p>";
+    exit;
+}
+
 $upd = mysqli_prepare($conn, "UPDATE orderinfo SET status = ? WHERE orderinfo_id = ?");
 $result = false;
 if ($upd) {
@@ -21,12 +29,12 @@ if ($upd) {
 }
 if ($result) {
     header("Location: orders.php");
+    exit;
 }
 
 // After updating, send email notification to customer
 require_once __DIR__ . '/../includes/mail.php';
 
-$orderId = isset($_SESSION['orderId']) ? (int) $_SESSION['orderId'] : 0;
 if ($orderId && $result) {
     // fetch customer user email and order info
     $oq = "SELECT o.orderinfo_id, o.customer_id, o.shipping, o.status, c.user_id, u.email, c.lname, c.fname
@@ -86,3 +94,4 @@ if ($orderId && $result) {
         $stmt->close();
     }
 }
+?>

@@ -19,7 +19,8 @@ if ($catRes) {
     <form method="POST" action="store.php" enctype="multipart/form-data">
         <div class="mb-3">
             <label>Name</label>
-            <input type="text" name="name" class="form-control" required>
+            <!-- removed required -->
+            <input type="text" name="name" class="form-control">
         </div>
 
         <div class="mb-3">
@@ -29,7 +30,7 @@ if ($catRes) {
 
         <div class="mb-3">
             <label>Category</label>
-            <select name="category_id" class="form-control" required>
+            <select name="category_id" class="form-control">
                 <option value="">-- Select category --</option>
                 <?php foreach ($categories as $cat): ?>
                     <option value="<?php echo $cat['category_id']; ?>">
@@ -41,17 +42,17 @@ if ($catRes) {
 
         <div class="mb-3">
             <label>Cost Price</label>
-            <input type="number" name="cost_price" class="form-control" step="0.01" required>
+            <input type="text" name="cost_price" class="form-control">
         </div>
 
         <div class="mb-3">
             <label>Selling Price</label>
-            <input type="number" name="sell_price" class="form-control" step="0.01" required>
+            <input type="text" name="sell_price" class="form-control">
         </div>
 
         <div class="mb-3">
             <label>Quantity</label>
-            <input type="number" name="quantity" class="form-control" step="1" min="0" required>
+            <input type="text" name="quantity" class="form-control">
         </div>
 
         <div class="mb-3">
@@ -61,12 +62,13 @@ if ($catRes) {
 
         <div class="mb-3">
             <label>Item Images</label>
-            <input type="file" name="img_paths[]" class="form-control" multiple accept="image/*">
+            <input type="file" name="img_paths[]" class="form-control" multiple>
         </div>
 
         <button type="submit" name="submit" class="btn btn-primary">Save</button>
         <a href="index.php" class="btn btn-secondary">Cancel</a>
     </form>
 </div>
+
 
 <?php include('../includes/footer.php'); ?>

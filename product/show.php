@@ -53,75 +53,19 @@ $markupPrice = $item['sell_price'] * 1.3;
 ?>
 
 <style>
-    body {
-        font-family: 'Helvetica Neue', 'Helvetica World', Arial, sans-serif;
-    }
-    .image-slideshow {
-        display: flex;
-        gap: 10px;
-        overflow-x: auto;
-        padding: 10px 0;
-    }
-    .image-slideshow img {
-        max-height: 400px;
-        border: 1px solid #ddd;
-        background: #fff;
-        flex-shrink: 0;
-    }
-    .product-container {
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    .h2-dark {
-        color: #000;
-        font-weight: bold;
-        font-size: 1.6em;
-        margin-bottom: 10px;
-    }
-    .product-details {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        margin-bottom: 15px;
-    }
-    .original-price {
-        color: red;
-        text-decoration: line-through;
-        margin-right: 10px;
-        font-weight: bold;
-    }
-    .real-price {
-        color: #000;
-        font-weight: bold;
-    }
-    .star-rating {
-        font-size: 1.5em;
-        color: #FFD700;
-        letter-spacing: 8px;
-    }
-    .star-rating .empty {
-        color: #ccc;
-    }
-    .review-container {
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-        color: #000;
-    }
-    .review-container h5 {
-        color: #000;
-        font-weight: bold;
-        margin-bottom: 15px;
-    }
-    .btn-add {
-        font-size: 1.0em;      
-        padding: 10px 20px;    
-        width: auto;           
-        margin-top: 3px;      
-    }
+    body { font-family: 'Helvetica Neue', 'Helvetica World', Arial, sans-serif; }
+    .image-slideshow { display:flex; gap:10px; overflow-x:auto; padding:10px 0; }
+    .image-slideshow img { max-height:400px; border:1px solid #ddd; background:#fff; flex-shrink:0; }
+    .product-container { background:#fff; padding:20px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
+    .h2-dark { color:#000; font-weight:bold; font-size:1.6em; margin-bottom:10px; }
+    .product-details { display:flex; flex-direction:column; gap:8px; margin-bottom:15px; }
+    .original-price { color:red; text-decoration:line-through; margin-right:10px; font-weight:bold; }
+    .real-price { color:#000; font-weight:bold; }
+    .star-rating { font-size:1.5em; color:#FFD700; letter-spacing:8px; }
+    .star-rating .empty { color:#ccc; }
+    .review-container { background:#fff; padding:20px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.05); color:#000; }
+    .review-container h5 { color:#000; font-weight:bold; margin-bottom:15px; }
+    .btn-add { font-size:1.0em; padding:10px 20px; width:auto; margin-top:3px; }
 </style>
 
 <div class="container mt-4 product-container">
@@ -153,9 +97,9 @@ $markupPrice = $item['sell_price'] * 1.3;
                         <?php
                         for ($i = 1; $i <= 5; $i++) {
                             if ($i <= $averageRating) {
-                                echo "&#9733;"; // filled star
+                                echo "&#9733;";
                             } else {
-                                echo "<span class='empty'>&#9733;</span>"; // empty star
+                                echo "<span class='empty'>&#9733;</span>";
                             }
                         }
                         ?>
@@ -172,11 +116,10 @@ $markupPrice = $item['sell_price'] * 1.3;
                 <input type="hidden" name="item_id" value="<?php echo $item['item_id']; ?>">
 
                 <div class="d-flex flex-column align-items-start gap-3">
-                    <input type="number" 
+                    <!-- ✅ removed type=number, min, max -->
+                    <input type="text" 
                         name="item_qty" 
                         value="1" 
-                        min="1" 
-                        max="<?php echo (int)$item['quantity']; ?>" 
                         class="form-control" 
                         style="width:120px;">
 
@@ -185,7 +128,7 @@ $markupPrice = $item['sell_price'] * 1.3;
             </form>
 
             <div class="mt-3">
-                <h5 style>Description:</h5>
+                <h5>Description:</h5>
                 <p><?php echo nl2br(htmlspecialchars($item['description'])); ?></p>
             </div>
         </div>
@@ -193,7 +136,6 @@ $markupPrice = $item['sell_price'] * 1.3;
 
     <hr />
 
-    <!-- ✅ Reviews stay at bottom -->
     <div class="reviews mt-4 review-container">
         <h5 class="d-flex align-items-center gap-2">
             <span>REVIEWS</span>

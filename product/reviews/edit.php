@@ -11,7 +11,6 @@ if (!$id) {
     exit();
 }
 
-// fetch review and check ownership
 $sql = "SELECT r.*, i.name AS item_name,
                (SELECT pi.filename FROM product_images pi WHERE pi.item_id = i.item_id LIMIT 1) AS filename
         FROM reviews r 
@@ -25,7 +24,6 @@ if (!$res || mysqli_num_rows($res) == 0) {
 }
 $review = mysqli_fetch_assoc($res);
 
-// check ownership
 if ($review['user_id'] != $_SESSION['user_id']) {
     echo "<p>You can only edit your own reviews.</p>";
     include('../../includes/footer.php');
@@ -34,67 +32,18 @@ if ($review['user_id'] != $_SESSION['user_id']) {
 ?>
 
 <style>
-    body {
-        background: #000000ff;
-        color: #000;
-        font-family: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    }
-    .review-container {
-        max-width: 700px;
-        margin: 40px auto;
-        padding: 20px;
-        border: 1px solid #000;
-        background: #fff;
-    }
-    .review-container h2 {
-        text-align: center;
-        margin-bottom: 10px;
-    }
-    .review-container p {
-        text-align: center;
-        color: #555;
-    }
-    .review-card {
-        display: flex;
-        border-top: 1px solid #000;
-        padding-top: 20px;
-        margin-top: 20px;
-    }
-    .review-card img {
-        max-width: 200px;
-        border: 1px solid #000;
-    }
-    .review-form {
-        flex: 1;
-        padding-left: 20px;
-    }
-    .form-control {
-        border: 1px solid #000;
-        background: #fff;
-        color: #000;
-    }
-    .btn-submit {
-        background: #000;
-        color: #fff;
-        border: none;
-        padding: 10px 20px;
-        text-transform: uppercase;
-        cursor: pointer;
-    }
-    .btn-submit:hover {
-        background: #333;
-    }
-    .btn-cancel {
-        background: #6c757d;
-        color: #fff;
-        border: none;
-        padding: 10px 20px;
-        margin-left: 10px;
-        cursor: pointer;
-    }
-    .btn-cancel:hover {
-        background: #555;
-    }
+    body { background:#000000ff; color:#000; font-family:"Helvetica World","Helvetica Neue",Helvetica,Arial,sans-serif; }
+    .review-container { max-width:700px; margin:40px auto; padding:20px; border:1px solid #000; background:#fff; }
+    .review-container h2 { text-align:center; margin-bottom:10px; }
+    .review-container p { text-align:center; color:#555; }
+    .review-card { display:flex; border-top:1px solid #000; padding-top:20px; margin-top:20px; }
+    .review-card img { max-width:200px; border:1px solid #000; }
+    .review-form { flex:1; padding-left:20px; }
+    .form-control { border:1px solid #000; background:#fff; color:#000; }
+    .btn-submit { background:#000; color:#fff; border:none; padding:10px 20px; text-transform:uppercase; cursor:pointer; }
+    .btn-submit:hover { background:#333; }
+    .btn-cancel { background:#6c757d; color:#fff; border:none; padding:10px 20px; margin-left:10px; cursor:pointer; }
+    .btn-cancel:hover { background:#555; }
 </style>
 
 <div class="review-container">
@@ -123,7 +72,8 @@ if ($review['user_id'] != $_SESSION['user_id']) {
 
                 <div class="mb-3">
                     <label>Rating (1-5)</label>
-                    <select name="rating" class="form-control" required>
+                    <!-- ✅ removed required -->
+                    <select name="rating" class="form-control">
                         <option value="">--</option>
                         <?php for ($i = 1; $i <= 5; $i++): ?>
                             <option value="<?php echo $i; ?>" 
@@ -136,7 +86,8 @@ if ($review['user_id'] != $_SESSION['user_id']) {
 
                 <div class="mb-3">
                     <label>Comment</label>
-                    <textarea name="comment" class="form-control" rows="4" required><?php 
+                    <!-- ✅ removed required -->
+                    <textarea name="comment" class="form-control" rows="4"><?php 
                         echo htmlspecialchars($review['comment']); 
                     ?></textarea>
                 </div>

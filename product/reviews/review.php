@@ -13,7 +13,6 @@ if (!$orderId) {
     exit();
 }
 
-// Fetch all items in the order
 $sql = "SELECT i.item_id, i.name,
                (SELECT pi.filename 
                 FROM product_images pi 
@@ -51,56 +50,16 @@ $currentItem = $index + 1;
 ?>
 
 <style>
-    body {
-        background: #000000ff;
-        color: #000;
-        font-family: Arial, sans-serif;
-    }
-    .review-container {
-        max-width: 700px;
-        margin: 40px auto;
-        padding: 20px;
-        border: 1px solid #000;
-        background: #fff;
-    }
-    .review-container h2 {
-        text-align: center;
-        margin-bottom: 10px;
-    }
-    .review-container p {
-        text-align: center;
-        color: #555;
-    }
-    .review-card {
-        display: flex;
-        border-top: 1px solid #000;
-        padding-top: 20px;
-        margin-top: 20px;
-    }
-    .review-card img {
-        max-width: 200px;
-        border: 1px solid #000;
-    }
-    .review-form {
-        flex: 1;
-        padding-left: 20px;
-    }
-    .form-control {
-        border: 1px solid #000;
-        background: #fff;
-        color: #000;
-    }
-    .btn-submit {
-        background: #000;
-        color: #fff;
-        border: none;
-        padding: 10px 20px;
-        text-transform: uppercase;
-        cursor: pointer;
-    }
-    .btn-submit:hover {
-        background: #333;
-    }
+    body { background:#000000ff; color:#000; font-family:Arial,sans-serif; }
+    .review-container { max-width:700px; margin:40px auto; padding:20px; border:1px solid #000; background:#fff; }
+    .review-container h2 { text-align:center; margin-bottom:10px; }
+    .review-container p { text-align:center; color:#555; }
+    .review-card { display:flex; border-top:1px solid #000; padding-top:20px; margin-top:20px; }
+    .review-card img { max-width:200px; border:1px solid #000; }
+    .review-form { flex:1; padding-left:20px; }
+    .form-control { border:1px solid #000; background:#fff; color:#000; }
+    .btn-submit { background:#000; color:#fff; border:none; padding:10px 20px; text-transform:uppercase; cursor:pointer; }
+    .btn-submit:hover { background:#333; }
 </style>
 
 <div class="review-container">
@@ -124,7 +83,8 @@ $currentItem = $index + 1;
 
                 <div class="mb-3">
                     <label>Rating (1-5)</label>
-                    <select name="rating" class="form-control" required>
+                    <!-- ✅ removed required -->
+                    <select name="rating" class="form-control">
                         <option value="">--</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
@@ -136,7 +96,8 @@ $currentItem = $index + 1;
 
                 <div class="mb-3">
                     <label>Comment</label>
-                    <textarea name="comment" class="form-control" rows="4" required></textarea>
+                    <!-- ✅ removed required -->
+                    <textarea name="comment" class="form-control" rows="4"></textarea>
                 </div>
 
                 <button class="btn-submit">Submit Review</button>

@@ -67,7 +67,6 @@ if (isset($_POST['submit'])) {
           $login_error = true;
       }
     } else {
-      // no user found with that email
       $login_error = true;
     }
   } else {
@@ -78,7 +77,7 @@ if (isset($_POST['submit'])) {
 
 <div class="container">
 
-  <!-- Unauthorized/Admin alerts -->
+  <!-- Alerts -->
   <?php if (isset($_GET['error'])): ?>
     <?php if ($_GET['error'] === 'unauthorized'): ?>
       <div class="alert alert-danger text-center">
@@ -91,7 +90,6 @@ if (isset($_POST['submit'])) {
     <?php endif; ?>
   <?php endif; ?>
 
-  <!-- Deactivated account -->
   <?php if ($deactivated): ?>
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
       <span class="d-block text-center">That account is no longer available or deactivated.</span>
@@ -99,7 +97,6 @@ if (isset($_POST['submit'])) {
     </div>
   <?php endif; ?>
 
-  <!-- Wrong email/password -->
   <?php if ($login_error): ?>
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
       <span class="d-block text-center">Invalid email or password. Please try again.</span>
@@ -111,11 +108,11 @@ if (isset($_POST['submit'])) {
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
       <div class="mb-3">
         <label for="form2Example1" class="loginform-label">Email address</label>
-        <input type="email" id="form2Example1" class="form-control" name="email" required />
+        <input id="form2Example1" class="form-control" name="email" />
       </div>
       <div class="mb-3">
         <label for="form2Example2" class="loginform-label">Password</label>
-        <input type="password" id="form2Example2" class="form-control" name="password" required />
+        <input id="form2Example2" class="form-control" name="password" />
       </div>
       <button type="submit" class="btn btn-primary w-100 mb-3" name="submit">Sign in</button>
       <div class="text-center">

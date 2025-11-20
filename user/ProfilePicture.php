@@ -54,22 +54,21 @@ if (isset($_POST['upload_image']) && isset($_FILES['profile_image'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Upload Profile Picture - F&L Glam Co</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Use the same absolute path as header -->
   <link rel="stylesheet" href="/F&LGlamCo/includes/style/style.css?v=1">
 </head>
 <body>
 
 <div class="container">
   <div class="auth-container text-center">
-    <img src="<?php echo $img; ?>" alt="Profile Image" class="profile-image mb-3">
+    <img src="<?php echo htmlspecialchars($img); ?>" alt="Profile Image" class="profile-image mb-3">
     <h5 style="color:#000000;"> <?php echo htmlspecialchars($_SESSION['email'] ?? 'Your Account'); ?></h5>
 
     <?php if (!empty($error)): ?>
-      <div class="alert"><?php echo htmlspecialchars($error); ?></div>
+      <div class="alert alert-danger"><?php echo htmlspecialchars($error); ?></div>
     <?php endif; ?>
 
     <form method="POST" enctype="multipart/form-data" class="mt-3">
-      <input type="file" name="profile_image" accept="image/*" class="form-control mb-3" required>
+      <input type="file" name="profile_image" class="form-control mb-3">
       <button class="btn btn-primary" type="submit" name="upload_image">Upload new image</button>
     </form>
   </div>

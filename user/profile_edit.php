@@ -14,33 +14,7 @@ if ($result && mysqli_num_rows($result) > 0) {
     $customer = mysqli_fetch_assoc($result);
 }
 
-// Handle image upload
-if (isset($_POST['upload_image']) && isset($_FILES['profile_image'])) {
-    $target_dir = "../uploads/";
-    $filename = basename($_FILES["profile_image"]["name"]);
-    $target_file = $target_dir . $filename;
-    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-
-    $valid_types = ['jpg', 'jpeg', 'png'];
-    if (in_array($imageFileType, $valid_types) && $_FILES["profile_image"]["size"] <= 5 * 1024 * 1024) {
-        if (move_uploaded_file($_FILES["profile_image"]["tmp_name"], $target_file)) {
-            $updImg = mysqli_prepare($conn, "UPDATE customers SET image = ? WHERE user_id = ?");
-            if ($updImg) {
-                mysqli_stmt_bind_param($updImg, 'si', $filename, $user_id);
-                mysqli_stmt_execute($updImg);
-                mysqli_stmt_close($updImg);
-            }
-            header("Location: profile.php");
-            exit;
-        } else {
-            echo "Error uploading file.";
-        }
-    } else {
-        echo "Invalid file type or size.";
-    }
-}
-
-// Handle profile update
+// Handle profile update (including image)
 if (isset($_POST['submit'])) {
     $lname   = trim($_POST['lname']);
     $fname   = trim($_POST['fname']);
@@ -49,18 +23,42 @@ if (isset($_POST['submit'])) {
     $town    = trim($_POST['town']);
     $zipcode = trim($_POST['zipcode']);
     $phone   = trim($_POST['phone']);
+    $filename = $customer['image'] ?? null;
+
+    // ✅ Handle image if uploaded
+    if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
+        $target_dir = "../uploads/";
+        $filename = basename($_FILES["profile_image"]["name"]);
+        $target_file = $target_dir . $filename;
+        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+
+        $valid_types = ['jpg', 'jpeg', 'png'];
+        if (in_array($imageFileType, $valid_types) && $_FILES["profile_image"]["size"] <= 5 * 1024 * 1024) {
+            if (move_uploaded_file($_FILES["profile_image"]["tmp_name"], $target_file)) {
+                // file moved successfully
+            } else {
+                echo "Error uploading file.";
+            }
+        } else {
+            echo "Invalid file type or size.";
+        }
+    }
 
     if ($customer) {
-        $upd = mysqli_prepare($conn, "UPDATE customers SET title = ?, lname = ?, fname = ?, addressline = ?, town = ?, zipcode = ?, phone = ? WHERE user_id = ?");
+        $upd = mysqli_prepare($conn, "UPDATE customers 
+            SET title=?, lname=?, fname=?, addressline=?, town=?, zipcode=?, phone=?, image=? 
+            WHERE user_id=?");
         if ($upd) {
-            mysqli_stmt_bind_param($upd, 'sssssssi', $title, $lname, $fname, $address, $town, $zipcode, $phone, $user_id);
+            mysqli_stmt_bind_param($upd, 'ssssssssi', $title, $lname, $fname, $address, $town, $zipcode, $phone, $filename, $user_id);
             $ok = mysqli_stmt_execute($upd);
             mysqli_stmt_close($upd);
         }
     } else {
-        $ins = mysqli_prepare($conn, "INSERT INTO customers (title, lname, fname, addressline, town, zipcode, phone, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $ins = mysqli_prepare($conn, "INSERT INTO customers 
+            (title, lname, fname, addressline, town, zipcode, phone, image, user_id) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
         if ($ins) {
-            mysqli_stmt_bind_param($ins, 'sssssssi', $title, $lname, $fname, $address, $town, $zipcode, $phone, $user_id);
+            mysqli_stmt_bind_param($ins, 'ssssssssi', $title, $lname, $fname, $address, $town, $zipcode, $phone, $filename, $user_id);
             $ok = mysqli_stmt_execute($ins);
             mysqli_stmt_close($ins);
         }
@@ -80,80 +78,80 @@ if (isset($_POST['submit'])) {
         <a class="nav-link active ms-0" href="#">Profile</a>
     </nav>
     <hr class="mt-0 mb-4">
-    <div class="row">
-        <div class="col-xl-4">
-            <div class="card mb-4 mb-xl-0 profile-edit">
-                <div class="card-header">Profile Picture</div>
-                <div class="card-body text-center">
-                    <img class="img-account-profile rounded-circle mb-2"
-                         style="width: 150px; height: 150px; object-fit: cover;"
-                         src="<?php echo isset($customer['image']) ? '../uploads/' . $customer['image'] : 'http://bootdey.com/img/Content/avatar/avatar1.png'; ?>"
-                         alt="Profile Image">
-                    <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
-                    <form method="POST" enctype="multipart/form-data">
-                        <input type="file" name="profile_image" accept="image/*" class="form-control mb-3">
-                        <button class="btn btn-primary" type="submit" name="upload_image">Upload new image</button>
-                    </form>
+
+    <!-- ✅ One unified form across both columns -->
+    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" enctype="multipart/form-data">
+        <div class="row">
+            <!-- Left: Profile Picture -->
+            <div class="col-xl-4">
+                <div class="card mb-4 mb-xl-0 profile-edit">
+                    <div class="card-header">Profile Picture</div>
+                    <div class="card-body text-center">
+                        <img class="img-account-profile rounded-circle mb-2"
+                             style="width: 150px; height: 150px; object-fit: cover;"
+                             src="<?php echo isset($customer['image']) ? '../uploads/' . $customer['image'] : 'http://bootdey.com/img/Content/avatar/avatar1.png'; ?>"
+                             alt="Profile Image">
+                        <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
+                        <input type="file" name="profile_image" class="form-control mb-3">
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-xl-8">
-            <div class="card mb-4 profile-edit">
-                <div class="card-header">Account Details</div>
-                <div class="card-body">
-                    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" enctype="multipart/form-data">
+
+            <!-- Right: Account Details -->
+            <div class="col-xl-8">
+                <div class="card mb-4 profile-edit">
+                    <div class="card-header">Account Details</div>
+                    <div class="card-body">
                         <div class="row gx-3 mb-3">
                             <div class="col-md-6">
-                                <label class="small mb-1" for="inputFirstName">First name</label>
-                                <input class="form-control" id="inputFirstName" type="text" name="fname"
+                                <label class="small mb-1">First name</label>
+                                <input class="form-control" name="fname"
                                        value="<?php echo htmlspecialchars($customer['fname'] ?? ''); ?>">
                             </div>
                             <div class="col-md-6">
-                                <label class="small mb-1" for="inputLastName">Last name</label>
-                                <input class="form-control" id="inputLastName" type="text" name="lname"
+                                <label class="small mb-1">Last name</label>
+                                <input class="form-control" name="lname"
                                        value="<?php echo htmlspecialchars($customer['lname'] ?? ''); ?>">
                             </div>
                         </div>
 
                         <div class="row gx-3 mb-3">
                             <div class="col-md-6">
-                                <label class="small mb-1" for="address">Address</label>
-                                <input class="form-control" id="address" type="text" name="address"
+                                <label class="small mb-1">Address</label>
+                                <input class="form-control" name="address"
                                        value="<?php echo htmlspecialchars($customer['addressline'] ?? ''); ?>">
                             </div>
                             <div class="col-md-6">
-                                <label class="small mb-1" for="town">Town</label>
-                                <input class="form-control" id="town" type="text" name="town"
+                                <label class="small mb-1">Town</label>
+                                <input class="form-control" name="town"
                                        value="<?php echo htmlspecialchars($customer['town'] ?? ''); ?>">
                             </div>
                         </div>
 
                         <div class="row gx-3 mb-3">
                             <div class="col-md-6">
-                                <label class="small mb-1" for="zip">Zip code</label>
-                                <input class="form-control" id="zip" type="tel" name="zipcode"
+                                <label class="small mb-1">Zip code</label>
+                                <input class="form-control" name="zipcode"
                                        value="<?php echo htmlspecialchars($customer['zipcode'] ?? ''); ?>">
                             </div>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label class="small mb-1" for="title">Title (Mr./Ms./Mrs..)</label>
-                            <input class="form-control" id="title" type="text" name="title"
-                                   value="<?php echo htmlspecialchars($customer['title'] ?? ''); ?>">
+                            <div class="col-md-6">
+                                <label class="small mb-1">Title (Mr./Ms./Mrs..)</label>
+                                <input class="form-control" name="title"
+                                       value="<?php echo htmlspecialchars($customer['title'] ?? ''); ?>">
+                            </div>
                         </div>
 
                         <div class="row gx-3 mb-3">
                             <div class="col-md-6">
-                                <label class="small mb-1" for="inputPhone">Phone number</label>
-                                <input class="form-control" id="inputPhone" type="tel" name="phone"
+                                <label class="small mb-1">Phone number</label>
+                                <input class="form-control" name="phone"
                                        value="<?php echo htmlspecialchars($customer['phone'] ?? ''); ?>">
                             </div>
                         </div>
-
                         <button class="btn btn-primary" type="submit" name="submit">Save changes</button>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </form>
 </div>

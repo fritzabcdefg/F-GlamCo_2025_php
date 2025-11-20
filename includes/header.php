@@ -33,8 +33,6 @@ if (isset($_SESSION['user_id'])) {
   <title>F & L Glam Co</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
-  <!-- Remove Montserrat if not needed -->
-  <!-- <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet"> -->
   <link href="/F&LGlamCo/includes/style/style.css" rel="stylesheet" type="text/css">
 
   <style>
@@ -48,9 +46,6 @@ if (isset($_SESSION['user_id'])) {
 
 <input type="checkbox" id="sidebarToggle" hidden>
 <input type="checkbox" id="logoutConfirm" hidden>
-
-
-<input type="checkbox" id="sidebarToggle" hidden>
 
 <!-- Sidebar -->
 <div id="mySidebar" class="sidebar">
@@ -70,7 +65,6 @@ if (isset($_SESSION['user_id'])) {
       <a href="/F&LGlamCo/admin/reviews.php" class="sidebar-btn">Reviews</a>
       <a href="/F&LGlamCo/admin/sales.php" class="sidebar-btn">Sales</a>
     <?php else: ?>
-      <!-- My Orders button with badge top-left -->
       <div class="position-relative d-inline-block w-100">
         <a href="/F&LGlamCo/user/orders/orders.php" 
            class="sidebar-btn d-block text-center position-relative">
@@ -98,29 +92,26 @@ if (isset($_SESSION['user_id'])) {
   </div>
 
   <div class="container-fluid d-flex justify-content-between align-items-center w-100">
-    <!-- Left Section -->
     <div class="d-flex align-items-center gap-3">
       <a class="nav-link text-pink" href="/F&LGlamCo/index.php"><i class="fas fa-home"></i></a>
       <form action="/F&LGlamCo/search.php" method="GET" class="d-flex search-bar">
-        <input class="form-control form-control-sm border-pink" type="search" placeholder="Search" name="search">
+        <!-- ✅ changed type="search" to type="text" -->
+        <input class="form-control form-control-sm border-pink" type="text" placeholder="Search" name="search">
         <button class="btn btn-sm text-pink" type="submit"><i class="fas fa-search"></i></button>
       </form>
-     <a class="nav-link text-pink" href="/F&LGlamCo/index.php">All</a>
-    <?php
-    $catRes = mysqli_query($conn, "SELECT name FROM categories ORDER BY name ASC");
-    if ($catRes && mysqli_num_rows($catRes) > 0) {
-        while ($catRow = mysqli_fetch_assoc($catRes)) {
-            $catName = htmlspecialchars($catRow['name']);
-            echo '<a class="nav-link text-pink" href="/F&LGlamCo/index.php?category=' . urlencode($catRow['name']) . '">' . $catName . '</a>';
-        }
-    }
-    ?>
-
+      <a class="nav-link text-pink" href="/F&LGlamCo/index.php">All</a>
+      <?php
+      $catRes = mysqli_query($conn, "SELECT name FROM categories ORDER BY name ASC");
+      if ($catRes && mysqli_num_rows($catRes) > 0) {
+          while ($catRow = mysqli_fetch_assoc($catRes)) {
+              $catName = htmlspecialchars($catRow['name']);
+              echo '<a class="nav-link text-pink" href="/F&LGlamCo/index.php?category=' . urlencode($catRow['name']) . '">' . $catName . '</a>';
+          }
+      }
+      ?>
     </div>
 
-    <!-- Right Section -->
     <ul class="navbar-nav d-flex align-items-center gap-3">
-      <!-- Cart -->
       <li class="nav-item position-relative">
         <a class="nav-link text-pink" href="/F&LGlamCo/cart/view_cart.php">
           <i class="fas fa-shopping-bag"></i>

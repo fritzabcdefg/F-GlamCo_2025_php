@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pass    = isset($_POST['password']) ? trim($_POST['password']) : '';
     $confirm = isset($_POST['confirmPass']) ? trim($_POST['confirmPass']) : '';
 
-    // Validation
+    // ✅ Server-side validation replaces HTML5 required/type checks
     if ($email !== '' && $pass !== '' && $confirm !== '' && filter_var($email, FILTER_VALIDATE_EMAIL) && $pass === $confirm) {
         // Check if email already exists
         $check = mysqli_prepare($conn, "SELECT id FROM users WHERE email = ? LIMIT 1");
@@ -23,7 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             mysqli_stmt_bind_param($insert, 'ss', $email, $hashed);
 
             if (mysqli_stmt_execute($insert)) {
-                // Get new user ID
                 $newUserId = mysqli_insert_id($conn);
 
                 // Create blank customer row linked to this user
@@ -37,7 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['email']   = $email;
                 $_SESSION['role']    = 'customer';
 
-                // Redirect to ProfilePicture step
                 header("Location: ProfilePicture.php");
                 exit();
             } else {
@@ -68,17 +66,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
       <div class="mb-3">
         <label for="email" class="loginform-label">Email</label>
-        <input type="email" class="form-control" id="email" name="email" required>
+        <input class="form-control" id="email" name="email">
       </div>
 
       <div class="mb-3">
         <label for="password" class="loginform-label">Password</label>
-        <input type="password" class="form-control" id="password" name="password" required>
+        <input class="form-control" id="password" name="password">
       </div>
 
       <div class="mb-3">
         <label for="confirmPass" class="loginform-label">Confirm Password</label>
-        <input type="password" class="form-control" id="confirmPass" name="confirmPass" required>
+        <input class="form-control" id="confirmPass" name="confirmPass">
       </div>
 
       <button type="submit" class="btn btn-primary w-100">Register</button>

@@ -1,5 +1,6 @@
 <?php
 session_start();
+include('../includes/header.php');
 include('../includes/config.php');
 
 $alertMessage = '';
@@ -43,9 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['go_checkout'])) {
         exit;
     }
 }
-
-// ✅ Only include header.php AFTER all header() calls
-include('../includes/header.php');
 ?>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
