@@ -1,6 +1,18 @@
 <?php
-require_once __DIR__ . '/../includes/config.php';
-require_once __DIR__ . '/../includes/auth_admin.php';
+session_start();
+include(__DIR__ . '/../includes/config.php');
+
+// Require login
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../user/login.php?error=unauthorized");
+    exit();
+}
+
+// Require admin role
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    header("Location: ../index.php?error=adminonly");
+    exit();
+}
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: users.php');
@@ -33,3 +45,4 @@ if ($stmt = $conn->prepare($sql)) {
 
 header('Location: users.php');
 exit;
+?>

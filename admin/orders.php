@@ -1,9 +1,20 @@
 <?php
 session_start();
-require_once __DIR__ . '/../includes/auth_admin.php';
 require_once __DIR__ . '/../includes/config.php';
+
+// ✅ Admin-only access enforcement
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../user/login.php?error=unauthorized");
+    exit();
+}
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    header("Location: ../index.php?error=adminonly");
+    exit();
+}
+
 include __DIR__ . '/../includes/header.php';
 
+// Fetch orders
 $sql = "SELECT orderinfo_id, total, status FROM salesperorder ORDER BY orderinfo_id DESC";
 $result = mysqli_query($conn, $sql);
 $itemCount = $result ? mysqli_num_rows($result) : 0;
@@ -47,7 +58,6 @@ $itemCount = $result ? mysqli_num_rows($result) : 0;
                             <a href="orderDetails.php?id=<?= (int)$row['orderinfo_id']; ?>" 
                                class="btn btn-sm btn-primary">
                                 <i class="fa-regular fa-eye"></i> View
-                            
                             </a>
                         </td>
                     </tr>

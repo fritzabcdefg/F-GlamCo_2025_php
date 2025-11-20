@@ -8,19 +8,31 @@
 // INNER JOIN item i USING(item_id);
 
 session_start();
-require_once __DIR__ . '/../includes/auth_admin.php';
 require_once __DIR__ . '/../includes/config.php';
+
+// ✅ Admin-only access enforcement
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../user/login.php?error=unauthorized");
+    exit();
+}
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    header("Location: ../index.php?error=adminonly");
+    exit();
+}
+
 include __DIR__ . '/../includes/header.php';
 
 $orderId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $_SESSION['orderId'] = $orderId;
 
+// Fetch customer/order info
 $sql = "SELECT lname, fname, addressline, town, zipcode, phone, orderinfo_id, status 
         FROM orderdetails 
         WHERE orderinfo_id = $orderId LIMIT 1";
 $result = mysqli_query($conn, $sql);
 $customer = mysqli_fetch_assoc($result);
 
+// Fetch items
 $sql = "SELECT name, quantity, sell_price 
         FROM orderdetails 
         WHERE orderinfo_id = $orderId";
@@ -75,7 +87,6 @@ $items = mysqli_query($conn, $sql);
         <input type="hidden" name="order_id" value="<?= (int)$orderId ?>">
         <div class="mb-3">
             <label for="status" class="form-label">Update Status</label>
-            <!-- removed HTML5 "required" -->
             <select class="form-select" id="status" name="status">
                 <option value="">Select status...</option>
                 <option value="Processing" <?= $customer['status'] === 'Processing' ? 'selected' : '' ?>>Processing</option>

@@ -1,11 +1,20 @@
 <?php
 session_start();
-include('../includes/auth_admin.php');
 include('../includes/config.php');
+
+// ✅ Admin-only access enforcement
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../user/login.php?error=unauthorized");
+    exit();
+}
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    header("Location: ../index.php?error=adminonly");
+    exit();
+}
 
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-if ($id) {
+if ($id > 0) {
     $sel = mysqli_prepare($conn, "SELECT is_visible FROM reviews WHERE id = ? LIMIT 1");
     if ($sel) {
         mysqli_stmt_bind_param($sel, 'i', $id);

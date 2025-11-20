@@ -104,22 +104,23 @@ if (isset($_POST['submit'])) {
     </div>
   <?php endif; ?>
 
-  <div class="auth-container">
-    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
-      <div class="mb-3">
-        <label for="form2Example1" class="loginform-label">Email address</label>
-        <input id="form2Example1" class="form-control" name="email" />
-      </div>
-      <div class="mb-3">
-        <label for="form2Example2" class="loginform-label">Password</label>
-        <input id="form2Example2" class="form-control" name="password" />
-      </div>
-      <button type="submit" class="btn btn-primary w-100 mb-3" name="submit">Sign in</button>
-      <div class="text-center">
-        <p style="color:#000000">Not a member? <a href="register.php">Register</a></p>
-      </div>
-    </form>
-  </div>
+<div class="auth-container">
+  <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
+    <div class="mb-3">
+      <label for="form2Example1" class="loginform-label">Email address</label>
+      <input id="form2Example1" class="form-control" name="email">
+    </div>
+    <div class="mb-3">
+      <label for="form2Example2" class="loginform-label">Password</label>
+      <input id="form2Example2" class="form-control" name="password">
+    </div>
+    <button type="submit" class="btn btn-primary w-100 mb-3" name="submit">Sign in</button>
+    <div class="text-center">
+      <p style="color:#000000">Not a member? <a href="register.php">Register</a></p>
+    </div>
+  </form>
+</div>
+
 </div>
 
 <?php include("../includes/footer.php"); ?>

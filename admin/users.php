@@ -1,9 +1,20 @@
 <?php
 session_start();
-require_once __DIR__ . '/../includes/auth_admin.php';
 require_once __DIR__ . '/../includes/config.php';
+
+// ✅ Admin-only access enforcement
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../user/login.php?error=unauthorized");
+    exit();
+}
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    header("Location: ../index.php?error=adminonly");
+    exit();
+}
+
 include __DIR__ . '/../includes/header.php';
 
+// Fetch users
 $sql = "SELECT id, email, role, created_at, active FROM users ORDER BY id DESC";
 $result = mysqli_query($conn, $sql);
 $itemCount = $result ? mysqli_num_rows($result) : 0;
@@ -30,31 +41,31 @@ $itemCount = $result ? mysqli_num_rows($result) : 0;
             <?php if ($itemCount > 0): ?>
                 <?php while ($row = mysqli_fetch_assoc($result)): ?>
                     <tr>
-                        <td><?php echo (int)$row['id']; ?></td>
-                        <td><?php echo htmlspecialchars($row['email']); ?></td>
-                        <td><?php echo htmlspecialchars($row['role']); ?></td>
+                        <td><?= (int)$row['id']; ?></td>
+                        <td><?= htmlspecialchars($row['email']); ?></td>
+                        <td><?= htmlspecialchars($row['role']); ?></td>
                         <td>
                             <?php if ($row['active']): ?>
-                                <span class="badge badge-success">Active</span>
+                                <span class="badge bg-success">Active</span>
                             <?php else: ?>
-                                <span class="badge badge-secondary">Inactive</span>
+                                <span class="badge bg-secondary">Inactive</span>
                             <?php endif; ?>
                         </td>
                         <td>
                             <!-- Toggle Active/Inactive -->
                             <form action="toggle_user.php" method="POST" style="display:inline-block;">
-                                <input type="hidden" name="id" value="<?php echo (int)$row['id']; ?>">
-                                <button type="submit" class="btn btn-sm <?php echo $row['active'] ? 'btn-warning' : 'btn-success'; ?>">
-                                    <?php echo $row['active'] ? 'Deactivate' : 'Activate'; ?>
+                                <input type="hidden" name="id" value="<?= (int)$row['id']; ?>">
+                                <button type="submit" class="btn btn-sm <?= $row['active'] ? 'btn-warning' : 'btn-success'; ?>">
+                                    <?= $row['active'] ? 'Deactivate' : 'Activate'; ?>
                                 </button>
                             </form>
 
                             <!-- Change Role -->
                             <form action="change_role.php" method="POST" style="display:inline-block; margin-left:8px;">
-                                <input type="hidden" name="id" value="<?php echo (int)$row['id']; ?>">
+                                <input type="hidden" name="id" value="<?= (int)$row['id']; ?>">
                                 <select name="role" class="form-select form-select-sm" style="display:inline-block; width:auto; vertical-align:middle;">
-                                    <option value="customer"<?php echo $row['role'] === 'customer' ? ' selected' : ''; ?>>Customer</option>
-                                    <option value="admin"<?php echo $row['role'] === 'admin' ? ' selected' : ''; ?>>Admin</option>
+                                    <option value="customer"<?= $row['role'] === 'customer' ? ' selected' : ''; ?>>Customer</option>
+                                    <option value="admin"<?= $row['role'] === 'admin' ? ' selected' : ''; ?>>Admin</option>
                                 </select>
                                 <button type="submit" class="btn btn-sm btn-secondary">Change</button>
                             </form>
@@ -62,7 +73,7 @@ $itemCount = $result ? mysqli_num_rows($result) : 0;
                     </tr>
                 <?php endwhile; ?>
             <?php else: ?>
-                <tr><td colspan="6">No users found.</td></tr>
+                <tr><td colspan="5">No users found.</td></tr>
             <?php endif; ?>
         </tbody>
     </table>

@@ -1,13 +1,24 @@
 <?php
 session_start();
-require_once __DIR__ . '/../includes/auth_admin.php';
 require_once __DIR__ . '/../includes/config.php';
+
+// ✅ Admin-only access enforcement
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../user/login.php?error=unauthorized");
+    exit();
+}
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    header("Location: ../index.php?error=adminonly");
+    exit();
+}
+
 include __DIR__ . '/../includes/header.php';
 
 // Query sales from salesperorder view
 $sql = "SELECT orderinfo_id, total, status FROM salesperorder ORDER BY total DESC";
 $result = mysqli_query($conn, $sql);
 $itemCount = $result ? mysqli_num_rows($result) : 0;
+
 $grandTotal = 0;
 if ($result) {
     foreach ($result as $row) {

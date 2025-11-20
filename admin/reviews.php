@@ -1,10 +1,20 @@
 <?php
 session_start();
-require_once __DIR__ . '/../includes/auth_admin.php';
 require_once __DIR__ . '/../includes/config.php';
+
+// ✅ Admin-only access enforcement
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../user/login.php?error=unauthorized");
+    exit();
+}
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    header("Location: ../index.php?error=adminonly");
+    exit();
+}
+
 include __DIR__ . '/../includes/header.php';
 
-// list reviews
+// List reviews
 $sql = "SELECT r.*, i.name AS item_name 
         FROM reviews r 
         JOIN items i ON r.item_id = i.item_id 
