@@ -3,7 +3,13 @@ session_start();
 include('./includes/header.php');
 include('./includes/config.php');
 
-// Get category filter from URL
+
+
+
+
+
+
+
 $categoryFilter = isset($_GET['category']) ? trim($_GET['category']) : null;
 
 if ($categoryFilter) {

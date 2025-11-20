@@ -61,11 +61,9 @@ if (isset($_POST['submit'])) {
               header("Location: ../index.php");
               exit();
           } else {
-              // account is deactivated
               $deactivated = true;
           }
       } else {
-          // password didn’t match
           $login_error = true;
       }
     } else {
