@@ -1,5 +1,6 @@
 <?php
 session_start();
+include('../includes/auth_user.php');
 include('../includes/config.php');
 
 if (isset($_POST["type"]) && $_POST["type"] === 'add' && isset($_POST["item_qty"]) && $_POST["item_qty"] > 0) {
@@ -22,9 +23,9 @@ if (isset($_POST["type"]) && $_POST["type"] === 'add' && isset($_POST["item_qty"
         $new_product["item_id"]       = (int)$row['itemId'];
         $new_product["item_name"]     = $row['name'];
         $new_product["item_price"]    = (float)$row['sell_price'];
-        $new_product["item_stock"]    = (int)$row['quantity']; // for validation
-        $new_product["item_image"]    = $row['main_image'];    // optional for display
-        $new_product["supplier_name"] = $row['supplier_name']; // brand
+        $new_product["item_stock"]    = (int)$row['quantity']; 
+        $new_product["item_image"]    = $row['main_image'];   
+        $new_product["supplier_name"] = $row['supplier_name']; 
         $new_product["item_qty"]      = isset($new_product["item_qty"]) ? max(1, (int)$new_product["item_qty"]) : 1;
     }
 

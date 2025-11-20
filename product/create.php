@@ -4,6 +4,18 @@ include('../includes/auth_admin.php');
 include('../includes/header.php');
 include('../includes/config.php');
 
+// Require login
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../user/login.php?error=unauthorized");
+    exit();
+}
+
+// Require admin role
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    header("Location: ../index.php?error=adminonly");
+    exit();
+}
+
 // Fetch categories
 $categories = [];
 $catRes = mysqli_query($conn, "SELECT category_id, name FROM categories ORDER BY name ASC");

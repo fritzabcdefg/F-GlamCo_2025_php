@@ -3,6 +3,18 @@ session_start();
 include('../includes/auth_admin.php');
 include('../includes/config.php');
 
+// Require login
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../user/login.php?error=unauthorized");
+    exit();
+}
+
+// Require admin role
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    header("Location: ../index.php?error=adminonly");
+    exit();
+}
+
 if (!isset($_POST['submit'])) {
     header("Location: create.php");
     exit();

@@ -3,13 +3,6 @@ session_start();
 include('./includes/header.php');
 include('./includes/config.php');
 
-
-
-
-
-
-
-
 $categoryFilter = isset($_GET['category']) ? trim($_GET['category']) : null;
 
 if ($categoryFilter) {

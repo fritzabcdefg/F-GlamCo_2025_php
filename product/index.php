@@ -3,6 +3,17 @@ session_start();
 include('../includes/header.php');
 include('../includes/config.php');
 
+// Require login
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../user/login.php?error=unauthorized");
+    exit();
+}
+
+// Require admin role
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    header("Location: ../index.php?error=adminonly");
+    exit();
+}
 $keyword = isset($_GET['search']) ? strtolower(trim($_GET['search'])) : '';
 
 if ($keyword) {
