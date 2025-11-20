@@ -9,6 +9,7 @@ if (!isset($_POST['submit'])) {
 }
 
 $name        = trim($_POST['name']);
+$description = trim($_POST['description'] ?? '');   // ✅ new field
 $category_id = $_POST['category_id'] !== '' ? intval($_POST['category_id']) : null;
 $quantity    = intval($_POST['quantity']);
 $supplier    = trim($_POST['supplier_name'] ?? 'Default Supplier');
@@ -19,15 +20,15 @@ $sell_price = round((float)$_POST['sell_price'], 2);
 
 // Insert item
 if ($category_id === null) {
-    $sql = "INSERT INTO items (name, cost_price, sell_price, supplier_name, category_id)
-            VALUES (?, ?, ?, ?, NULL)";
+    $sql = "INSERT INTO items (name, description, cost_price, sell_price, supplier_name, category_id)
+            VALUES (?, ?, ?, ?, ?, NULL)";
     $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, "sdds", $name, $cost_price, $sell_price, $supplier);
+    mysqli_stmt_bind_param($stmt, "ssdss", $name, $description, $cost_price, $sell_price, $supplier);
 } else {
-    $sql = "INSERT INTO items (name, cost_price, sell_price, supplier_name, category_id)
-            VALUES (?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO items (name, description, cost_price, sell_price, supplier_name, category_id)
+            VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, "sdssi", $name, $cost_price, $sell_price, $supplier, $category_id);
+    mysqli_stmt_bind_param($stmt, "ssdssi", $name, $description, $cost_price, $sell_price, $supplier, $category_id);
 }
 $ok = mysqli_stmt_execute($stmt);
 $itemId = mysqli_insert_id($conn);

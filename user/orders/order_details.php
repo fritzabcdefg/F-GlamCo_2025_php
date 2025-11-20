@@ -102,22 +102,25 @@ $grand_total = $total + $summary['shipping'];
         </tbody>
     </table>
 
-    <div class="order-actions">
+<div class="order-actions">
+    <?php if ($summary['status'] === 'Pending' || $summary['status'] === 'Processing'): ?>
+        <form method="POST" action="order_status.php">
+            <input type="hidden" name="order_id" value="<?php echo $order_id; ?>">
+            <input type="hidden" name="status" value="Cancelled">
+            <button class="btn-cancel">Cancel Order</button>
+        </form>
         <?php if ($summary['status'] === 'Pending'): ?>
             <form method="POST" action="update_order_status.php">
                 <input type="hidden" name="order_id" value="<?php echo $order_id; ?>">
-                <input type="hidden" name="status" value="Cancelled">
-                <button class="btn-cancel">❌ Cancel Order</button>
-            </form>
-            <form method="POST" action="update_order_status.php">
-                <input type="hidden" name="order_id" value="<?php echo $order_id; ?>">
                 <input type="hidden" name="status" value="Delivered">
-                <button class="btn-delivered">✅ Mark as Delivered</button>
+                <button class="btn-delivered">Mark as Delivered</button>
             </form>
-        <?php else: ?>
-            <p><em>This order is already marked as <strong><?php echo $summary['status']; ?></strong>.</em></p>
         <?php endif; ?>
-    </div>
+    <?php else: ?>
+        <p><em>This order is already marked as <strong><?php echo $summary['status']; ?></strong>.</em></p>
+    <?php endif; ?>
 </div>
+<br>
+
 
 <?php include('../../includes/footer.php'); ?>

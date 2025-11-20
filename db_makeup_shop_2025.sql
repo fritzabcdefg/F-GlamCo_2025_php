@@ -206,8 +206,9 @@ INSERT INTO `items` (`item_id`, `name`, `description`, `cost_price`, `sell_price
 (12, 'Impeccable Setting Spray', 'Long-lasting setting spray that locks makeup in place while keeping skin refreshed.', 2090.00, 2320.00, 'Anastasia Beverly Hills', 3),
 (13, 'Perfect Strokes Universal Volumizing Mascara', 'Volumizing mascara that lifts and defines lashes with a universal brush design.', 1250.00, 1550.00, 'Rare Beauty', 1),
 (14, 'Effortless Natural Lash Collection', 'A curated set of natural-looking false lashes for effortless everyday wear.', 1400.00, 1680.00, 'Velour Lashes', 3),
-(15, 'Mini Soft Glam Eye Shadow Palette', NULL, 2480.00, 2270.00, 'Anastasia Beverly Hills', 1),
-(16, 'Kind Words Matte Lipstick • 3.5g', NULL, 1100.00, 1450.00, 'Rare Beauty', 2);
+(15, 'Mini Soft Glam Eye Shadow Palette', 'A travel-friendly palette featuring essential neutral shades with both matte and shimmer finishes.', 2480.00, 2270.00, 'Anastasia Beverly Hills', 1),
+(16, 'Kind Words Matte Lipstick • 3.5g', 'Apply directly to your lips for the most intense payoff.\r\nFor just a touch of soft matte colour, apply with your finger in a blotting motion.\r\nTo help shape and define lips, first line them with Rare Beauty by Selena Gomezs Kind Words Matte Lip Liner (sold separately).', 1100.00, 1450.00, 'Rare Beauty', 2);
+
 
 
 INSERT INTO `stocks` (`item_id`, `quantity`) VALUES
@@ -260,6 +261,11 @@ INSERT INTO `product_images` (`id`, `item_id`, `filename`, `created_at`) VALUES
 (31, 13, '/F&LGlamCo/product/images/1763564082_c077c72e_Rare_Beauty_Perfect_Strokes_Universal_Volumizing_Mascara.png', '2025-11-19 14:54:42'),
 (32, 14, '/F&LGlamCo/product/images/1763564380_857c6339_Velour_Lashes_Effortless_Natural_Lash_Collection__2_.png', '2025-11-19 14:59:40'),
 (33, 14, '/F&LGlamCo/product/images/1763564380_05c17290_Velour_Lashes_Effortless_Natural_Lash_Collection__3_.png', '2025-11-19 14:59:40'),
-(34, 14, '/F&LGlamCo/product/images/1763564380_610749a2_Velour_Lashes_Effortless_Natural_Lash_Collection.png', '2025-11-19 14:59:40');
-
+(34, 14, '/F&LGlamCo/product/images/1763564380_610749a2_Velour_Lashes_Effortless_Natural_Lash_Collection.png', '2025-11-19 14:59:40'),
+(35, 15, '/F&LGlamCo/product/images/1763566619_824b755a_Anastasia_Beverly_Hills_Mini_Soft_Glam_Eye_Shadow_Palette__2_.png', '2025-11-19 15:36:59'),
+(36, 15, '/F&LGlamCo/product/images/1763566619_cc272dd6_Anastasia_Beverly_Hills_Mini_Soft_Glam_Eye_Shadow_Palette__3_.png', '2025-11-19 15:36:59'),
+(37, 15, '/F&LGlamCo/product/images/1763566619_810f311f_Anastasia_Beverly_Hills_Mini_Soft_Glam_Eye_Shadow_Palette.png', '2025-11-19 15:36:59'),
+(38, 16, '/F&LGlamCo/product/images/1763566841_7974a622_Rare_Beauty_Kind_Words_Matte_Lipstick_____3.5g__2_.png', '2025-11-19 15:40:41'),
+(39, 16, '/F&LGlamCo/product/images/1763566841_4912390e_Rare_Beauty_Kind_Words_Matte_Lipstick_____3.5g__3_.png', '2025-11-19 15:40:41'),
+(40, 16, '/F&LGlamCo/product/images/1763566841_d592eec3_Rare_Beauty_Kind_Words_Matte_Lipstick_____3.5g.png', '2025-11-19 15:40:41');
 COMMIT;

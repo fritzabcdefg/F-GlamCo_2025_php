@@ -10,11 +10,11 @@ if (!isset($_POST['submit'])) {
 
 $item_id     = intval($_POST['item_id']);
 $name        = trim($_POST['name']);
+$description = trim($_POST['description'] ?? '');  
 $category_id = ($_POST['category_id'] !== '') ? intval($_POST['category_id']) : null;
 $quantity    = intval($_POST['quantity']);
 $supplier    = trim($_POST['supplier_name'] ?? '');
 
-// ✅ Round to 2 decimals, keep as float
 $cost_price  = isset($_POST['cost_price']) ? round((float)$_POST['cost_price'], 2) : 0.0;
 $sell_price  = isset($_POST['sell_price']) ? round((float)$_POST['sell_price'], 2) : 0.0;
 
@@ -26,16 +26,20 @@ if ($item_id <= 0 || $name === '') {
 // --- Update item ---
 if ($category_id === null) {
     $upd = mysqli_prepare($conn,
-        "UPDATE items SET name=?, cost_price=?, sell_price=?, supplier_name=?, category_id=NULL WHERE item_id=?"
+        "UPDATE items 
+         SET name=?, description=?, cost_price=?, sell_price=?, supplier_name=?, category_id=NULL 
+         WHERE item_id=?"
     );
     if (!$upd) die("Prepare failed: " . mysqli_error($conn));
-    mysqli_stmt_bind_param($upd, 'sddsi', $name, $cost_price, $sell_price, $supplier, $item_id);
+    mysqli_stmt_bind_param($upd, 'ssdssi', $name, $description, $cost_price, $sell_price, $supplier, $item_id);
 } else {
     $upd = mysqli_prepare($conn,
-        "UPDATE items SET name=?, cost_price=?, sell_price=?, supplier_name=?, category_id=? WHERE item_id=?"
+        "UPDATE items 
+         SET name=?, description=?, cost_price=?, sell_price=?, supplier_name=?, category_id=? 
+         WHERE item_id=?"
     );
     if (!$upd) die("Prepare failed: " . mysqli_error($conn));
-    mysqli_stmt_bind_param($upd, 'sddsii', $name, $cost_price, $sell_price, $supplier, $category_id, $item_id);
+    mysqli_stmt_bind_param($upd, 'ssdssii', $name, $description, $cost_price, $sell_price, $supplier, $category_id, $item_id);
 }
 
 if (!mysqli_stmt_execute($upd)) {
@@ -67,8 +71,5 @@ if ($exists) {
     mysqli_stmt_close($insS);
 }
 
-// --- Handle images (keep your existing upload/delete logic here) ---
-
-// ✅ Redirect back to product list
 header('Location: index.php?msg=Item+updated+successfully');
 exit();

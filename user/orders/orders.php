@@ -82,7 +82,7 @@ $result = mysqli_stmt_get_result($stmt);
                 $total = $row['subtotal'] + $row['shipping'];
                 $statusClass = 'status-' . strtolower($row['status']);
 
-                $reviewCheck = mysqli_prepare($conn, "SELECT COUNT(*) FROM reviews WHERE orderinfo_id = ? AND customer_id = ?");
+                $reviewCheck = mysqli_prepare($conn, "SELECT COUNT(*) FROM reviews WHERE orderinfo_id = ? AND user_id = ?");
                 mysqli_stmt_bind_param($reviewCheck, 'ii', $row['orderinfo_id'], $customer_id);
                 mysqli_stmt_execute($reviewCheck);
                 mysqli_stmt_bind_result($reviewCheck, $reviewCount);
